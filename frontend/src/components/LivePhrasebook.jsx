@@ -360,7 +360,7 @@ export default function LivePhrasebook({
       </div>
 
       {/* ── Two-Column Engine ── */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', alignItems: 'start' }}>
+      <div className="voice-engine-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', alignItems: 'start' }}>
 
         {/* ═══════════════════════════════════════
             CHANNEL 1 — Teacher Hindi → Tribal

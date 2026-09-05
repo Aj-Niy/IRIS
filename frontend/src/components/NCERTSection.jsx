@@ -3,7 +3,7 @@ import {
   BookOpen, Hand, Download, Play, CheckCircle2, HelpCircle, Sparkles,
   ChevronRight, ChevronDown, Atom, Beaker, Dna, Binary, Calculator,
   BrainCircuit, Volume2, Globe, MessageSquare, Send, Lightbulb,
-  Eye, Headphones, Video, CheckCheck, Lock, Star, Mic, X, Film
+  Eye, Headphones, Video, CheckCheck, Lock, Star, Mic, X, Film, Languages
 } from 'lucide-react';
 import jsPDF from 'jspdf';
 import ISLVideoPlayerModal from './ISLVideoPlayerModal';
@@ -334,6 +334,46 @@ Use simple language, bold key terms, and end with a quick quiz question to check
         <p style={{ fontSize: '14px', color: 'var(--text-muted)', marginTop: '4px' }}>
           {t.ncert.subtitle}
         </p>
+        {/* Tribal / Hindi bilingual line */}
+        <div style={{
+          marginTop: '10px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '10px',
+          flexWrap: 'wrap'
+        }}>
+          <span style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '6px',
+            padding: '4px 12px',
+            borderRadius: '8px',
+            backgroundColor: '#FFF7ED',
+            border: '1.5px solid #FDBA74',
+            fontSize: '12px',
+            fontWeight: '700',
+            color: '#C2410C',
+            letterSpacing: '0.2px'
+          }}>
+            <Languages size={13} color="#EA580C" />
+            {t.ncert.vernacularLine}
+          </span>
+          <span style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '5px',
+            padding: '4px 10px',
+            borderRadius: '8px',
+            backgroundColor: '#ECFDF5',
+            border: '1px solid #A7F3D0',
+            fontSize: '11px',
+            fontWeight: '700',
+            color: '#065F46'
+          }}>
+            <Sparkles size={12} color="#059669" />
+            {uiLang === 'hi' ? 'AI-संचालित सोक्रेटिक शिक्षण' : 'Socratic AI · Mother-Tongue Aware'}
+          </span>
+        </div>
       </div>
 
       {/* ── Top Controls Row: Grade + STEM branch tabs + Mode switcher ── */}
@@ -428,7 +468,7 @@ Use simple language, bold key terms, and end with a quick quiz question to check
       </div>
 
       {/* ── UPPER SECTION: Chapters (left) + STEM Summary (right) ── */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 380px', gap: '24px', marginBottom: '28px', alignItems: 'start' }}>
+      <div className="ncert-main-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 380px', gap: '24px', marginBottom: '28px', alignItems: 'start' }}>
 
         {/* Chapter List */}
         <div>

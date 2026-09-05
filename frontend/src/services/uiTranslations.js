@@ -128,7 +128,10 @@ export const uiTranslations = {
     ncert: {
       badge: "RAG-Grounded NCERT & JCERT Curriculum · Classes 8–12",
       title: "STEM AI Learning Lab",
-      subtitle: "Select a STEM branch · Choose your grade · Read, summarize, and chat with AI Mentor"
+      subtitle: "Select a STEM branch · Choose your grade · Read, summarize, and chat with AI Mentor",
+      vernacularLine: "ᱥᱮᱬᱮᱞ ᱠᱚᱡᱤ (Ol Chiki) · विज्ञान, गणित और कम्प्यूटर — AI मेंटर से सीखें",
+      gradeLabel: "Class",
+      allGrades: "All Classes"
     }
   },
 
@@ -256,7 +259,10 @@ export const uiTranslations = {
     ncert: {
       badge: "NCERT एवं JCERT पाठ्यक्रम संरेखण · कक्षा ८–१२",
       title: "STEM AI शिक्षण लैब",
-      subtitle: "STEM शाखा चुनें · अपनी कक्षा चुनें · पढ़ें, सारांश देखें और AI मेंटर से चर्चा करें"
+      subtitle: "STEM शाखा चुनें · अपनी कक्षा चुनें · पढ़ें, सारांश देखें और AI मेंटर से चर्चा करें",
+      vernacularLine: "ᱥᱮᱬᱮᱞ ᱠᱚᱡᱤ (ओल चिकी) · विज्ञान, गणित और कम्प्यूटर — AI गुरुजी से सीखें",
+      gradeLabel: "कक्षा",
+      allGrades: "सभी कक्षाएं"
     }
   }
 };

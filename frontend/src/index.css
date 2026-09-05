@@ -218,6 +218,111 @@ input, select, textarea {
   }
 }
 
+/* ═══════════════════════════════════════════════════
+   TABLET-FIRST RESPONSIVE LAYOUT (≤1024px + ≤768px)
+   Target: School tablets, iPad Air/Pro, Android tabs
+═══════════════════════════════════════════════════ */
+
+/* iPad Landscape & small laptops ≤1024px */
+@media (max-width: 1024px) {
+  header > div:first-child {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  header nav {
+    flex-wrap: wrap !important;
+    gap: 4px !important;
+  }
+  .nav-tab-block {
+    padding: 6px 10px !important;
+    font-size: 11px !important;
+  }
+  /* Voice engine two-col → single col */
+  .voice-engine-grid {
+    grid-template-columns: 1fr !important;
+  }
+  /* NCERT section sidebar → full width */
+  .ncert-main-grid {
+    grid-template-columns: 1fr !important;
+  }
+  /* Dashboard metrics 4→2 cols */
+  .metrics-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  /* FLN studio side panel → full width */
+  .fln-studio-grid {
+    grid-template-columns: 1fr !important;
+  }
+  /* Inner container horizontal padding */
+  .page-container {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+}
+
+/* iPad Portrait & small Android tablets ≤768px */
+@media (max-width: 768px) {
+  /* Navbar top sub-bar stack */
+  header > div:first-child {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    padding: 8px 14px !important;
+    gap: 8px !important;
+  }
+  header > div:first-child > div:last-child {
+    flex-wrap: wrap;
+  }
+  /* Nav main bar: brand + nav stack */
+  header > div:last-child,
+  header > div:nth-child(2) {
+    flex-wrap: wrap;
+    gap: 8px !important;
+    padding: 8px 14px !important;
+  }
+  .nav-tab-block {
+    padding: 5px 8px !important;
+    font-size: 10px !important;
+    gap: 3px !important;
+  }
+  /* Cards */
+  .card {
+    padding: 14px !important;
+    border-radius: 10px !important;
+  }
+  /* Main content bottom padding (for nav bar on tablets) */
+  .main-content {
+    padding-bottom: 70px;
+  }
+  /* Generic flex rows that row-wrap */
+  .flex-row-wrap {
+    flex-wrap: wrap !important;
+  }
+  /* Footer stacks */
+  footer > div > div {
+    flex-direction: column !important;
+    gap: 6px !important;
+    text-align: center !important;
+  }
+  /* Section padding reduction */
+  .section-pad {
+    padding: 14px 14px !important;
+  }
+}
+
+/* Touch-friendly interactive targets on tablets */
+@media (pointer: coarse) {
+  button, select, input[type="text"], textarea {
+    min-height: 40px;
+  }
+  .nav-tab-block {
+    min-height: 38px !important;
+    padding: 6px 12px !important;
+  }
+  select {
+    font-size: 14px !important;
+  }
+}
+
 /* Print Optimization for Worksheets */
 @media print {
   header, nav, .no-print, button {
@@ -236,3 +341,4 @@ input, select, textarea {
     padding: 10mm !important;
   }
 }
+
