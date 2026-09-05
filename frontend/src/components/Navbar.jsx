@@ -217,21 +217,17 @@ export default function Navbar({
           onMouseEnter={(e) => e.currentTarget.style.borderColor = '#EA580C'}
           onMouseLeave={(e) => e.currentTarget.style.borderColor = '#FED7AA'}
         >
-          <div style={{
-            width: '38px',
-            height: '38px',
-            borderRadius: '10px',
-            background: 'linear-gradient(135deg, #EA580C 0%, #C2410C 100%)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: '#FFFFFF',
-            fontWeight: '900',
-            fontSize: '18px',
-            boxShadow: '0 3px 6px rgba(234, 88, 12, 0.35)'
-          }}>
-            P
-          </div>
+          <img
+            src="/iris-logo.png"
+            alt="PALASH IRIS Logo"
+            style={{
+              width: '38px',
+              height: '38px',
+              borderRadius: '10px',
+              objectFit: 'cover',
+              boxShadow: '0 3px 6px rgba(234, 88, 12, 0.35)'
+            }}
+          />
           <div>
             <div style={{ fontSize: '16px', fontWeight: '900', color: '#0F172A', letterSpacing: '-0.3px', lineHeight: 1.1 }}>
               PALASH <span style={{ color: '#EA580C' }}>IRIS</span>
