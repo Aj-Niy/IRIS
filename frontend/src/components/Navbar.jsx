@@ -1,213 +1,143 @@
 import React from 'react';
 import { 
-  Code2, 
-  Hand, 
   Languages, 
-  LayoutDashboard, 
-  FolderKanban, 
-  Bot, 
-  GraduationCap, 
   BookOpen, 
+  FileCheck, 
+  Volume2, 
+  GraduationCap, 
+  Bot, 
   User, 
-  Sparkles,
-  Terminal,
-  LogOut
+  LogOut,
+  ShieldCheck,
+  Cpu,
+  Sparkles
 } from 'lucide-react';
 
 export default function Navbar({ 
   currentTab, 
   setCurrentTab, 
-  islMode, 
-  setIslMode, 
   currentLang, 
   setCurrentLang,
-  userRole,
-  setUserRole,
   userName,
   setUserName
 }) {
   const languages = [
-    { code: 'en', name: 'English' },
-    { code: 'hi', name: 'हिंदी (Hindi)' },
-    { code: 'ta', name: 'தமிழ் (Tamil)' },
-    { code: 'te', name: 'తెలుగు (Telugu)' },
-    { code: 'kn', name: 'ಕன்னಡ (Kannada)' },
-    { code: 'mr', name: 'मराठी (Marathi)' },
-    { code: 'bn', name: 'বাংলা (Bengali)' },
-    { code: 'gu', name: 'ગુજરાતી (Gujarati)' }
+    { code: 'sat', name: 'ᱥᱟᱱᱛᱟᱲᱤ (Santhali)', script: 'Ol Chiki' },
+    { code: 'hoc', name: '𑢹𑣉𑣉 (Ho)', script: 'Warang Chiti' },
+    { code: 'unr', name: 'ᱢᱩᱱᱰᱟᱨᱤ (Mundari)', script: 'Mundari' },
+    { code: 'hi', name: 'हिंदी (Hindi)', script: 'Devanagari' },
+    { code: 'en', name: 'English', script: 'Latin' }
   ];
 
-  const leftNavItems = [
-    { id: 'home', label: 'Home', icon: LayoutDashboard },
-    { id: 'projects', label: 'Projects Hub', icon: FolderKanban },
-    { id: 'my-workspace', label: 'My Workspace', icon: Terminal },
-    { id: 'ai-mentor', label: 'AI Mentor', icon: Bot },
-    { id: 'teacher', label: 'Teacher Portal', icon: GraduationCap },
+  // Primary MTB-MLE Navigation Modules
+  const navItems = [
+    { id: 'santali-studio', label: 'FLN Lesson Studio', icon: BookOpen, color: '#EA580C' },
+    { id: 'phrasebook', label: 'Real-Time Voice', icon: Volume2, color: '#059669' },
+    { id: 'worksheets', label: 'NIPUN Worksheets', icon: FileCheck, color: '#2563EB' },
+    { id: 'teacher', label: 'Teacher Dashboard', icon: GraduationCap, color: '#7C3AED' },
+    { id: 'ai-mentor', label: 'Pedagogy Assistant', icon: Bot, color: '#D97706' },
+    { id: 'ncert', label: 'Curriculum Hub', icon: BookOpen, color: '#0284C7' }
   ];
-
-  const academicsItem = { id: 'ncert', label: 'Academics', icon: BookOpen };
 
   const handleLogout = () => {
     setUserName('');
+    localStorage.removeItem('palash_username');
     localStorage.removeItem('codeseekho_username');
     setCurrentTab('landing');
   };
 
-  const renderNavButton = (item, isAcademics = false) => {
-    const Icon = item.icon;
-    const isActive = currentTab === item.id;
-    const isAuthorized = item.id !== 'teacher' || userRole === 'teacher';
-    const isLocked = !userName;
-
-    if (!isAuthorized) return null;
-
-    if (isAcademics) {
-      return (
-        <button
-          key={item.id}
-          onClick={() => !isLocked && setCurrentTab(item.id)}
-          disabled={isLocked}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px',
-            padding: '6px 14px',
-            borderRadius: 'var(--radius-md)',
-            fontSize: '13px',
-            fontWeight: '700',
-            whiteSpace: 'nowrap',
-            color: isLocked ? 'var(--text-faint)' : isActive ? '#FFFFFF' : '#7C3AED',
-            backgroundColor: isLocked ? 'var(--bg-card)' : isActive ? 'var(--accent)' : 'rgba(139, 92, 246, 0.08)',
-            border: isActive ? '1.5px solid var(--accent)' : '1px solid #A78BFA',
-            boxShadow: isActive ? '0 2px 8px rgba(200, 75, 36, 0.3)' : '0 1px 3px rgba(139, 92, 246, 0.15)',
-            transition: 'all 0.15s ease',
-            cursor: isLocked ? 'not-allowed' : 'pointer',
-            opacity: isLocked ? 0.45 : 1,
-            marginLeft: '8px'
-          }}
-          title={isLocked ? "Log in to unlock this dashboard" : ""}
-        >
-          <Icon size={16} color={isLocked ? 'var(--text-faint)' : isActive ? '#FFFFFF' : '#7C3AED'} />
-          <span>{item.label}</span>
-          <span style={{
-            fontSize: '9px',
-            fontWeight: '800',
-            padding: '1px 5px',
-            borderRadius: '10px',
-            backgroundColor: isActive ? 'rgba(255,255,255,0.25)' : '#7C3AED',
-            color: '#FFFFFF',
-            marginLeft: '2px',
-            letterSpacing: '0.5px'
-          }}>
-            NCERT
-          </span>
-        </button>
-      );
-    }
-
-    return (
-      <button
-        key={item.id}
-        onClick={() => !isLocked && setCurrentTab(item.id)}
-        disabled={isLocked}
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '5px',
-          padding: '5px 9px',
-          borderRadius: 'var(--radius-md)',
-          fontSize: '12px',
-          fontWeight: isActive ? '700' : '600',
-          whiteSpace: 'nowrap',
-          color: isLocked ? 'var(--text-faint)' : isActive ? 'var(--accent)' : 'var(--text-main)',
-          backgroundColor: isActive ? 'var(--accent-light)' : 'var(--bg-card)',
-          border: isActive ? '1.5px solid var(--accent)' : '1px solid var(--border-medium)',
-          boxShadow: isActive ? '0 1px 3px rgba(200, 75, 36, 0.15)' : 'var(--shadow-sm)',
-          transition: 'all 0.15s ease',
-          cursor: isLocked ? 'not-allowed' : 'pointer',
-          opacity: isLocked ? 0.45 : 1
-        }}
-        title={isLocked ? "Log in to unlock this dashboard" : ""}
-      >
-        <Icon size={15} color={isLocked ? 'var(--text-faint)' : isActive ? 'var(--accent)' : 'var(--text-muted)'} />
-        <span>{item.label}</span>
-      </button>
-    );
-  };
+  const currentLangObj = languages.find(l => l.code === currentLang) || languages[0];
 
   return (
     <header style={{
-      backgroundColor: 'var(--bg-card)',
-      borderBottom: '1px solid var(--border-light)',
+      backgroundColor: '#FAF8F5',
+      borderBottom: '2px solid #FED7AA',
       position: 'sticky',
       top: 0,
-      zIndex: 100
+      zIndex: 100,
+      boxShadow: '0 4px 12px rgba(234, 88, 12, 0.06)'
     }}>
-      {/* Upper sub-bar for ISL Status & Problem Statement */}
+      {/* Top Institutional Sub-Bar with Modular Blocks */}
       <div style={{
-        backgroundColor: 'var(--bg-subtle)',
-        borderBottom: '1px solid var(--border-light)',
-        padding: '6px 24px',
+        backgroundColor: '#FFFFFF',
+        borderBottom: '1px solid #FED7AA',
+        padding: '6px 20px',
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        fontSize: '12px',
-        color: 'var(--text-muted)'
+        fontSize: '11px',
+        color: '#334155'
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: '600' }}>
-            <span style={{
-              width: '8px',
-              height: '8px',
-              borderRadius: '50%',
-              backgroundColor: '#16A34A',
-              display: 'inline-block'
-            }}></span>
-            Backend Live: <strong style={{ color: 'var(--accent)' }}>decode-sih-2026.onrender.com</strong>
+        {/* Left Modular Info Blocks */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '5px',
+            backgroundColor: '#FFF7ED',
+            color: '#EA580C',
+            border: '1px solid #FDBA74',
+            padding: '3px 8px',
+            borderRadius: '6px',
+            fontWeight: '800',
+            letterSpacing: '0.3px',
+            fontSize: '10px'
+          }}>
+            <ShieldCheck size={12} />
+            <span>GOVT. OF JHARKHAND</span>
           </div>
-          <span>•</span>
-          <span>Problem Statement: <strong>Inclusive Education AI</strong></span>
+
+          <div style={{
+            backgroundColor: '#EFF6FF',
+            color: '#1E40AF',
+            border: '1px solid #BFDBFE',
+            padding: '3px 8px',
+            borderRadius: '6px',
+            fontWeight: '700',
+            fontSize: '11px'
+          }}>
+            PALASH MTB-MLE · Problem Statement <strong>26042</strong>
+          </div>
+
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            backgroundColor: '#ECFDF5',
+            color: '#065F46',
+            border: '1px solid #A7F3D0',
+            padding: '3px 8px',
+            borderRadius: '6px',
+            fontWeight: '600',
+            fontSize: '11px'
+          }}>
+            <span className="pulse-dot"></span>
+            <span>Tablet Offline Mode Ready (&le; 2GB RAM)</span>
+          </div>
         </div>
 
-        {/* Header content on the right */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          {/* ISL Toggle Switch */}
-          <button 
-            onClick={() => setIslMode(!islMode)}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              padding: '4px 10px',
-              borderRadius: 'var(--radius-full)',
-              backgroundColor: islMode ? '#FEF3C7' : 'var(--bg-card)',
-              color: islMode ? '#92400E' : 'var(--text-muted)',
-              border: islMode ? '1px solid #FCD34D' : '1px solid var(--border-medium)',
-              fontWeight: '600',
-              cursor: 'pointer',
-              fontSize: '12px'
-            }}
-            title="Toggle Indian Sign Language gesture video support"
-          >
-            <Hand size={14} color={islMode ? '#D97706' : 'currentColor'} />
-            <span>ISL Video Support:</span>
-            <span style={{ color: islMode ? '#B45309' : 'var(--text-main)', fontWeight: '700' }}>
-              {islMode ? 'ON 🤟' : 'OFF'}
-            </span>
-          </button>
-
-          {/* Regional Language Switcher */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <Languages size={14} color="var(--text-faint)" />
+        {/* Right Modular Status Blocks */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            backgroundColor: '#FFFFFF',
+            border: '1.5px solid #FED7AA',
+            borderRadius: '8px',
+            padding: '3px 8px',
+            boxShadow: '0 1px 2px rgba(234, 88, 12, 0.05)'
+          }}>
+            <Languages size={13} color="#EA580C" />
             <select
               value={currentLang}
               onChange={(e) => setCurrentLang(e.target.value)}
               style={{
                 background: 'none',
                 border: 'none',
-                fontSize: '12px',
-                fontWeight: '600',
-                color: 'var(--text-main)',
+                fontSize: '11px',
+                fontWeight: '800',
+                color: '#0F172A',
                 cursor: 'pointer',
                 outline: 'none'
               }}
@@ -220,128 +150,170 @@ export default function Navbar({
         </div>
       </div>
 
-      {/* Main Navigation Bar */}
+      {/* Main Navigation Bar (Modular Block Layout) */}
       <div style={{
-        padding: '10px 16px',
+        padding: '10px 20px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        maxWidth: '1600px',
+        maxWidth: '1500px',
         margin: '0 auto',
-        gap: '8px'
+        gap: '12px',
+        flexWrap: 'wrap'
       }}>
-        {/* Brand Logo */}
+        {/* Brand Block */}
         <div 
           onClick={() => setCurrentTab('landing')}
           style={{
             display: 'flex',
             alignItems: 'center',
             gap: '10px',
+            backgroundColor: '#FFFFFF',
+            border: '1.5px solid #FED7AA',
+            borderRadius: '12px',
+            padding: '6px 14px 6px 8px',
+            boxShadow: '0 2px 6px rgba(234, 88, 12, 0.1)',
             cursor: 'pointer',
-            userSelect: 'none'
+            userSelect: 'none',
+            transition: 'all 0.15s ease'
           }}
+          onMouseEnter={(e) => e.currentTarget.style.borderColor = '#EA580C'}
+          onMouseLeave={(e) => e.currentTarget.style.borderColor = '#FED7AA'}
         >
           <div style={{
             width: '38px',
             height: '38px',
-            borderRadius: 'var(--radius-md)',
-            backgroundColor: 'var(--accent)',
+            borderRadius: '10px',
+            background: 'linear-gradient(135deg, #EA580C 0%, #C2410C 100%)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             color: '#FFFFFF',
-            flexShrink: 0
+            fontWeight: '900',
+            fontSize: '18px',
+            boxShadow: '0 3px 6px rgba(234, 88, 12, 0.35)'
           }}>
-            <Code2 size={20} strokeWidth={2.5} style={{ display: 'block' }} />
+            P
           </div>
           <div>
-            <div style={{ fontSize: '16px', fontWeight: '800', letterSpacing: '-0.5px', color: 'var(--text-main)', whiteSpace: 'nowrap' }}>
-              CodeSeekho <span style={{ color: 'var(--accent)' }}>AI</span>
+            <div style={{ fontSize: '16px', fontWeight: '900', color: '#0F172A', letterSpacing: '-0.3px', lineHeight: 1.1 }}>
+              PALASH <span style={{ color: '#EA580C' }}>IRIS</span>
             </div>
-            <div style={{ fontSize: '10px', color: 'var(--text-faint)', marginTop: '-2px', whiteSpace: 'nowrap' }}>
-              Inclusive CS Education Platform
+            <div style={{ fontSize: '10px', color: '#64748B', marginTop: '1px', fontWeight: '700' }}>
+              Vernacular Pedagogy Engine
             </div>
           </div>
         </div>
 
-        {/* Left Navigation Tabs */}
-        <nav style={{ display: 'flex', alignItems: 'center', gap: '4px', flexWrap: 'nowrap' }}>
-          {leftNavItems.map(item => renderNavButton(item, false))}
-        </nav>
-
-        {/* Right Section: Academics (Highlighted) & User Role / Quick Landing Toggle */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0 }}>
-          {renderNavButton(academicsItem, true)}
-
-          <button
-            onClick={() => setCurrentTab('landing')}
-            style={{
-              fontSize: '11px',
-              fontWeight: '600',
-              color: 'var(--text-muted)',
-              padding: '5px 9px',
-              borderRadius: 'var(--radius-md)',
-              border: '1px solid var(--border-medium)',
-              backgroundColor: 'var(--bg-card)',
-              cursor: 'pointer',
-              whiteSpace: 'nowrap'
-            }}
-          >
-            Landing View
-          </button>
-
-          {userName ? (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '5px',
-                padding: '5px 9px',
-                backgroundColor: 'var(--bg-subtle)',
-                borderRadius: 'var(--radius-md)',
-                border: '1px solid var(--border-medium)',
-                fontSize: '11px',
-                fontWeight: '700',
-                whiteSpace: 'nowrap'
-              }}>
-                <User size={14} color="var(--accent)" />
-                <span>{userName} {userRole === 'teacher' ? '(Teacher)' : ''}</span>
-              </div>
+        {/* Modular Navigation Tabs Bar */}
+        <nav style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '6px',
+          backgroundColor: '#FFFFFF',
+          padding: '4px',
+          borderRadius: '12px',
+          border: '1.5px solid #FED7AA',
+          boxShadow: '0 2px 6px rgba(234, 88, 12, 0.06)',
+          flexWrap: 'wrap'
+        }}>
+          {navItems.map(item => {
+            const Icon = item.icon;
+            const isActive = currentTab === item.id;
+            return (
               <button
-                onClick={handleLogout}
+                key={item.id}
+                onClick={() => setCurrentTab(item.id)}
+                className={`nav-tab-block ${isActive ? 'active' : ''}`}
                 style={{
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'center',
-                  padding: '6px',
-                  borderRadius: 'var(--radius-md)',
-                  border: '1px solid #FECACA',
-                  backgroundColor: '#FEF2F2',
-                  color: '#EF4444',
-                  cursor: 'pointer'
+                  gap: '6px',
+                  padding: '7px 12px',
+                  borderRadius: '8px',
+                  fontSize: '12px',
+                  fontWeight: '800'
                 }}
-                title="Logout"
               >
-                <LogOut size={14} />
+                <Icon size={14} color={isActive ? '#FFFFFF' : item.color} />
+                <span>{item.label}</span>
               </button>
-            </div>
-          ) : (
+            );
+          })}
+        </nav>
+
+        {/* Teacher Identity / Account Module Block */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          {userName ? (
             <div style={{
               display: 'flex',
               alignItems: 'center',
               gap: '6px',
-              padding: '6px 12px',
-              backgroundColor: 'var(--bg-subtle)',
-              borderRadius: 'var(--radius-md)',
-              border: '1px dashed var(--border-medium)',
-              fontSize: '12px',
-              fontWeight: '700',
-              color: 'var(--text-muted)',
-              whiteSpace: 'nowrap'
+              backgroundColor: '#FFFFFF',
+              border: '1.5px solid #FED7AA',
+              borderRadius: '10px',
+              padding: '4px 6px 4px 10px',
+              boxShadow: '0 1px 3px rgba(234, 88, 12, 0.08)'
             }}>
-              <User size={14} />
-              <span>Not Logged In</span>
+              <div style={{
+                width: '26px',
+                height: '26px',
+                borderRadius: '6px',
+                backgroundColor: '#FFF7ED',
+                border: '1px solid #FDBA74',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#EA580C',
+                fontWeight: '800',
+                fontSize: '11px'
+              }}>
+                <User size={13} />
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <span style={{ fontSize: '11px', fontWeight: '800', color: '#0F172A', lineHeight: 1.1 }}>
+                  {userName}
+                </span>
+                <span style={{ fontSize: '9px', fontWeight: '600', color: '#059669' }}>
+                  Jharkhand Primary
+                </span>
+              </div>
+              <button
+                onClick={handleLogout}
+                style={{
+                  padding: '4px 6px',
+                  borderRadius: '6px',
+                  backgroundColor: '#FFF1F2',
+                  border: '1px solid #FECDD3',
+                  color: '#E11D48',
+                  cursor: 'pointer',
+                  fontSize: '11px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  marginLeft: '4px'
+                }}
+                title="Sign out"
+              >
+                <LogOut size={12} />
+              </button>
             </div>
+          ) : (
+            <button
+              onClick={() => setCurrentTab('landing')}
+              style={{
+                fontSize: '12px',
+                fontWeight: '800',
+                color: '#FFFFFF',
+                padding: '8px 16px',
+                borderRadius: '10px',
+                border: 'none',
+                background: 'linear-gradient(135deg, #EA580C 0%, #C2410C 100%)',
+                boxShadow: '0 2px 6px rgba(234, 88, 12, 0.3)',
+                cursor: 'pointer'
+              }}
+            >
+              Teacher Login →
+            </button>
           )}
         </div>
       </div>

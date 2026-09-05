@@ -1,51 +1,57 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import LandingPage from './components/LandingPage';
-import HomeDashboard from './components/HomeDashboard';
-import ProjectsPage from './components/ProjectsPage';
-import MyProjectsWorkspace from './components/MyProjectsWorkspace';
+import SantaliStudio from './components/SantaliStudio';
+import WorksheetGenerator from './components/WorksheetGenerator';
+import LivePhrasebook from './components/LivePhrasebook';
 import AIMentorPage from './components/AIMentorPage';
 import TeacherDashboard from './components/TeacherDashboard';
 import NCERTSection from './components/NCERTSection';
+import MyProjectsWorkspace from './components/MyProjectsWorkspace';
+import { initOfflineStorage } from './services/offlineSync';
 
 export default function App() {
   const [currentTab, setCurrentTab] = useState('landing');
-  const [islMode, setIslMode] = useState(true);
-  const [currentLang, setCurrentLang] = useState('hi');
-  const [userRole, setUserRoleState] = useState(localStorage.getItem('codeseekho_userrole') || 'student');
-  const [userName, setUserName] = useState(localStorage.getItem('codeseekho_username') || '');
+  const [currentLang, setCurrentLang] = useState('sat'); // Default to Santhali
+  const [userRole, setUserRoleState] = useState(
+    localStorage.getItem('palash_userrole') || localStorage.getItem('codeseekho_userrole') || 'teacher'
+  );
+  const [userName, setUserName] = useState(
+    localStorage.getItem('palash_username') || localStorage.getItem('codeseekho_username') || ''
+  );
+
+  useEffect(() => {
+    initOfflineStorage();
+  }, []);
 
   const setUserRole = (role) => {
     setUserRoleState(role);
-    localStorage.setItem('codeseekho_userrole', role);
+    localStorage.setItem('palash_userrole', role);
+  };
+
+  const handleSetUserName = (name) => {
+    setUserName(name);
+    localStorage.setItem('palash_username', name);
   };
 
   const [selectedProject, setSelectedProject] = useState({
     id: 'calculator',
-    title: 'Smart Calculator',
+    title: 'Interactive Math & Logic Sandbox',
     emoji: '🧮',
-    codeSnippet: `# CodeSeekho AI — Smart Calculator Project
-# Problem Statement: Calculate sum of numbers using a while loop
-
+    codeSnippet: `# Interactive Logic & Arithmetic Sandbox
 total = 0
-count = 1
+for count in range(1, 6):
+    total += count
+    print(f"Count {count} -> Running Sum = {total}")
 
-while count <= 5:
-    total = total + count
-    print(f"Step {count}: Current sum is {total}")
-    count = count + 1
-
-print("Final Total Sum:", total)
+print("Final Sum:", total)
 `
   });
 
   const handleSetTab = (tab) => {
-    const activeUser = userName || localStorage.getItem('codeseekho_username');
+    const activeUser = userName || localStorage.getItem('palash_username') || localStorage.getItem('codeseekho_username');
     if (!activeUser && tab !== 'landing') {
       return;
-    }
-    if (tab === 'teacher') {
-      setUserRole('teacher');
     }
     setCurrentTab(tab);
     window.scrollTo(0, 0);
@@ -53,18 +59,16 @@ print("Final Total Sum:", total)
 
   return (
     <div className="app-container">
-      {/* Top Header */}
+      {/* Government Standard Header */}
       <Navbar
         currentTab={currentTab}
         setCurrentTab={handleSetTab}
-        islMode={islMode}
-        setIslMode={setIslMode}
         currentLang={currentLang}
         setCurrentLang={setCurrentLang}
         userRole={userRole}
         setUserRole={setUserRole}
         userName={userName}
-        setUserName={setUserName}
+        setUserName={handleSetUserName}
       />
 
       {/* Main Content Body */}
@@ -72,49 +76,42 @@ print("Final Total Sum:", total)
         {currentTab === 'landing' && (
           <LandingPage
             setCurrentTab={handleSetTab}
-            islMode={islMode}
-            setIslMode={setIslMode}
             setUserRole={setUserRole}
-            setUserName={(name) => {
-              setUserName(name);
-              localStorage.setItem('codeseekho_username', name);
-            }}
+            setUserName={handleSetUserName}
           />
         )}
 
-        {currentTab === 'home' && (
-          <HomeDashboard
+        {/* FLN Lesson Translation & Scripting Studio */}
+        {currentTab === 'santali-studio' && (
+          <SantaliStudio
             setCurrentTab={handleSetTab}
-            islMode={islMode}
-            currentLang={currentLang}
-            userName={userName}
           />
         )}
 
-        {currentTab === 'projects' && (
-          <ProjectsPage
-            setCurrentTab={handleSetTab}
-            setSelectedProject={setSelectedProject}
-          />
+        {/* Real-time Voice Translation & Classroom Dialogue Module */}
+        {currentTab === 'phrasebook' && (
+          <LivePhrasebook />
         )}
 
-        {currentTab === 'my-workspace' && (
-          <MyProjectsWorkspace
-            selectedProject={selectedProject}
-            islMode={islMode}
-            currentLang={currentLang}
-            userName={userName}
-          />
+        {/* Auto-Generated NIPUN Bharat Worksheets & Flashcards */}
+        {currentTab === 'worksheets' && (
+          <WorksheetGenerator />
         )}
 
+        {/* PALASH Teacher Progress Dashboard */}
+        {currentTab === 'teacher' && (
+          <TeacherDashboard />
+        )}
+
+        {/* Vernacular Pedagogy Assistant */}
         {currentTab === 'ai-mentor' && (
           <AIMentorPage
             currentLang={currentLang}
-            islMode={islMode}
             userName={userName}
           />
         )}
 
+        {/* Curriculum Hub with embedded Coding Lab entry */}
         {currentTab === 'ncert' && (
           <NCERTSection
             setCurrentTab={handleSetTab}
@@ -122,28 +119,66 @@ print("Final Total Sum:", total)
           />
         )}
 
-        {currentTab === 'teacher' && (
-          <TeacherDashboard />
+        {/* Embedded Secondary Coding Sandbox (linked from NCERT Computer Science) */}
+        {currentTab === 'coding-workspace' && (
+          <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '16px 20px' }}>
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              backgroundColor: '#FFFFFF',
+              border: '1px solid var(--border-medium)',
+              borderRadius: '8px',
+              padding: '10px 16px',
+              marginBottom: '16px'
+            }}>
+              <div>
+                <strong>Interactive Coding Sandbox</strong> · Sub-module of NCERT Computer Science (Secondary Education)
+              </div>
+              <button
+                onClick={() => setCurrentTab('ncert')}
+                style={{
+                  padding: '5px 12px',
+                  borderRadius: '4px',
+                  backgroundColor: 'var(--bg-subtle)',
+                  border: '1px solid var(--border-medium)',
+                  fontSize: '12px',
+                  fontWeight: '600',
+                  cursor: 'pointer'
+                }}
+              >
+                ← Back to Curriculum Hub
+              </button>
+            </div>
+            <MyProjectsWorkspace
+              selectedProject={selectedProject}
+              islMode={false}
+              currentLang={currentLang}
+              userName={userName}
+            />
+          </div>
         )}
       </main>
 
-      {/* Minimal Footer */}
+      {/* Official Government Footer */}
       <footer style={{
-        backgroundColor: 'var(--bg-card)',
-        borderTop: '1px solid var(--border-light)',
-        padding: '20px 24px',
+        backgroundColor: '#FFFFFF',
+        borderTop: '1px solid var(--border-medium)',
+        padding: '18px 24px',
         textAlign: 'center',
-        fontSize: '13px',
+        fontSize: '12px',
         color: 'var(--text-muted)'
       }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
           <div>
-            <strong>CodeSeekho AI</strong> — Inclusive CS Education Platform (Hackathon MVP)
+            <strong>PALASH IRIS</strong> · AI-Powered Vernacular Pedagogy and Real-Time Translation Tool for Mother Tongue-Based Primary Education
           </div>
-          <div style={{ display: 'flex', gap: '16px', fontSize: '12px' }}>
-            <span>NCERT CS Curriculum Aligned</span>
+          <div style={{ display: 'flex', gap: '14px', fontSize: '11px' }}>
+            <span>Govt. of Jharkhand (Problem Statement 26042)</span>
             <span>•</span>
-            <span>Indian Sign Language (ISL) Engine</span>
+            <span>Santhali · Ho · Mundari</span>
+            <span>•</span>
+            <span>NIPUN Bharat Aligned</span>
           </div>
         </div>
       </footer>

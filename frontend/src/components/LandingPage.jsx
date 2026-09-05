@@ -1,652 +1,344 @@
 import React, { useState } from 'react';
 import { 
   Languages, 
-  Hand, 
-  Code2, 
-  GraduationCap, 
-  Sparkles, 
+  BookOpen, 
+  FileCheck, 
+  Volume2, 
   ArrowRight, 
   CheckCircle2, 
-  BookOpen, 
-  Layers,
-  Play,
-  ShieldCheck,
-  UserCheck
+  Zap, 
+  Radio,
+  GraduationCap
 } from 'lucide-react';
-import { authService } from '../services/supabaseClient';
-import ISLVideoPlayerModal from './ISLVideoPlayerModal';
+import { SAMPLE_FLN_LESSONS, TRIBAL_LANGUAGES } from '../services/apertiumSantaliData';
+import AudioPlayButton from './AudioPlayButton';
 
-export default function LandingPage({ setCurrentTab, setIslMode, islMode, setUserRole, setUserName }) {
-  const [activeRoleTab, setActiveRoleTab] = useState('student');
-  const [email, setEmail] = useState('student@school.edu.in');
-  const [isIslModalOpen, setIsIslModalOpen] = useState(false);
-  const [activeConcept, setActiveConcept] = useState('While Loop (count < 5)');
-  const [activeText, setActiveText] = useState('Repeat instructions while count is less than 5');
-  const [password, setPassword] = useState('password123');
-  const [fullName, setFullName] = useState('');
-  const [localIsl, setLocalIsl] = useState(islMode);
-  const [isSignUp, setIsSignUp] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
-  const [loading, setLoading] = useState(false);
+export default function LandingPage({ setCurrentTab, setUserRole, setUserName }) {
+  const [selectedLang, setSelectedLang] = useState('sat'); // 'sat' | 'hoc' | 'unr'
+  const [demoLesson, setDemoLesson] = useState(SAMPLE_FLN_LESSONS[0]);
 
-  const handleLoginSubmit = async (e) => {
-    e.preventDefault();
-    setErrorMessage('');
-    setSuccessMessage('');
-    setLoading(true);
-    setIslMode(localIsl);
+  const activeLangObj = TRIBAL_LANGUAGES.find(l => l.code === selectedLang) || TRIBAL_LANGUAGES[0];
 
-    try {
-      let sessionData;
-      if (isSignUp) {
-        if (!fullName.trim()) {
-          throw new Error('Please enter your full name.');
-        }
-        sessionData = await authService.signUp(email, password, activeRoleTab, fullName);
-        setSuccessMessage('Account created successfully! Logging you in...');
-      } else {
-        sessionData = await authService.signIn(email, password);
-        setSuccessMessage('Welcome back! Logging you in...');
-      }
-
-      const user = sessionData?.user;
-      const finalName = user?.fullName || user?.user_metadata?.full_name || email.split('@')[0];
-
-      if (setUserName) {
-        setUserName(finalName);
-      }
-      if (setUserRole) {
-        setUserRole(activeRoleTab);
-      }
-
-      setTimeout(() => {
-        if (activeRoleTab === 'student') {
-          setCurrentTab('home');
-        } else {
-          setCurrentTab('teacher');
-        }
-      }, 1000);
-    } catch (err) {
-      setErrorMessage(err.message || 'An error occurred during authentication.');
-    } finally {
-      setLoading(false);
-    }
+  const handleLaunch = (tab = 'santali-studio') => {
+    if (setUserName) setUserName('Primary Teacher');
+    if (setUserRole) setUserRole('teacher');
+    localStorage.setItem('palash_username', 'Primary Teacher');
+    localStorage.setItem('palash_userrole', 'teacher');
+    setCurrentTab(tab);
   };
 
-  const handleGuestLogin = () => {
-    setIslMode(localIsl);
-    const guestNameInput = fullName.trim() || 'Guest Judge';
-    if (setUserName) {
-      setUserName(guestNameInput);
-    }
-    if (setUserRole) {
-      setUserRole(activeRoleTab);
-    }
-    if (activeRoleTab === 'student') {
-      setCurrentTab('home');
-    } else {
-      setCurrentTab('teacher');
-    }
-  };
+  const lessonScript = demoLesson[selectedLang]?.script || demoLesson.sat.script;
+  const lessonRoman = demoLesson[selectedLang]?.roman || demoLesson.sat.roman;
 
   return (
-    <div style={{ paddingBottom: '80px' }}>
-      {/* Top Banner Notice */}
-      <div style={{
-        maxWidth: '1200px',
-        margin: '24px auto 0',
-        padding: '0 24px'
-      }}>
+    <div style={{ paddingBottom: '60px' }}>
+      {/* Official Government Header Banner */}
+      <div style={{ maxWidth: '1300px', margin: '20px auto 0', padding: '0 20px' }}>
         <div style={{
-          display: 'inline-flex',
+          backgroundColor: '#F8FAFC',
+          border: '1px solid var(--border-medium)',
+          borderRadius: '10px',
+          padding: '14px 20px',
+          display: 'flex',
           alignItems: 'center',
-          gap: '8px',
-          padding: '6px 14px',
-          borderRadius: 'var(--radius-full)',
-          backgroundColor: 'var(--accent-light)',
-          border: '1px solid var(--accent-border)',
-          color: 'var(--accent)',
-          fontSize: '13px',
-          fontWeight: '600'
-        }}>
-          <Sparkles size={14} />
-          <span>AI coding mentor · ISL · 8 Indian Languages</span>
-        </div>
-      </div>
-
-      {/* Main Hero Grid */}
-      <div style={{
-        maxWidth: '1200px',
-        margin: '20px auto 0',
-        padding: '0 24px',
-        display: 'grid',
-        gridTemplateColumns: '1.2fr 0.8fr',
-        gap: '48px',
-        alignItems: 'start'
-      }}>
-        {/* Left Column: Heading & USP cards */}
-        <div>
-          <h1 style={{
-            fontSize: '52px',
-            fontWeight: '800',
-            lineHeight: '1.15',
-            letterSpacing: '-1.5px',
-            color: 'var(--text-main)',
-            marginBottom: '20px'
-          }}>
-            Learn to code in <span style={{ color: 'var(--accent)' }}>your language</span>, and in <span style={{ color: 'var(--accent)' }}>sign</span>.
-          </h1>
-
-          <p style={{
-            fontSize: '18px',
-            color: 'var(--text-muted)',
-            lineHeight: '1.6',
-            marginBottom: '36px',
-            maxWidth: '580px'
-          }}>
-            CodeSeekho AI teaches Class 8+ students real programming through small projects — with regional-language explanations and Indian Sign Language support inside every lesson.
-          </p>
-
-          {/* 4 USP Feature Cards Grid */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
-            gap: '20px',
-            marginBottom: '40px'
-          }}>
-            {/* Card 1 */}
-            <div className="card" style={{ padding: '20px' }}>
-              <div style={{
-                width: '40px',
-                height: '40px',
-                borderRadius: 'var(--radius-md)',
-                backgroundColor: 'var(--bg-subtle)',
-                border: '1px solid var(--border-medium)',
-                display: 'flex',
-                alignItems: 'center',
-                justify: 'center',
-                color: 'var(--accent)',
-                marginBottom: '14px',
-                flexShrink: 0
-              }}>
-                <Languages size={20} style={{ display: 'block' }} />
-              </div>
-              <h3 style={{ fontSize: '15px', fontWeight: '700', marginBottom: '6px' }}>
-                Your language, not just English
-              </h3>
-              <p style={{ fontSize: '13px', color: 'var(--text-muted)', lineHeight: '1.5' }}>
-                Explanations grounded in the official NCERT / state-board CS syllabus, delivered in Indian languages.
-              </p>
-            </div>
-
-            {/* Card 2 */}
-            <div className="card" style={{ padding: '20px' }}>
-              <div style={{
-                width: '40px',
-                height: '40px',
-                borderRadius: 'var(--radius-md)',
-                backgroundColor: 'var(--bg-subtle)',
-                border: '1px solid var(--border-medium)',
-                display: 'flex',
-                alignItems: 'center',
-                justify: 'center',
-                color: 'var(--accent)',
-                marginBottom: '14px',
-                flexShrink: 0
-              }}>
-                <Hand size={20} style={{ display: 'block' }} />
-              </div>
-              <h3 style={{ fontSize: '15px', fontWeight: '700', marginBottom: '6px' }}>
-                Indian Sign Language built in
-              </h3>
-              <p style={{ fontSize: '13px', color: 'var(--text-muted)', lineHeight: '1.5' }}>
-                Every core concept is mapped to an ISL clip inside the lesson — not bolted on afterwards.
-              </p>
-            </div>
-
-            {/* Card 3 */}
-            <div className="card" style={{ padding: '20px' }}>
-              <div style={{
-                width: '40px',
-                height: '40px',
-                borderRadius: 'var(--radius-md)',
-                backgroundColor: 'var(--bg-subtle)',
-                border: '1px solid var(--border-medium)',
-                display: 'flex',
-                alignItems: 'center',
-                justify: 'center',
-                color: 'var(--accent)',
-                marginBottom: '14px',
-                flexShrink: 0
-              }}>
-                <Code2 size={20} style={{ display: 'block' }} />
-              </div>
-              <h3 style={{ fontSize: '15px', fontWeight: '700', marginBottom: '6px' }}>
-                Real languages, real projects
-              </h3>
-              <p style={{ fontSize: '13px', color: 'var(--text-muted)', lineHeight: '1.5' }}>
-                Students build Python & JS mini-projects like Calculators, Quiz Apps & Tic-Tac-Toe instead of memorizing syntax.
-              </p>
-            </div>
-
-            {/* Card 4 */}
-            <div className="card" style={{ padding: '20px' }}>
-              <div style={{
-                width: '40px',
-                height: '40px',
-                borderRadius: 'var(--radius-md)',
-                backgroundColor: 'var(--bg-subtle)',
-                border: '1px solid var(--border-medium)',
-                display: 'flex',
-                alignItems: 'center',
-                justify: 'center',
-                color: 'var(--accent)',
-                marginBottom: '14px',
-                flexShrink: 0
-              }}>
-                <GraduationCap size={20} style={{ display: 'block' }} />
-              </div>
-              <h3 style={{ fontSize: '15px', fontWeight: '700', marginBottom: '6px' }}>
-                Classroom ready
-              </h3>
-              <p style={{ fontSize: '13px', color: 'var(--text-muted)', lineHeight: '1.5' }}>
-                Teacher dashboard tracks concept-level mastery and flags struggling students for NEP 2020 classrooms.
-              </p>
-            </div>
-          </div>
-
-          {/* Quick CTA button */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-            <button 
-              onClick={() => {
-                if (setUserName) setUserName('Guest Judge');
-                if (setUserRole) setUserRole('student');
-                setCurrentTab('home');
-              }}
-              className="btn-primary" 
-              style={{ padding: '14px 28px', fontSize: '16px' }}
-            >
-              <span>Explore Student Dashboard</span>
-              <ArrowRight size={18} />
-            </button>
-
-            <button 
-              onClick={() => {
-                if (setUserName) setUserName('Guest Judge');
-                if (setUserRole) setUserRole('student');
-                setCurrentTab('my-workspace');
-              }}
-              className="btn-secondary"
-              style={{ padding: '14px 24px', fontSize: '15px' }}
-            >
-              <span>Try Code Workspace</span>
-            </button>
-          </div>
-        </div>
-
-        {/* Right Column: Login Card matching reference screenshot */}
-        <div style={{
-          backgroundColor: 'var(--bg-card)',
-          border: '1px solid var(--border-light)',
-          borderRadius: 'var(--radius-lg)',
-          padding: '32px',
-          boxShadow: 'var(--shadow-md)'
-        }}>
-          {/* Student / Teacher Role Switcher */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
-            backgroundColor: 'var(--bg-subtle)',
-            padding: '4px',
-            borderRadius: 'var(--radius-md)',
-            marginBottom: '28px'
-          }}>
-            <button
-              onClick={() => setActiveRoleTab('student')}
-              style={{
-                padding: '8px',
-                borderRadius: 'var(--radius-sm)',
-                fontSize: '14px',
-                fontWeight: '600',
-                backgroundColor: activeRoleTab === 'student' ? 'var(--bg-card)' : 'transparent',
-                color: activeRoleTab === 'student' ? 'var(--text-main)' : 'var(--text-muted)',
-                boxShadow: activeRoleTab === 'student' ? 'var(--shadow-sm)' : 'none',
-                transition: 'all 0.15s ease'
-              }}
-            >
-              Student
-            </button>
-            <button
-              onClick={() => setActiveRoleTab('teacher')}
-              style={{
-                padding: '8px',
-                borderRadius: 'var(--radius-sm)',
-                fontSize: '14px',
-                fontWeight: '600',
-                backgroundColor: activeRoleTab === 'teacher' ? 'var(--bg-card)' : 'transparent',
-                color: activeRoleTab === 'teacher' ? 'var(--text-main)' : 'var(--text-muted)',
-                boxShadow: activeRoleTab === 'teacher' ? 'var(--shadow-sm)' : 'none',
-                transition: 'all 0.15s ease'
-              }}
-            >
-              Teacher
-            </button>
-          </div>
-
-          <h2 style={{ fontSize: '24px', fontWeight: '800', marginBottom: '6px' }}>
-            {isSignUp ? 'Create account' : 'Welcome back'}
-          </h2>
-          <p style={{ fontSize: '14px', color: 'var(--text-muted)', marginBottom: '24px' }}>
-            {isSignUp 
-              ? 'Join CodeSeekho AI and begin your coding journey.' 
-              : 'Pick up where you left off in your coding project.'}
-          </p>
-
-          {errorMessage && (
-            <div style={{
-              backgroundColor: '#FEE2E2',
-              color: '#991B1B',
-              padding: '10px 14px',
-              borderRadius: 'var(--radius-md)',
-              fontSize: '13px',
-              fontWeight: '600',
-              marginBottom: '16px',
-              border: '1px solid #FCA5A5'
-            }}>
-              ⚠️ {errorMessage}
-            </div>
-          )}
-
-          {successMessage && (
-            <div style={{
-              backgroundColor: '#DEF7EC',
-              color: '#03543F',
-              padding: '10px 14px',
-              borderRadius: 'var(--radius-md)',
-              fontSize: '13px',
-              fontWeight: '600',
-              marginBottom: '16px',
-              border: '1px solid #84E1BC'
-            }}>
-              ✅ {successMessage}
-            </div>
-          )}
-
-          <form onSubmit={handleLoginSubmit}>
-            {/* Unified name input: acts as Full Name for signup and Guest Name for login/guest */}
-            <div style={{ marginBottom: '18px' }}>
-              <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '6px', color: 'var(--text-main)' }}>
-                {isSignUp ? 'Full Name' : 'Full Name / Guest Name (Optional for Guest)'}
-              </label>
-              <input
-                type="text"
-                className="form-input"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                placeholder="Aarav Sharma"
-                required={isSignUp}
-              />
-            </div>
-
-            <div style={{ marginBottom: '18px' }}>
-              <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '6px', color: 'var(--text-main)' }}>
-                Email address
-              </label>
-              <input
-                type="email"
-                className="form-input"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@school.edu.in"
-                required
-              />
-            </div>
-
-            <div style={{ marginBottom: '20px' }}>
-              <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '6px', color: 'var(--text-main)' }}>
-                Password
-              </label>
-              <input
-                type="password"
-                className="form-input"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                required
-              />
-            </div>
-
-            {/* Checkbox for ISL mode */}
-            <div style={{
-              backgroundColor: 'var(--bg-subtle)',
-              border: '1px solid var(--border-light)',
-              padding: '12px 16px',
-              borderRadius: 'var(--radius-md)',
-              marginBottom: '24px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '12px',
-              cursor: 'pointer'
-            }}
-            onClick={() => setLocalIsl(!localIsl)}
-            >
-              <input
-                type="checkbox"
-                checked={localIsl}
-                onChange={(e) => setLocalIsl(e.target.checked)}
-                style={{ width: '18px', height: '18px', accentColor: 'var(--accent)', cursor: 'pointer' }}
-              />
-              <span style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text-main)' }}>
-                🤟 Enable Indian Sign Language (ISL) mode
-              </span>
-            </div>
-
-            <button
-              type="submit"
-              className="btn-primary"
-              disabled={loading}
-              style={{ width: '100%', padding: '12px', fontSize: '15px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
-            >
-              {loading && <span className="spinner" style={{ width: '14px', height: '14px', border: '2px solid white', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.6s linear infinite' }} />}
-              <span>{isSignUp ? 'Sign up' : 'Log in'} as {activeRoleTab === 'student' ? 'student' : 'teacher'}</span>
-            </button>
-          </form>
-
-          {/* Continue as Guest Button (Highlighted for Judges) */}
-          <div style={{ marginTop: '12px' }}>
-            <button
-              onClick={handleGuestLogin}
-              className="btn-primary"
-              style={{
-                width: '100%',
-                padding: '12px',
-                fontSize: '15px',
-                backgroundColor: '#10B981',
-                borderColor: '#059669',
-                color: '#FFFFFF',
-                fontWeight: '700',
-                display: 'flex',
-                alignItems: 'center',
-                justify: 'center',
-                gap: '8px',
-                boxShadow: '0 4px 6px -1px rgba(16, 185, 129, 0.2)'
-              }}
-            >
-              <UserCheck size={18} />
-              <span>Continue as Guest (Judge Entry)</span>
-            </button>
-          </div>
-
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '12px',
-            margin: '20px 0',
-            fontSize: '12px',
-            color: 'var(--text-faint)'
-          }}>
-            <div style={{ flex: 1, height: '1px', backgroundColor: 'var(--border-light)' }}></div>
-            <span>or</span>
-            <div style={{ flex: 1, height: '1px', backgroundColor: 'var(--border-light)' }}></div>
-          </div>
-
-          <button
-            onClick={handleGuestLogin}
-            className="btn-secondary"
-            style={{ width: '100%', padding: '10px', fontSize: '14px' }}
-          >
-            Continue with Google
-          </button>
-
-          <div style={{
-            textAlign: 'center',
-            marginTop: '20px',
-            fontSize: '13px',
-            color: 'var(--text-muted)'
-          }}>
-            {isSignUp ? 'Already have an account? ' : 'New here? '}
-            <span 
-              onClick={() => {
-                setErrorMessage('');
-                setSuccessMessage('');
-                setIsSignUp(!isSignUp);
-              }}
-              style={{ color: 'var(--accent)', fontWeight: '700', cursor: 'pointer' }}
-            >
-              {isSignUp ? 'Log in' : 'Create an account'}
-            </span>
-          </div>
-        </div>
-      </div>
-
-      {/* ISL & NCERT Highlights Section */}
-      <div style={{
-        maxWidth: '1200px',
-        margin: '80px auto 0',
-        padding: '0 24px'
-      }}>
-        <div style={{
-          backgroundColor: 'var(--bg-card)',
-          border: '1px solid var(--border-light)',
-          borderRadius: 'var(--radius-lg)',
-          padding: '40px',
-          display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
-          gap: '40px',
-          alignItems: 'center'
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          gap: '12px',
+          fontSize: '12px'
         }}>
           <div>
-            <div className="pill-badge" style={{ marginBottom: '16px' }}>
-              <Hand size={14} />
-              <span>ISL Video Mapping Engine</span>
+            <div style={{ fontWeight: '700', color: 'var(--text-main)' }}>
+              Government of Jharkhand · Department of Higher & Technical Education
             </div>
-            <h2 style={{ fontSize: '30px', fontWeight: '800', marginBottom: '14px' }}>
-              Designed for Hearing-Impaired & Regional Students
-            </h2>
-            <p style={{ fontSize: '15px', color: 'var(--text-muted)', lineHeight: '1.6', marginBottom: '24px' }}>
-              India has over 1.8 million hearing-impaired youth. General STEM platforms neglect coding. CodeSeekho AI pairs every programming logic snippet with pre-recorded Indian Sign Language video explanations.
-            </p>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '14px' }}>
-                <CheckCircle2 size={18} color="var(--accent)" />
-                <span>Concept-matched ISL dictionary (Loops, Arrays, Conditions)</span>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '14px' }}>
-                <CheckCircle2 size={18} color="var(--accent)" />
-                <span>Plain-English error translator (No scary stack traces)</span>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '14px' }}>
-                <CheckCircle2 size={18} color="var(--accent)" />
-                <span>Downloadable offline PDF lesson sheets for remote schools</span>
-              </div>
+            <div style={{ color: 'var(--text-muted)', marginTop: '2px' }}>
+              PALASH Mother Tongue-Based Multilingual Education (MTB-MLE) Programme · Problem Statement ID: <strong>26042</strong>
             </div>
           </div>
-
-          {/* Interactive ISL Gesture Card */}
-          <div style={{
-            backgroundColor: 'var(--bg-subtle)',
-            border: '1px solid var(--border-light)',
-            borderRadius: 'var(--radius-md)',
-            padding: '24px',
-            textAlign: 'center'
-          }}>
-            <div style={{
-              display: 'inline-flex',
-              padding: '12px',
-              borderRadius: '50%',
-              backgroundColor: '#FEF3C7',
-              color: '#D97706',
-              marginBottom: '16px'
-            }}>
-              <Hand size={36} />
-            </div>
-            <h4 style={{ fontSize: '16px', fontWeight: '700', marginBottom: '6px' }}>
-              Interactive ISL Gesture Clip
-            </h4>
-            <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '16px' }}>
-              Concept: <code style={{ backgroundColor: 'var(--bg-card)', padding: '2px 6px', borderRadius: '4px' }}>while (count &lt; 5)</code>
-            </p>
-            <div
-              onClick={() => {
-                setActiveConcept('While Loop (count < 5)');
-                setActiveText('Repeat code execution while condition evaluates to True');
-                setIsIslModalOpen(true);
-              }}
-              style={{
-                backgroundColor: '#000000',
-                borderRadius: 'var(--radius-md)',
-                height: '190px',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: '#FFFFFF',
-                position: 'relative',
-                cursor: 'pointer',
-                border: '2px solid var(--accent)',
-                boxShadow: '0 8px 24px rgba(200,75,36,0.25)',
-                transition: 'all 0.2s ease'
-              }}
-              title="Click to play ISL Video Gesture Clip"
-            >
-              <div style={{
-                width: '52px', height: '52px', borderRadius: '50%',
-                backgroundColor: 'rgba(200,75,36,0.3)', border: '2px solid var(--accent)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                marginBottom: '10px'
-              }}>
-                <Play size={26} color="var(--accent)" style={{ marginLeft: '4px' }} />
-              </div>
-              <span style={{ fontSize: '14px', fontWeight: '700', color: '#FFF' }}>Play ISL Gesture Video Clip</span>
-              <span style={{ fontSize: '12px', color: '#A3A3A3', marginTop: '4px' }}>Click to launch interactive sign player</span>
-              <div style={{
-                position: 'absolute',
-                bottom: '10px',
-                left: '10px',
-                right: '10px',
-                backgroundColor: 'rgba(200,75,36,0.3)',
-                border: '1px solid rgba(200,75,36,0.5)',
-                padding: '6px 10px',
-                borderRadius: '6px',
-                fontSize: '11px',
-                color: '#FFEDD5',
-                fontWeight: '600'
-              }}>
-                🤟 Subtitle: "Repeat action while condition remains True"
-              </div>
-            </div>
-          </div>
+          <button
+            onClick={() => handleLaunch('santali-studio')}
+            style={{
+              padding: '6px 14px',
+              borderRadius: '6px',
+              backgroundColor: 'var(--accent)',
+              color: '#FFFFFF',
+              border: 'none',
+              fontWeight: '700',
+              fontSize: '12px',
+              cursor: 'pointer'
+            }}
+          >
+            Launch FLN Studio →
+          </button>
         </div>
       </div>
 
-      <ISLVideoPlayerModal
-        isOpen={isIslModalOpen}
-        onClose={() => setIsIslModalOpen(false)}
-        conceptName={activeConcept}
-        fullText={activeText}
-      />
+      {/* Hero Section */}
+      <section style={{ maxWidth: '1300px', margin: '32px auto 0', padding: '0 20px' }}>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: '1.1fr 0.9fr',
+          gap: '36px',
+          alignItems: 'center'
+        }}>
+          {/* Left Column: Context & Capabilities */}
+          <div>
+            <div style={{
+              fontSize: '12px',
+              fontWeight: '700',
+              color: 'var(--accent)',
+              textTransform: 'uppercase',
+              letterSpacing: '0.5px',
+              marginBottom: '10px'
+            }}>
+              AI-Powered Vernacular Pedagogy & Real-Time Translation
+            </div>
+
+            <h1 style={{
+              fontSize: '34px',
+              fontWeight: '900',
+              lineHeight: '1.25',
+              margin: '0 0 14px 0',
+              color: 'var(--text-main)',
+              letterSpacing: '-0.5px'
+            }}>
+              Mother Tongue-Based Primary Education for <span style={{ color: 'var(--accent)' }}>5,000+ Tribal Schools</span> in Jharkhand
+            </h1>
+
+            <p style={{
+              fontSize: '15px',
+              color: 'var(--text-muted)',
+              lineHeight: '1.6',
+              margin: '0 0 24px 0'
+            }}>
+              Enables non-native speaking, Hindi-medium primary school teachers to deliver foundational literacy and numeracy (FLN) in <strong>Santhali (Ol Chiki ᱚᱞ ᱪᱤᱠᱤ)</strong>, <strong>Ho (Warang Chiti 𑢹𑣉𑣉)</strong>, and <strong>Mundari</strong> without prior language training.
+            </p>
+
+            {/* 4 Core Pillars */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '28px' }}>
+              <div style={{
+                padding: '12px 14px',
+                borderRadius: '8px',
+                backgroundColor: '#FFFFFF',
+                border: '1px solid var(--border-medium)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px'
+              }}>
+                <BookOpen size={18} color="var(--accent)" />
+                <div>
+                  <div style={{ fontSize: '13px', fontWeight: '700', color: 'var(--text-main)' }}>FLN Lesson Translator</div>
+                  <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Hindi to Santhali, Ho & Mundari</div>
+                </div>
+              </div>
+
+              <div style={{
+                padding: '12px 14px',
+                borderRadius: '8px',
+                backgroundColor: '#FFFFFF',
+                border: '1px solid var(--border-medium)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px'
+              }}>
+                <Volume2 size={18} color="#16A34A" />
+                <div>
+                  <div style={{ fontSize: '13px', fontWeight: '700', color: 'var(--text-main)' }}>Real-Time Voice Dialogue</div>
+                  <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Sub-3s Response Latency</div>
+                </div>
+              </div>
+
+              <div style={{
+                padding: '12px 14px',
+                borderRadius: '8px',
+                backgroundColor: '#FFFFFF',
+                border: '1px solid var(--border-medium)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px'
+              }}>
+                <FileCheck size={18} color="#0284C7" />
+                <div>
+                  <div style={{ fontSize: '13px', fontWeight: '700', color: 'var(--text-main)' }}>NIPUN Worksheets</div>
+                  <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>L1-L5 / M1-M5 Printable PDF</div>
+                </div>
+              </div>
+
+              <div style={{
+                padding: '12px 14px',
+                borderRadius: '8px',
+                backgroundColor: '#FFFFFF',
+                border: '1px solid var(--border-medium)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px'
+              }}>
+                <Radio size={18} color="#7C3AED" />
+                <div>
+                  <div style={{ fontSize: '13px', fontWeight: '700', color: 'var(--text-main)' }}>100% Offline Tablet Engine</div>
+                  <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Runs on &le; 2GB RAM Devices</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Launch Buttons */}
+            <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+              <button
+                onClick={() => handleLaunch('santali-studio')}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  padding: '12px 22px',
+                  borderRadius: '6px',
+                  backgroundColor: 'var(--accent)',
+                  color: '#FFFFFF',
+                  border: 'none',
+                  fontWeight: '700',
+                  fontSize: '13px',
+                  cursor: 'pointer'
+                }}
+              >
+                <span>Launch FLN Studio</span>
+                <ArrowRight size={15} />
+              </button>
+
+              <button
+                onClick={() => handleLaunch('phrasebook')}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  padding: '12px 18px',
+                  borderRadius: '6px',
+                  backgroundColor: '#FFFFFF',
+                  color: 'var(--text-main)',
+                  border: '1px solid var(--border-medium)',
+                  fontWeight: '700',
+                  fontSize: '13px',
+                  cursor: 'pointer'
+                }}
+              >
+                <Volume2 size={15} />
+                <span>Real-Time Voice Tool</span>
+              </button>
+
+              <button
+                onClick={() => handleLaunch('worksheets')}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  padding: '12px 18px',
+                  borderRadius: '6px',
+                  backgroundColor: '#FFFFFF',
+                  color: 'var(--text-main)',
+                  border: '1px solid var(--border-medium)',
+                  fontWeight: '700',
+                  fontSize: '13px',
+                  cursor: 'pointer'
+                }}
+              >
+                <FileCheck size={15} />
+                <span>NIPUN Worksheets</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Right Column: Live Interactive Demo Card */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div className="card" style={{
+              padding: '24px',
+              backgroundColor: '#FFFFFF',
+              border: '1px solid var(--border-medium)',
+              borderRadius: '12px'
+            }}>
+              {/* Demo Language Switcher */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+                <div style={{ fontSize: '11px', fontWeight: '700', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
+                  Live Translation Demo
+                </div>
+                <div style={{ display: 'flex', gap: '4px' }}>
+                  {TRIBAL_LANGUAGES.map(lang => (
+                    <button
+                      key={lang.code}
+                      onClick={() => setSelectedLang(lang.code)}
+                      style={{
+                        padding: '3px 8px',
+                        borderRadius: '4px',
+                        fontSize: '11px',
+                        fontWeight: '700',
+                        border: selectedLang === lang.code ? '1px solid var(--accent)' : '1px solid var(--border-medium)',
+                        backgroundColor: selectedLang === lang.code ? 'var(--accent)' : 'var(--bg-subtle)',
+                        color: selectedLang === lang.code ? '#FFFFFF' : 'var(--text-muted)',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      {lang.name}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Tribal Script Display */}
+              <div style={{
+                padding: '18px',
+                borderRadius: '8px',
+                backgroundColor: '#F8FAFC',
+                border: '1px solid var(--border-medium)',
+                marginBottom: '12px'
+              }}>
+                <div style={{ fontSize: '20px', fontWeight: '800', color: 'var(--text-main)', marginBottom: '4px' }}>
+                  {lessonScript}
+                </div>
+                <div style={{ fontSize: '13px', fontWeight: '600', color: 'var(--accent)', fontStyle: 'italic' }}>
+                  "{lessonRoman}"
+                </div>
+              </div>
+
+              {/* Hindi Source */}
+              <div style={{
+                padding: '10px 14px',
+                borderRadius: '6px',
+                backgroundColor: 'var(--bg-subtle)',
+                fontSize: '12px',
+                color: 'var(--text-main)',
+                marginBottom: '14px'
+              }}>
+                <strong>Hindi Source:</strong> {demoLesson.sourceText}
+              </div>
+
+              {/* Audio Play/Pause Button */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <AudioPlayButton
+                  text={lessonRoman || demoLesson.sourceText}
+                  label={`Listen in ${activeLangObj.name}`}
+                />
+                <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
+                  Script: <strong>{activeLangObj.script}</strong>
+                </span>
+              </div>
+            </div>
+
+            {/* Deployment Requirements Card */}
+            <div style={{
+              padding: '14px 18px',
+              borderRadius: '8px',
+              backgroundColor: '#F0FDF4',
+              border: '1px solid #BBF7D0',
+              fontSize: '12px',
+              color: '#166534',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between'
+            }}>
+              <div>
+                <strong>Offline Tablet Target:</strong> Android 9+, &le; 2GB RAM
+              </div>
+              <span style={{ fontWeight: '700' }}>✓ Verified</span>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

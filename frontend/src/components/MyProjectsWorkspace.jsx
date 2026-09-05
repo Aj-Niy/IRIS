@@ -34,8 +34,8 @@ export default function MyProjectsWorkspace({ selectedProject, islMode, currentL
   const [isAiDrawerOpen, setIsAiDrawerOpen] = useState(true);
   
   // Default code starter
-  const defaultCode = selectedProject?.codeSnippet || `# CodeSeekho AI — Smart Calculator Project
-# Problem Statement: Calculate sum of numbers using a while loop
+  const defaultCode = selectedProject?.codeSnippet || `# Interactive Coding Sandbox — Smart Calculator
+# Calculate sum of numbers using a while loop
 
 total = 0
 count = 1
@@ -50,7 +50,7 @@ print("Final Total Sum:", total)
 
   const [codeContent, setCodeContent] = useState(defaultCode);
   const [outputLogs, setOutputLogs] = useState([
-    '▶ Connected to Live Backend (https://decode-sih-2026.onrender.com). Click "Run Code" to execute.'
+    '▶ Connected to Sandbox Execution Server. Click "Run Code" to execute.'
   ]);
   const [isRunning, setIsRunning] = useState(false);
   const [hasError, setHasError] = useState(false);
@@ -68,7 +68,7 @@ print("Final Total Sum:", total)
   const [chatMessages, setChatMessages] = useState([
     {
       sender: 'ai',
-      text: `Namaste ${userName || 'Aarav'}! I am your CodeSeekho Socratic Mentor. Ask me any question in Hindi or English, or click "Explain Error" if your code fails.`
+      text: `Namaste ${userName || 'Student'}! I am your Socratic Coding Mentor. Ask me any question in Hindi or English, or click "Explain Error" if your code fails.`
     }
   ]);
   const [userChatInput, setUserChatInput] = useState('');
@@ -250,30 +250,29 @@ print("Final Total Sum:", total)
   const handleDownloadPdfSummary = () => {
     const doc = new jsPDF();
     doc.setFont('helvetica', 'bold');
-    doc.setFontSize(20);
-    doc.setTextColor(200, 75, 36); // #C84B24
-    doc.text('CodeSeekho AI — Lesson Summary', 20, 20);
+    doc.setFontSize(18);
+    doc.text('Computer Science — Coding Lesson Summary', 20, 20);
 
-    doc.setFontSize(12);
+    doc.setFontSize(11);
     doc.setTextColor(50, 50, 50);
-    doc.text(`Student: ${userName || 'Aarav'} | Date: ${new Date().toLocaleDateString()}`, 20, 30);
+    doc.text(`Student: ${userName || 'Student'} | Date: ${new Date().toLocaleDateString()}`, 20, 30);
     doc.text(`Project: ${selectedProject?.title || 'Smart Calculator'}`, 20, 38);
-    doc.text(`Curriculum: NCERT Class 8 Computer Science`, 20, 46);
+    doc.text(`Curriculum: NCERT Computer Science`, 20, 46);
 
     doc.setLineWidth(0.5);
     doc.setDrawColor(225, 225, 225);
     doc.line(20, 52, 190, 52);
 
-    doc.setFontSize(14);
+    doc.setFontSize(13);
     doc.setFont('helvetica', 'bold');
     doc.text('1. Core Programming Concept Learnt:', 20, 64);
 
-    doc.setFontSize(11);
+    doc.setFontSize(10);
     doc.setFont('helvetica', 'normal');
     doc.text('- Loop (While Loop): Repeats code until a condition becomes False.', 25, 74);
     doc.text('- Variable Accumulator: Adding values to total on each iteration.', 25, 82);
 
-    doc.setFontSize(14);
+    doc.setFontSize(13);
     doc.setFont('helvetica', 'bold');
     doc.text('2. Your Python Code Solution:', 20, 96);
 
@@ -282,7 +281,7 @@ print("Final Total Sum:", total)
     const lines = doc.splitTextToSize(codeContent, 160);
     doc.text(lines, 25, 106);
 
-    doc.save(`CodeSeekho_Lesson_Summary_${selectedProject?.id || 'calculator'}.pdf`);
+    doc.save(`Coding_Lesson_Summary_${selectedProject?.id || 'calculator'}.pdf`);
   };
 
   return (

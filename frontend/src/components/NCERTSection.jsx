@@ -81,7 +81,7 @@ export default function NCERTSection({ setCurrentTab, setSelectedProject }) {
 
   // Chatbot state
   const [chatMessages, setChatMessages] = useState([
-    { role: 'ai', text: '🙏 Namaste! I am your CodeSeekho STEM AI Mentor. Select a chapter or STEM branch above, then ask me anything — I will guide you Socratically!' }
+    { role: 'ai', text: '🙏 Namaste! I am your PALASH Curriculum AI Mentor. Select a chapter or STEM branch above, then ask me anything — I will guide you Socratically!' }
   ]);
   const [chatInput, setChatInput] = useState('');
   const [isChatLoading, setIsChatLoading] = useState(false);
@@ -435,8 +435,28 @@ Use simple language, bold key terms, and end with a quick quiz question to check
               display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px'
             }}>
               <div>
-                <div style={{ fontSize: '11px', fontWeight: '700', color: stemInfo.color, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '4px' }}>
-                  {stemInfo.name} · Class {selectedGrade === 'all' ? '8–12' : selectedGrade} Overview
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                  <span style={{ fontSize: '11px', fontWeight: '700', color: stemInfo.color, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                    {stemInfo.name} · Class {selectedGrade === 'all' ? '8–12' : selectedGrade} Overview
+                  </span>
+                  {selectedStem === 'cs' && setCurrentTab && (
+                    <button
+                      onClick={() => setCurrentTab('coding-workspace')}
+                      style={{
+                        fontSize: '11px',
+                        fontWeight: '700',
+                        padding: '2px 8px',
+                        borderRadius: '4px',
+                        backgroundColor: 'var(--accent)',
+                        color: '#FFFFFF',
+                        border: 'none',
+                        cursor: 'pointer'
+                      }}
+                      title="Open Interactive Coding Sandbox & Practice"
+                    >
+                      Open Coding Sandbox 💻
+                    </button>
+                  )}
                 </div>
                 <p style={{ fontSize: '13px', color: 'var(--text-muted)', lineHeight: '1.5', margin: 0 }}>
                   {gradeData.overview}
@@ -1035,7 +1055,7 @@ function VideoAIModal({ isOpen, onClose, chapterTitle, grade, subject, langCode 
         {/* Footer Info */}
         <div style={{ padding: '16px 24px', backgroundColor: '#14100E', borderTop: '1px solid #2C221E', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div style={{ fontSize: '12px', color: '#A3A3A3' }}>
-            <span style={{ color: 'var(--accent)', fontWeight: '700' }}>CodeSeekho AI Video Feature</span> · Supabase Endpoint Live
+            <span style={{ color: 'var(--accent)', fontWeight: '700' }}>PALASH Curriculum Video Feature</span> · Supabase Storage Live
           </div>
           <button
             onClick={onClose}
