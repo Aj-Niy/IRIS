@@ -12,9 +12,17 @@ import {
 } from 'lucide-react';
 import { SAMPLE_FLN_LESSONS, TRIBAL_LANGUAGES } from '../services/apertiumSantaliData';
 import AudioPlayButton from './AudioPlayButton';
+import { uiTranslations } from '../services/uiTranslations';
 
-export default function LandingPage({ setCurrentTab, setUserRole, setUserName }) {
-  const [selectedLang, setSelectedLang] = useState('sat'); // 'sat' | 'hoc' | 'unr'
+export default function LandingPage({ 
+  setCurrentTab, 
+  setUserRole, 
+  setUserName,
+  uiLang = 'en',
+  currentLang = 'sat'
+}) {
+  const t = uiTranslations[uiLang] || uiTranslations.en;
+  const [selectedLang, setSelectedLang] = useState(currentLang || 'sat');
   const [demoLesson, setDemoLesson] = useState(SAMPLE_FLN_LESSONS[0]);
 
   const activeLangObj = TRIBAL_LANGUAGES.find(l => l.code === selectedLang) || TRIBAL_LANGUAGES[0];
@@ -35,8 +43,8 @@ export default function LandingPage({ setCurrentTab, setUserRole, setUserName })
       {/* Official Government Header Banner */}
       <div style={{ maxWidth: '1300px', margin: '20px auto 0', padding: '0 20px' }}>
         <div style={{
-          backgroundColor: '#F8FAFC',
-          border: '1px solid var(--border-medium)',
+          backgroundColor: '#FFFDF9',
+          border: '1px solid #FDBA74',
           borderRadius: '10px',
           padding: '14px 20px',
           display: 'flex',
@@ -47,11 +55,11 @@ export default function LandingPage({ setCurrentTab, setUserRole, setUserName })
           fontSize: '12px'
         }}>
           <div>
-            <div style={{ fontWeight: '700', color: 'var(--text-main)' }}>
-              Government of Jharkhand · Department of Higher & Technical Education
+            <div style={{ fontWeight: '700', color: '#0F172A' }}>
+              {t.common.govtHeader} · Department of Higher & Technical Education
             </div>
-            <div style={{ color: 'var(--text-muted)', marginTop: '2px' }}>
-              PALASH Mother Tongue-Based Multilingual Education (MTB-MLE) Programme · Problem Statement ID: <strong>26042</strong>
+            <div style={{ color: '#334155', marginTop: '2px' }}>
+              {t.common.psTag}
             </div>
           </div>
           <button
@@ -59,7 +67,7 @@ export default function LandingPage({ setCurrentTab, setUserRole, setUserName })
             style={{
               padding: '6px 14px',
               borderRadius: '6px',
-              backgroundColor: 'var(--accent)',
+              backgroundColor: '#EA580C',
               color: '#FFFFFF',
               border: 'none',
               fontWeight: '700',
@@ -67,7 +75,7 @@ export default function LandingPage({ setCurrentTab, setUserRole, setUserName })
               cursor: 'pointer'
             }}
           >
-            Launch FLN Studio →
+            {t.landing.launchBtn} →
           </button>
         </div>
       </div>
@@ -85,12 +93,12 @@ export default function LandingPage({ setCurrentTab, setUserRole, setUserName })
             <div style={{
               fontSize: '12px',
               fontWeight: '700',
-              color: 'var(--accent)',
+              color: '#EA580C',
               textTransform: 'uppercase',
               letterSpacing: '0.5px',
               marginBottom: '10px'
             }}>
-              AI-Powered Vernacular Pedagogy & Real-Time Translation
+              {t.landing.badge}
             </div>
 
             <h1 style={{
@@ -98,19 +106,19 @@ export default function LandingPage({ setCurrentTab, setUserRole, setUserName })
               fontWeight: '900',
               lineHeight: '1.25',
               margin: '0 0 14px 0',
-              color: 'var(--text-main)',
+              color: '#0F172A',
               letterSpacing: '-0.5px'
             }}>
-              Mother Tongue-Based Primary Education for <span style={{ color: 'var(--accent)' }}>5,000+ Tribal Schools</span> in Jharkhand
+              {t.landing.title}
             </h1>
 
             <p style={{
               fontSize: '15px',
-              color: 'var(--text-muted)',
+              color: '#334155',
               lineHeight: '1.6',
               margin: '0 0 24px 0'
             }}>
-              Enables non-native speaking, Hindi-medium primary school teachers to deliver foundational literacy and numeracy (FLN) in <strong>Santhali (Ol Chiki ᱚᱞ ᱪᱤᱠᱤ)</strong>, <strong>Ho (Warang Chiti 𑢹𑣉𑣉)</strong>, and <strong>Mundari</strong> without prior language training.
+              {t.landing.subtitle}
             </p>
 
             {/* 4 Core Pillars */}
@@ -119,15 +127,15 @@ export default function LandingPage({ setCurrentTab, setUserRole, setUserName })
                 padding: '12px 14px',
                 borderRadius: '8px',
                 backgroundColor: '#FFFFFF',
-                border: '1px solid var(--border-medium)',
+                border: '1px solid #FDBA74',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '10px'
               }}>
-                <BookOpen size={18} color="var(--accent)" />
+                <BookOpen size={18} color="#EA580C" />
                 <div>
-                  <div style={{ fontSize: '13px', fontWeight: '700', color: 'var(--text-main)' }}>FLN Lesson Translator</div>
-                  <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Hindi to Santhali, Ho & Mundari</div>
+                  <div style={{ fontSize: '13px', fontWeight: '700', color: '#0F172A' }}>{t.landing.pillar1Title}</div>
+                  <div style={{ fontSize: '11px', color: '#334155' }}>{t.landing.pillar1Desc}</div>
                 </div>
               </div>
 
@@ -135,15 +143,15 @@ export default function LandingPage({ setCurrentTab, setUserRole, setUserName })
                 padding: '12px 14px',
                 borderRadius: '8px',
                 backgroundColor: '#FFFFFF',
-                border: '1px solid var(--border-medium)',
+                border: '1px solid #FDBA74',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '10px'
               }}>
                 <Volume2 size={18} color="#16A34A" />
                 <div>
-                  <div style={{ fontSize: '13px', fontWeight: '700', color: 'var(--text-main)' }}>Real-Time Voice Dialogue</div>
-                  <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Sub-3s Response Latency</div>
+                  <div style={{ fontSize: '13px', fontWeight: '700', color: '#0F172A' }}>{t.landing.pillar2Title}</div>
+                  <div style={{ fontSize: '11px', color: '#334155' }}>{t.landing.pillar2Desc}</div>
                 </div>
               </div>
 
@@ -151,15 +159,15 @@ export default function LandingPage({ setCurrentTab, setUserRole, setUserName })
                 padding: '12px 14px',
                 borderRadius: '8px',
                 backgroundColor: '#FFFFFF',
-                border: '1px solid var(--border-medium)',
+                border: '1px solid #FDBA74',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '10px'
               }}>
                 <FileCheck size={18} color="#0284C7" />
                 <div>
-                  <div style={{ fontSize: '13px', fontWeight: '700', color: 'var(--text-main)' }}>NIPUN Worksheets</div>
-                  <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>L1-L5 / M1-M5 Printable PDF</div>
+                  <div style={{ fontSize: '13px', fontWeight: '700', color: '#0F172A' }}>{t.landing.pillar3Title}</div>
+                  <div style={{ fontSize: '11px', color: '#334155' }}>{t.landing.pillar3Desc}</div>
                 </div>
               </div>
 
@@ -167,15 +175,15 @@ export default function LandingPage({ setCurrentTab, setUserRole, setUserName })
                 padding: '12px 14px',
                 borderRadius: '8px',
                 backgroundColor: '#FFFFFF',
-                border: '1px solid var(--border-medium)',
+                border: '1px solid #FDBA74',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '10px'
               }}>
                 <Radio size={18} color="#7C3AED" />
                 <div>
-                  <div style={{ fontSize: '13px', fontWeight: '700', color: 'var(--text-main)' }}>100% Offline Tablet Engine</div>
-                  <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Runs on &le; 2GB RAM Devices</div>
+                  <div style={{ fontSize: '13px', fontWeight: '700', color: '#0F172A' }}>{t.landing.pillar4Title}</div>
+                  <div style={{ fontSize: '11px', color: '#334155' }}>{t.landing.pillar4Desc}</div>
                 </div>
               </div>
             </div>
@@ -190,7 +198,7 @@ export default function LandingPage({ setCurrentTab, setUserRole, setUserName })
                   gap: '8px',
                   padding: '12px 22px',
                   borderRadius: '6px',
-                  backgroundColor: 'var(--accent)',
+                  backgroundColor: '#EA580C',
                   color: '#FFFFFF',
                   border: 'none',
                   fontWeight: '700',
@@ -198,7 +206,7 @@ export default function LandingPage({ setCurrentTab, setUserRole, setUserName })
                   cursor: 'pointer'
                 }}
               >
-                <span>Launch FLN Studio</span>
+                <span>{t.landing.launchBtn}</span>
                 <ArrowRight size={15} />
               </button>
 
@@ -211,15 +219,15 @@ export default function LandingPage({ setCurrentTab, setUserRole, setUserName })
                   padding: '12px 18px',
                   borderRadius: '6px',
                   backgroundColor: '#FFFFFF',
-                  color: 'var(--text-main)',
-                  border: '1px solid var(--border-medium)',
+                  color: '#0F172A',
+                  border: '1px solid #FDBA74',
                   fontWeight: '700',
                   fontSize: '13px',
                   cursor: 'pointer'
                 }}
               >
                 <Volume2 size={15} />
-                <span>Real-Time Voice Tool</span>
+                <span>{t.landing.voiceBtn}</span>
               </button>
 
               <button
@@ -231,15 +239,15 @@ export default function LandingPage({ setCurrentTab, setUserRole, setUserName })
                   padding: '12px 18px',
                   borderRadius: '6px',
                   backgroundColor: '#FFFFFF',
-                  color: 'var(--text-main)',
-                  border: '1px solid var(--border-medium)',
+                  color: '#0F172A',
+                  border: '1px solid #FDBA74',
                   fontWeight: '700',
                   fontSize: '13px',
                   cursor: 'pointer'
                 }}
               >
                 <FileCheck size={15} />
-                <span>NIPUN Worksheets</span>
+                <span>{t.landing.worksheetsBtn}</span>
               </button>
             </div>
           </div>
@@ -249,12 +257,12 @@ export default function LandingPage({ setCurrentTab, setUserRole, setUserName })
             <div className="card" style={{
               padding: '24px',
               backgroundColor: '#FFFFFF',
-              border: '1px solid var(--border-medium)',
+              border: '1px solid #FDBA74',
               borderRadius: '12px'
             }}>
               {/* Demo Language Switcher */}
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
-                <div style={{ fontSize: '11px', fontWeight: '700', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
+                <div style={{ fontSize: '11px', fontWeight: '700', color: '#334155', textTransform: 'uppercase' }}>
                   Live Translation Demo
                 </div>
                 <div style={{ display: 'flex', gap: '4px' }}>
@@ -267,9 +275,9 @@ export default function LandingPage({ setCurrentTab, setUserRole, setUserName })
                         borderRadius: '4px',
                         fontSize: '11px',
                         fontWeight: '700',
-                        border: selectedLang === lang.code ? '1px solid var(--accent)' : '1px solid var(--border-medium)',
-                        backgroundColor: selectedLang === lang.code ? 'var(--accent)' : 'var(--bg-subtle)',
-                        color: selectedLang === lang.code ? '#FFFFFF' : 'var(--text-muted)',
+                        border: selectedLang === lang.code ? '1px solid #EA580C' : '1px solid #FDBA74',
+                        backgroundColor: selectedLang === lang.code ? '#EA580C' : '#FFF7ED',
+                        color: selectedLang === lang.code ? '#FFFFFF' : '#334155',
                         cursor: 'pointer'
                       }}
                     >
@@ -283,14 +291,14 @@ export default function LandingPage({ setCurrentTab, setUserRole, setUserName })
               <div style={{
                 padding: '18px',
                 borderRadius: '8px',
-                backgroundColor: '#F8FAFC',
-                border: '1px solid var(--border-medium)',
+                backgroundColor: '#FFFDF9',
+                border: '1px solid #FDBA74',
                 marginBottom: '12px'
               }}>
-                <div style={{ fontSize: '20px', fontWeight: '800', color: 'var(--text-main)', marginBottom: '4px' }}>
+                <div style={{ fontSize: '20px', fontWeight: '800', color: '#0F172A', marginBottom: '4px' }}>
                   {lessonScript}
                 </div>
-                <div style={{ fontSize: '13px', fontWeight: '600', color: 'var(--accent)', fontStyle: 'italic' }}>
+                <div style={{ fontSize: '13px', fontWeight: '600', color: '#EA580C', fontStyle: 'italic' }}>
                   "{lessonRoman}"
                 </div>
               </div>
@@ -299,9 +307,9 @@ export default function LandingPage({ setCurrentTab, setUserRole, setUserName })
               <div style={{
                 padding: '10px 14px',
                 borderRadius: '6px',
-                backgroundColor: 'var(--bg-subtle)',
+                backgroundColor: '#FFF7ED',
                 fontSize: '12px',
-                color: 'var(--text-main)',
+                color: '#0F172A',
                 marginBottom: '14px'
               }}>
                 <strong>Hindi Source:</strong> {demoLesson.sourceText}
@@ -313,7 +321,7 @@ export default function LandingPage({ setCurrentTab, setUserRole, setUserName })
                   text={lessonRoman || demoLesson.sourceText}
                   label={`Listen in ${activeLangObj.name}`}
                 />
-                <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
+                <span style={{ fontSize: '11px', color: '#334155' }}>
                   Script: <strong>{activeLangObj.script}</strong>
                 </span>
               </div>

@@ -9,9 +9,14 @@ import html2canvas from 'html2canvas';
 import { NIPUN_OUTCOMES_MATRIX, TRIBAL_LANGUAGES } from '../services/apertiumSantaliData';
 import { irisAskTutor } from '../services/api';
 import AudioPlayButton from './AudioPlayButton';
+import { uiTranslations } from '../services/uiTranslations';
 
-export default function WorksheetGenerator() {
-  const [selectedLang, setSelectedLang] = useState('sat'); // 'sat' | 'hoc' | 'unr'
+export default function WorksheetGenerator({ 
+  uiLang = 'en', 
+  currentLang = 'sat' 
+}) {
+  const t = uiTranslations[uiLang] || uiTranslations.en;
+  const [selectedLang, setSelectedLang] = useState(currentLang || 'sat');
   const [selectedOutcome, setSelectedOutcome] = useState(NIPUN_OUTCOMES_MATRIX[0]);
   const [isGenerating, setIsGenerating] = useState(false);
   const [worksheetData, setWorksheetData] = useState(null);
@@ -99,9 +104,8 @@ export default function WorksheetGenerator() {
     if (!worksheetRef.current) return;
     setIsExporting(true);
     try {
-      // Use html2canvas to screenshot the rendered DOM preserving all Unicode (Ol Chiki, Devanagari, Warang Chiti)
       const canvas = await html2canvas(worksheetRef.current, {
-        scale: 2.5, // High DPI for print quality
+        scale: 2.5,
         useCORS: true,
         backgroundColor: '#FFFFFF',
         logging: false,
@@ -116,8 +120,8 @@ export default function WorksheetGenerator() {
         format: 'a4'
       });
 
-      const pdfWidth = pdf.internal.pageSize.getWidth(); // 210mm
-      const pdfHeight = pdf.internal.pageSize.getHeight(); // 297mm
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
       const margin = 10;
       const contentWidth = pdfWidth - margin * 2;
       const contentHeight = (canvas.height * contentWidth) / canvas.width;
@@ -126,7 +130,6 @@ export default function WorksheetGenerator() {
       if (contentHeight <= pdfHeight - margin * 2) {
         pdf.addImage(imgData, 'PNG', margin, yPos, contentWidth, contentHeight);
       } else {
-        // Multi-page support for long worksheets
         let remainingHeight = contentHeight;
         let sourceY = 0;
         const pageContentHeight = pdfHeight - margin * 2;
@@ -152,7 +155,7 @@ export default function WorksheetGenerator() {
         }
       }
 
-      pdf.save(`PALASH_NIPUN_${currentWorksheet.nipunCode}_${selectedLang}_${activeLangObj.name}.pdf`);
+      pdf.save(`PALASH_NIPUN_${currentWorksheet.nipunCode}_${selectedLang}.pdf`);
     } catch (err) {
       console.error('PDF export error:', err);
       alert('PDF export failed. Please use the Print button to save as PDF.');
@@ -167,40 +170,47 @@ export default function WorksheetGenerator() {
 
   return (
     <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '24px 20px' }}>
-      {/* Top Banner with Vibrant Borders */}
+      
+      {/* Top Banner with Clean Borders */}
       <div style={{
         backgroundColor: '#FFFFFF',
         borderRadius: 'var(--radius-lg)',
         padding: '20px 24px',
-        border: '2px solid #FED7AA',
+        border: '1.5px solid #FED7AA',
         marginBottom: '24px',
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
         flexWrap: 'wrap',
         gap: '16px',
-        boxShadow: '0 2px 8px rgba(234,88,12,0.07)'
+        boxShadow: '0 2px 8px rgba(234,88,12,0.06)'
       }}>
         <div>
           <div style={{
-            fontSize: '11px', fontWeight: '800', color: '#EA580C',
-            textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '4px'
+            fontSize: '11px',
+            fontWeight: '800',
+            color: '#EA580C',
+            textTransform: 'uppercase',
+            letterSpacing: '0.5px',
+            marginBottom: '4px'
           }}>
-            NIPUN Bharat Outcomes Framework · Jharkhand MTB-MLE
+            {t.worksheets.headerTag}
           </div>
           <h1 style={{ fontSize: '20px', fontWeight: '800', margin: '0 0 4px 0', color: '#0F172A' }}>
-            Auto-Generated Bilingual Worksheets &amp; Visual Flashcards
+            {t.worksheets.title}
           </h1>
           <p style={{ margin: 0, fontSize: '13px', color: '#334155' }}>
-            Generate classroom worksheets and printable flashcard decks aligned with Foundational Literacy and Numeracy Lakshyas.
+            {t.worksheets.subtitle}
           </p>
         </div>
 
         {/* Tribal Language & Tab Switchers */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
           <div style={{
-            display: 'flex', backgroundColor: '#FFF7ED',
-            borderRadius: '10px', padding: '3px',
+            display: 'flex',
+            backgroundColor: '#FFF7ED',
+            borderRadius: '8px',
+            padding: '3px',
             border: '1.5px solid #FDBA74'
           }}>
             {TRIBAL_LANGUAGES.map(lang => {
@@ -213,11 +223,13 @@ export default function WorksheetGenerator() {
                     setWorksheetData(null);
                   }}
                   style={{
-                    padding: '6px 12px', borderRadius: '8px',
-                    fontSize: '12px', fontWeight: isSelected ? '800' : '600',
-                    border: isSelected ? '1.5px solid #EA580C' : '1.5px solid transparent',
-                    background: isSelected ? 'linear-gradient(135deg, #EA580C 0%, #C2410C 100%)' : 'transparent',
-                    color: isSelected ? '#FFFFFF' : '#334155',
+                    padding: '6px 12px',
+                    borderRadius: '6px',
+                    fontSize: '12px',
+                    fontWeight: isSelected ? '700' : '600',
+                    border: isSelected ? '1px solid #EA580C' : '1px solid transparent',
+                    backgroundColor: isSelected ? '#EA580C' : 'transparent',
+                    color: isSelected ? '#FFFFFF' : '#0F172A',
                     cursor: 'pointer'
                   }}
                 >
@@ -228,35 +240,41 @@ export default function WorksheetGenerator() {
           </div>
 
           <div style={{
-            display: 'flex', backgroundColor: '#FFF7ED',
-            borderRadius: '10px', padding: '3px',
+            display: 'flex',
+            backgroundColor: '#FFF7ED',
+            borderRadius: '8px',
+            padding: '3px',
             border: '1.5px solid #FDBA74'
           }}>
             <button
               onClick={() => setActiveTab('worksheet')}
               style={{
-                padding: '6px 14px', borderRadius: '8px',
+                padding: '6px 14px',
+                borderRadius: '6px',
                 fontWeight: activeTab === 'worksheet' ? '800' : '600',
-                fontSize: '12px', cursor: 'pointer',
-                border: activeTab === 'worksheet' ? '1.5px solid #EA580C' : '1.5px solid transparent',
-                background: activeTab === 'worksheet' ? 'linear-gradient(135deg, #EA580C 0%, #C2410C 100%)' : 'transparent',
-                color: activeTab === 'worksheet' ? '#FFFFFF' : '#334155'
+                fontSize: '12px',
+                cursor: 'pointer',
+                border: activeTab === 'worksheet' ? '1px solid #EA580C' : '1px solid transparent',
+                backgroundColor: activeTab === 'worksheet' ? '#EA580C' : 'transparent',
+                color: activeTab === 'worksheet' ? '#FFFFFF' : '#0F172A'
               }}
             >
-              Worksheet View
+              {t.worksheets.worksheetView}
             </button>
             <button
               onClick={() => setActiveTab('flashcards')}
               style={{
-                padding: '6px 14px', borderRadius: '8px',
+                padding: '6px 14px',
+                borderRadius: '6px',
                 fontWeight: activeTab === 'flashcards' ? '800' : '600',
-                fontSize: '12px', cursor: 'pointer',
-                border: activeTab === 'flashcards' ? '1.5px solid #EA580C' : '1.5px solid transparent',
-                background: activeTab === 'flashcards' ? 'linear-gradient(135deg, #EA580C 0%, #C2410C 100%)' : 'transparent',
-                color: activeTab === 'flashcards' ? '#FFFFFF' : '#334155'
+                fontSize: '12px',
+                cursor: 'pointer',
+                border: activeTab === 'flashcards' ? '1px solid #EA580C' : '1px solid transparent',
+                backgroundColor: activeTab === 'flashcards' ? '#EA580C' : 'transparent',
+                color: activeTab === 'flashcards' ? '#FFFFFF' : '#0F172A'
               }}
             >
-              Flashcards
+              {t.worksheets.flashcardsView}
             </button>
           </div>
         </div>
@@ -267,9 +285,12 @@ export default function WorksheetGenerator() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           <div className="card" style={{ padding: '18px', backgroundColor: '#FFFFFF' }}>
             <h3 style={{
-              fontSize: '13px', fontWeight: '800',
-              margin: '0 0 10px 0', paddingBottom: '8px',
-              borderBottom: '2px solid #FED7AA', color: '#0F172A'
+              fontSize: '13px',
+              fontWeight: '800',
+              margin: '0 0 10px 0',
+              paddingBottom: '8px',
+              borderBottom: '1.5px solid #FED7AA',
+              color: '#0F172A'
             }}>
               Select NIPUN Bharat Lakshya:
             </h3>
@@ -281,14 +302,21 @@ export default function WorksheetGenerator() {
                     key={outcome.code}
                     onClick={() => handleGenerate(outcome)}
                     style={{
-                      textAlign: 'left', padding: '10px 12px', borderRadius: '8px',
+                      textAlign: 'left',
+                      padding: '10px 12px',
+                      borderRadius: '8px',
                       border: isSelected ? '2px solid #EA580C' : '1.5px solid #FED7AA',
                       backgroundColor: isSelected ? '#FFF7ED' : '#FFFFFF',
-                      cursor: 'pointer', transition: 'all 0.15s ease'
+                      cursor: 'pointer',
+                      transition: 'all 0.15s ease'
                     }}
                   >
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2px' }}>
-                      <span style={{ fontSize: '11px', fontWeight: '800', color: '#EA580C' }}>
+                      <span style={{
+                        fontSize: '11px',
+                        fontWeight: '800',
+                        color: '#EA580C'
+                      }}>
                         {outcome.code} · {outcome.domain}
                       </span>
                       <span style={{ fontSize: '10px', color: '#64748B' }}>{outcome.grade}</span>
@@ -311,22 +339,26 @@ export default function WorksheetGenerator() {
               value={schoolName}
               onChange={(e) => setSchoolName(e.target.value)}
               style={{
-                width: '100%', padding: '9px 12px', borderRadius: '8px',
-                border: '1.5px solid #FDBA74', backgroundColor: '#FFF7ED',
-                color: '#0F172A', fontSize: '12px', fontWeight: '600', outline: 'none'
+                width: '100%',
+                padding: '9px 12px',
+                borderRadius: '8px',
+                border: '1.5px solid #FDBA74',
+                backgroundColor: '#FFFDF9',
+                color: '#0F172A',
+                fontSize: '12px',
+                fontWeight: '600'
               }}
             />
           </div>
         </div>
 
-
         {/* Right Column: Printable Worksheet / Flashcard View */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           {activeTab === 'worksheet' && (
             <div className="card card-highlight" ref={worksheetRef} id="worksheet-print-area" style={{ padding: '26px', backgroundColor: '#FFFFFF' }}>
-              {/* Header (not captured in PDF - shown only as toolbar) */}
+              {/* Header */}
               <div className="no-print" style={{
-                borderBottom: '2px solid #FED7AA',
+                borderBottom: '1.5px dashed #FED7AA',
                 paddingBottom: '14px',
                 marginBottom: '16px',
                 display: 'flex',
@@ -351,27 +383,38 @@ export default function WorksheetGenerator() {
                   <button
                     onClick={handlePrint}
                     style={{
-                      display: 'flex', alignItems: 'center', gap: '6px',
-                      padding: '8px 12px', borderRadius: '8px',
-                      backgroundColor: '#EFF6FF', color: '#2563EB',
-                      border: '1.5px solid #BFDBFE', fontWeight: '700',
-                      fontSize: '12px', cursor: 'pointer'
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      padding: '8px 12px',
+                      borderRadius: '6px',
+                      backgroundColor: '#EFF6FF',
+                      color: '#2563EB',
+                      border: '1.5px solid #BFDBFE',
+                      fontWeight: '700',
+                      fontSize: '12px',
+                      cursor: 'pointer'
                     }}
                   >
                     <Printer size={14} />
                     <span>Print</span>
                   </button>
+
                   <button
                     onClick={exportPDF}
                     disabled={isExporting}
                     style={{
-                      display: 'flex', alignItems: 'center', gap: '6px',
-                      padding: '8px 14px', borderRadius: '8px',
-                      background: isExporting ? '#FED7AA' : 'linear-gradient(135deg, #EA580C 0%, #C2410C 100%)',
-                      color: '#FFFFFF', border: 'none',
-                      fontWeight: '700', fontSize: '12px',
-                      cursor: isExporting ? 'not-allowed' : 'pointer',
-                      boxShadow: '0 2px 6px rgba(234,88,12,0.3)'
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      padding: '8px 14px',
+                      borderRadius: '6px',
+                      backgroundColor: isExporting ? '#FED7AA' : '#EA580C',
+                      color: '#FFFFFF',
+                      border: 'none',
+                      fontWeight: '700',
+                      fontSize: '12px',
+                      cursor: isExporting ? 'not-allowed' : 'pointer'
                     }}
                   >
                     <Download size={14} />
@@ -380,10 +423,12 @@ export default function WorksheetGenerator() {
                 </div>
               </div>
 
-              {/* Printable Header Block (captured in PDF canvas) */}
+              {/* Printable Header */}
               <div style={{
-                backgroundColor: '#FFF7ED', borderRadius: '8px',
-                border: '1.5px solid #FDBA74', padding: '12px 16px',
+                backgroundColor: '#FFF7ED',
+                borderRadius: '8px',
+                border: '1.5px solid #FDBA74',
+                padding: '12px 16px',
                 marginBottom: '14px'
               }}>
                 <div style={{ fontSize: '11px', fontWeight: '800', color: '#EA580C', textTransform: 'uppercase', marginBottom: '2px' }}>
@@ -428,7 +473,7 @@ export default function WorksheetGenerator() {
                     }}
                   >
                     <div style={{ fontSize: '13px', fontWeight: '700', color: '#0F172A', marginBottom: '10px' }}>
-                      <span style={{ color: '#EA580C', marginRight: '6px', fontWeight: '900' }}>Q{idx + 1}.</span>
+                      <span style={{ color: '#EA580C', marginRight: '6px', fontWeight: '800' }}>Q{idx + 1}.</span>
                       {q.prompt}
                     </div>
 
@@ -451,8 +496,11 @@ export default function WorksheetGenerator() {
                             }}
                           >
                             <span style={{
-                              width: '16px', height: '16px', borderRadius: '50%',
-                              border: '2px solid #FDBA74', display: 'inline-block',
+                              width: '16px',
+                              height: '16px',
+                              borderRadius: '50%',
+                              border: '2px solid #FDBA74',
+                              display: 'inline-block',
                               flexShrink: 0
                             }}></span>
                             <span>{opt}</span>
@@ -472,23 +520,25 @@ export default function WorksheetGenerator() {
 
               {/* PDF Footer */}
               <div style={{
-                marginTop: '20px', paddingTop: '12px',
-                borderTop: '2px solid #FED7AA',
-                fontSize: '10px', color: '#64748B', textAlign: 'center'
+                marginTop: '20px',
+                paddingTop: '12px',
+                borderTop: '1.5px solid #FED7AA',
+                fontSize: '10px',
+                color: '#64748B',
+                textAlign: 'center'
               }}>
                 Government of Jharkhand · PALASH MTB-MLE · NIPUN Bharat FLN Programme
               </div>
             </div>
           )}
 
-
           {activeTab === 'flashcards' && (
             <div className="card" style={{ padding: '24px', backgroundColor: '#FFFFFF' }}>
-              <div style={{ marginBottom: '16px', paddingBottom: '10px', borderBottom: '1px solid var(--border-light)' }}>
-                <h3 style={{ fontSize: '15px', fontWeight: '800', margin: 0, color: 'var(--text-main)' }}>
+              <div style={{ marginBottom: '16px', paddingBottom: '10px', borderBottom: '1.5px solid #FED7AA' }}>
+                <h3 style={{ fontSize: '15px', fontWeight: '800', margin: 0, color: '#0F172A' }}>
                   Visual Classroom Flashcard Decks ({activeLangObj.name})
                 </h3>
-                <p style={{ margin: '4px 0 0 0', fontSize: '12px', color: 'var(--text-muted)' }}>
+                <p style={{ margin: '4px 0 0 0', fontSize: '12px', color: '#334155' }}>
                   Click card to flip between native script and Hindi gloss. Use audio controls to play and pause.
                 </p>
               </div>
@@ -502,57 +552,57 @@ export default function WorksheetGenerator() {
                       onClick={() => setFlippedCardIndex(isFlipped ? null : idx)}
                       style={{
                         height: '170px',
-                        borderRadius: '8px',
+                        borderRadius: '10px',
                         padding: '14px',
-                        backgroundColor: isFlipped ? '#FFFFFF' : '#F8FAFC',
-                        border: isFlipped ? '1.5px solid var(--accent)' : '1px solid var(--border-medium)',
+                        backgroundColor: isFlipped ? '#FFF7ED' : '#FFFFFF',
+                        border: isFlipped ? '2px solid #EA580C' : '1.5px solid #FED7AA',
                         cursor: 'pointer',
                         display: 'flex',
                         flexDirection: 'column',
                         justifyContent: 'space-between',
                         alignItems: 'center',
                         textAlign: 'center',
-                        transition: 'all 0.15s ease',
-                        boxShadow: 'var(--shadow-sm)'
+                        transition: 'all 0.2s ease',
+                        boxShadow: isFlipped ? '0 4px 12px rgba(234,88,12,0.15)' : '0 1px 4px rgba(234,88,12,0.06)'
                       }}
                     >
                       <div style={{
                         fontSize: '10px',
-                        fontWeight: '700',
+                        fontWeight: '800',
                         textTransform: 'uppercase',
-                        color: 'var(--text-muted)'
+                        color: '#EA580C'
                       }}>
                         {card.category} · {isFlipped ? 'Hindi' : activeLangObj.name}
                       </div>
 
                       {!isFlipped ? (
                         <div>
-                          <div style={{ fontSize: '24px', fontWeight: '900', color: 'var(--text-main)', marginBottom: '4px' }}>
+                          <div style={{ fontSize: '24px', fontWeight: '900', color: '#0F172A', marginBottom: '4px' }}>
                             {card.front}
                           </div>
-                          <div style={{ fontSize: '12px', fontWeight: '600', color: 'var(--accent)' }}>
+                          <div style={{ fontSize: '12px', fontWeight: '700', color: '#EA580C' }}>
                             ({card.roman})
                           </div>
                         </div>
                       ) : (
                         <div>
-                          <div style={{ fontSize: '15px', fontWeight: '800', color: 'var(--text-main)' }}>
+                          <div style={{ fontSize: '15px', fontWeight: '800', color: '#0F172A' }}>
                             {card.back}
                           </div>
-                          <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '4px' }}>
+                          <div style={{ fontSize: '11px', color: '#64748B', marginTop: '4px' }}>
                             {activeLangObj.name}: {card.front}
                           </div>
                         </div>
                       )}
 
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }} onClick={(e) => e.stopPropagation()}>
                         <AudioPlayButton
                           text={card.roman || card.front}
                           size="sm"
                           showStop={false}
                           label="Audio"
                         />
-                        <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Tap to flip</span>
+                        <span style={{ fontSize: '10px', color: '#64748B' }}>Tap to flip</span>
                       </div>
                     </div>
                   );

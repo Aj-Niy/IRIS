@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { irisGetDashboardStats, irisSyncOfflineProgress } from '../services/api';
 import { getPendingOfflineLogs, getLastSyncTime } from '../services/offlineSync';
+import { uiTranslations } from '../services/uiTranslations';
 
 function SummaryMetricCard({ label, value, subtext, tag }) {
   return (
@@ -15,35 +16,39 @@ function SummaryMetricCard({ label, value, subtext, tag }) {
       style={{
         padding: '20px',
         backgroundColor: '#FFFFFF',
-        border: '1px solid var(--border-medium)',
+        border: '1.5px solid #FED7AA',
         borderRadius: '10px'
       }}
     >
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-        <span style={{ fontSize: '12px', fontWeight: '600', color: 'var(--text-muted)' }}>{label}</span>
+        <span style={{ fontSize: '12px', fontWeight: '700', color: '#334155' }}>{label}</span>
         {tag && (
           <span style={{
             fontSize: '10px',
-            fontWeight: '700',
+            fontWeight: '800',
             padding: '2px 6px',
             borderRadius: '4px',
-            backgroundColor: '#F0FDF4',
-            color: '#166534',
-            border: '1px solid #BBF7D0'
+            backgroundColor: '#ECFDF5',
+            color: '#059669',
+            border: '1px solid #A7F3D0'
           }}>
             {tag}
           </span>
         )}
       </div>
-      <div style={{ fontSize: '26px', fontWeight: '800', color: 'var(--text-main)', lineHeight: 1 }}>
+      <div style={{ fontSize: '26px', fontWeight: '900', color: '#0F172A', lineHeight: 1 }}>
         {value}
       </div>
-      {subtext && <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '6px' }}>{subtext}</div>}
+      {subtext && <div style={{ fontSize: '11px', color: '#64748B', marginTop: '6px' }}>{subtext}</div>}
     </div>
   );
 }
 
-export default function TeacherDashboard() {
+export default function TeacherDashboard({ 
+  uiLang = 'en', 
+  currentLang = 'sat' 
+}) {
+  const t = uiTranslations[uiLang] || uiTranslations.en;
   const [flnStats, setFlnStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [syncing, setSyncing] = useState(false);
@@ -113,30 +118,31 @@ export default function TeacherDashboard() {
         backgroundColor: '#FFFFFF',
         borderRadius: '12px',
         padding: '22px 28px',
-        border: '1px solid var(--border-medium)',
+        border: '1.5px solid #FED7AA',
         marginBottom: '24px',
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
         flexWrap: 'wrap',
-        gap: '16px'
+        gap: '16px',
+        boxShadow: '0 2px 8px rgba(234,88,12,0.06)'
       }}>
         <div>
           <div style={{
             fontSize: '11px',
             fontWeight: '700',
-            color: 'var(--text-muted)',
+            color: '#334155',
             textTransform: 'uppercase',
             letterSpacing: '0.5px',
             marginBottom: '4px'
           }}>
-            Jharkhand PALASH MTB-MLE Programme · School Implementation Monitoring
+            {t.dashboard.headerTag}
           </div>
-          <h1 style={{ fontSize: '22px', fontWeight: '800', margin: '0 0 6px 0', color: 'var(--text-main)' }}>
-            Teacher Instruction & FLN Progress Dashboard
+          <h1 style={{ fontSize: '22px', fontWeight: '800', margin: '0 0 6px 0', color: '#0F172A' }}>
+            {t.dashboard.title}
           </h1>
-          <p style={{ margin: 0, fontSize: '13px', color: 'var(--text-muted)' }}>
-            Monitors tribal language lesson delivery, mother-tongue translation reliance heatmaps, NIPUN Bharat competency progress, and tablet synchronization across 5,000+ tribal primary schools.
+          <p style={{ margin: 0, fontSize: '13px', color: '#334155' }}>
+            {t.dashboard.subtitle}
           </p>
         </div>
 
@@ -151,7 +157,7 @@ export default function TeacherDashboard() {
               gap: '6px',
               padding: '8px 14px',
               borderRadius: '6px',
-              backgroundColor: 'var(--accent)',
+              backgroundColor: '#EA580C',
               color: '#FFFFFF',
               border: 'none',
               fontWeight: '700',
@@ -160,7 +166,7 @@ export default function TeacherDashboard() {
             }}
           >
             <RefreshCw size={14} className={syncing ? 'animate-spin' : ''} />
-            <span>{syncing ? 'Syncing...' : 'Sync Tablet Logs'}</span>
+            <span>{syncing ? 'Syncing...' : t.dashboard.syncBtn}</span>
           </button>
         </div>
       </div>
@@ -171,16 +177,16 @@ export default function TeacherDashboard() {
           marginBottom: '20px',
           padding: '10px 16px',
           borderRadius: '6px',
-          backgroundColor: '#F0FDF4',
-          border: '1px solid #BBF7D0',
-          color: '#166534',
+          backgroundColor: '#ECFDF5',
+          border: '1px solid #A7F3D0',
+          color: '#065F46',
           fontSize: '12px',
           fontWeight: '600',
           display: 'flex',
           alignItems: 'center',
           gap: '8px'
         }}>
-          <CheckCircle2 size={16} color="#16A34A" />
+          <CheckCircle2 size={16} color="#059669" />
           <span>{syncMessage}</span>
         </div>
       )}
@@ -188,24 +194,24 @@ export default function TeacherDashboard() {
       {/* 4 Clean Metric Cards */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px', marginBottom: '24px' }}>
         <SummaryMetricCard
-          label="FLN Lessons Delivered"
+          label={t.dashboard.metric1}
           value={flnStats?.flnLessonsDelivered || 42}
           subtext="Covered across Santhali, Ho, and Mundari"
           tag="Active MTB-MLE"
         />
         <SummaryMetricCard
-          label="Mother-Tongue Translations Used"
+          label={t.dashboard.metric2}
           value={flnStats?.motherTongueTranslationsUsed || 318}
           subtext="Classroom phrase dialogues conducted"
           tag="+32% this term"
         />
         <SummaryMetricCard
-          label="NIPUN Outcomes Covered"
+          label={t.dashboard.metric3}
           value={flnStats?.nipunOutcomesCovered || 16}
           subtext="Out of 20 foundational competencies"
         />
         <SummaryMetricCard
-          label="Tablet Offline Sync Status"
+          label={t.dashboard.metric4}
           value="100%"
           subtext={`Pending: ${pendingLogsCount} logs · Last sync: ${lastSync}`}
           tag="Offline-Ready"
@@ -215,41 +221,41 @@ export default function TeacherDashboard() {
       {/* Analytics Grid */}
       <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '24px' }}>
         {/* NIPUN Bharat Competency Progression Chart */}
-        <div className="card" style={{ padding: '24px', backgroundColor: 'var(--bg-card)' }}>
-          <h3 style={{ fontSize: '15px', fontWeight: '800', margin: '0 0 4px 0', color: 'var(--text-main)' }}>
+        <div className="card" style={{ padding: '24px', backgroundColor: '#FFFFFF' }}>
+          <h3 style={{ fontSize: '15px', fontWeight: '800', margin: '0 0 4px 0', color: '#0F172A' }}>
             NIPUN Bharat Competency Mastery (%)
           </h3>
-          <p style={{ margin: '0 0 16px 0', fontSize: '12px', color: 'var(--text-muted)' }}>
-            Classroom average achievement in Foundational Literacy & Numeracy
+          <p style={{ margin: '0 0 16px 0', fontSize: '12px', color: '#334155' }}>
+            Classroom average achievement in Foundational Literacy &amp; Numeracy
           </p>
 
           <div style={{ height: '280px', width: '100%' }}>
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={nipunChartData} margin={{ top: 10, right: 10, left: -20, bottom: 20 }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border-light)" />
-                <XAxis dataKey="name" stroke="var(--text-muted)" fontSize={11} angle={-15} textAnchor="end" />
-                <YAxis stroke="var(--text-muted)" fontSize={11} domain={[0, 100]} />
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#FED7AA" />
+                <XAxis dataKey="name" stroke="#334155" fontSize={11} angle={-15} textAnchor="end" />
+                <YAxis stroke="#334155" fontSize={11} domain={[0, 100]} />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: '#1E293B',
+                    backgroundColor: '#0F172A',
                     borderRadius: '6px',
                     border: 'none',
                     color: '#FFFFFF',
                     fontSize: '12px'
                   }}
                 />
-                <Bar dataKey="mastered" fill="var(--accent)" radius={[4, 4, 0, 0]} name="Mastery %" />
+                <Bar dataKey="mastered" fill="#EA580C" radius={[4, 4, 0, 0]} name="Mastery %" />
               </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
 
         {/* Translation Reliance Heatmap */}
-        <div className="card" style={{ padding: '24px', backgroundColor: 'var(--bg-card)' }}>
-          <h3 style={{ fontSize: '15px', fontWeight: '800', margin: '0 0 4px 0', color: 'var(--text-main)' }}>
+        <div className="card" style={{ padding: '24px', backgroundColor: '#FFFFFF' }}>
+          <h3 style={{ fontSize: '15px', fontWeight: '800', margin: '0 0 4px 0', color: '#0F172A' }}>
             Translation Reliance Heatmap
           </h3>
-          <p style={{ margin: '0 0 16px 0', fontSize: '12px', color: 'var(--text-muted)' }}>
+          <p style={{ margin: '0 0 16px 0', fontSize: '12px', color: '#334155' }}>
             Concepts where teachers relied most on tribal language translation
           </p>
 
@@ -257,20 +263,20 @@ export default function TeacherDashboard() {
             {translationRelianceData.map((item, idx) => (
               <div key={idx} style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', fontWeight: '600' }}>
-                  <span style={{ color: 'var(--text-main)' }}>{item.word}</span>
-                  <span style={{ color: 'var(--accent)', fontWeight: '700' }}>{item.count} occurrences</span>
+                  <span style={{ color: '#0F172A' }}>{item.word}</span>
+                  <span style={{ color: '#EA580C', fontWeight: '700' }}>{item.count} occurrences</span>
                 </div>
                 <div style={{
                   width: '100%',
                   height: '6px',
                   borderRadius: '3px',
-                  backgroundColor: 'var(--bg-subtle)',
+                  backgroundColor: '#FFF7ED',
                   overflow: 'hidden'
                 }}>
                   <div style={{
                     width: `${Math.min(100, (item.count / 100) * 100)}%`,
                     height: '100%',
-                    backgroundColor: 'var(--accent)'
+                    backgroundColor: '#EA580C'
                   }} />
                 </div>
               </div>
@@ -281,10 +287,10 @@ export default function TeacherDashboard() {
             marginTop: '20px',
             padding: '12px',
             borderRadius: '6px',
-            backgroundColor: 'var(--bg-subtle)',
-            border: '1px solid var(--border-light)',
+            backgroundColor: '#FFF7ED',
+            border: '1px solid #FDE68A',
             fontSize: '11px',
-            color: 'var(--text-muted)'
+            color: '#334155'
           }}>
             District: <strong>Ranchi / Kolhan Tribal Area (5,000+ Schools)</strong> · Android Tablet Target: <strong>&le; 2GB RAM (Offline Mode)</strong>
           </div>

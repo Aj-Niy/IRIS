@@ -12,13 +12,21 @@ import { initOfflineStorage } from './services/offlineSync';
 
 export default function App() {
   const [currentTab, setCurrentTab] = useState('landing');
-  const [currentLang, setCurrentLang] = useState('sat'); // Default to Santhali
+  const [currentLang, setCurrentLang] = useState('sat'); // Default to Santhali (Ol Chiki)
+  const [uiLang, setUiLangState] = useState(
+    localStorage.getItem('palash_uilang') || 'en'
+  );
   const [userRole, setUserRoleState] = useState(
     localStorage.getItem('palash_userrole') || localStorage.getItem('codeseekho_userrole') || 'teacher'
   );
   const [userName, setUserName] = useState(
     localStorage.getItem('palash_username') || localStorage.getItem('codeseekho_username') || ''
   );
+
+  const setUiLang = (lang) => {
+    setUiLangState(lang);
+    localStorage.setItem('palash_uilang', lang);
+  };
 
   useEffect(() => {
     initOfflineStorage();
@@ -65,6 +73,8 @@ print("Final Sum:", total)
         setCurrentTab={handleSetTab}
         currentLang={currentLang}
         setCurrentLang={setCurrentLang}
+        uiLang={uiLang}
+        setUiLang={setUiLang}
         userRole={userRole}
         setUserRole={setUserRole}
         userName={userName}
@@ -78,6 +88,8 @@ print("Final Sum:", total)
             setCurrentTab={handleSetTab}
             setUserRole={setUserRole}
             setUserName={handleSetUserName}
+            uiLang={uiLang}
+            currentLang={currentLang}
           />
         )}
 
@@ -85,22 +97,35 @@ print("Final Sum:", total)
         {currentTab === 'santali-studio' && (
           <SantaliStudio
             setCurrentTab={handleSetTab}
+            uiLang={uiLang}
+            currentLang={currentLang}
+            setCurrentLang={setCurrentLang}
           />
         )}
 
         {/* Real-time Voice Translation & Classroom Dialogue Module */}
         {currentTab === 'phrasebook' && (
-          <LivePhrasebook />
+          <LivePhrasebook 
+            uiLang={uiLang}
+            currentLang={currentLang}
+            setCurrentLang={setCurrentLang}
+          />
         )}
 
         {/* Auto-Generated NIPUN Bharat Worksheets & Flashcards */}
         {currentTab === 'worksheets' && (
-          <WorksheetGenerator />
+          <WorksheetGenerator 
+            uiLang={uiLang}
+            currentLang={currentLang}
+          />
         )}
 
         {/* PALASH Teacher Progress Dashboard */}
         {currentTab === 'teacher' && (
-          <TeacherDashboard />
+          <TeacherDashboard 
+            uiLang={uiLang}
+            currentLang={currentLang}
+          />
         )}
 
         {/* Vernacular Pedagogy Assistant */}
@@ -108,6 +133,7 @@ print("Final Sum:", total)
           <AIMentorPage
             currentLang={currentLang}
             userName={userName}
+            uiLang={uiLang}
           />
         )}
 
@@ -116,6 +142,8 @@ print("Final Sum:", total)
           <NCERTSection
             setCurrentTab={handleSetTab}
             setSelectedProject={setSelectedProject}
+            uiLang={uiLang}
+            currentLang={currentLang}
           />
         )}
 

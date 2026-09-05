@@ -7,36 +7,38 @@ import {
   GraduationCap, 
   Bot, 
   User, 
-  LogOut,
-  ShieldCheck,
-  Cpu,
-  Sparkles
+  LogOut, 
+  ShieldCheck, 
+  Globe
 } from 'lucide-react';
+import { uiTranslations } from '../services/uiTranslations';
 
 export default function Navbar({ 
   currentTab, 
   setCurrentTab, 
   currentLang, 
   setCurrentLang,
+  uiLang = 'en',
+  setUiLang,
   userName,
   setUserName
 }) {
-  const languages = [
+  const t = uiTranslations[uiLang] || uiTranslations.en;
+
+  const tribalLanguages = [
     { code: 'sat', name: 'ᱥᱟᱱᱛᱟᱲᱤ (Santhali)', script: 'Ol Chiki' },
     { code: 'hoc', name: '𑢹𑣉𑣉 (Ho)', script: 'Warang Chiti' },
-    { code: 'unr', name: 'ᱢᱩᱱᱰᱟᱨᱤ (Mundari)', script: 'Mundari' },
-    { code: 'hi', name: 'हिंदी (Hindi)', script: 'Devanagari' },
-    { code: 'en', name: 'English', script: 'Latin' }
+    { code: 'unr', name: 'ᱢᱩᱱᱰᱟᱨᱤ (Mundari)', script: 'Mundari' }
   ];
 
   // Primary MTB-MLE Navigation Modules
   const navItems = [
-    { id: 'santali-studio', label: 'FLN Lesson Studio', icon: BookOpen, color: '#EA580C' },
-    { id: 'phrasebook', label: 'Real-Time Voice', icon: Volume2, color: '#059669' },
-    { id: 'worksheets', label: 'NIPUN Worksheets', icon: FileCheck, color: '#2563EB' },
-    { id: 'teacher', label: 'Teacher Dashboard', icon: GraduationCap, color: '#7C3AED' },
-    { id: 'ai-mentor', label: 'Pedagogy Assistant', icon: Bot, color: '#D97706' },
-    { id: 'ncert', label: 'Curriculum Hub', icon: BookOpen, color: '#0284C7' }
+    { id: 'santali-studio', label: t.nav.flnStudio, icon: BookOpen, color: '#EA580C' },
+    { id: 'phrasebook', label: t.nav.voiceEngine, icon: Volume2, color: '#059669' },
+    { id: 'worksheets', label: t.nav.worksheets, icon: FileCheck, color: '#2563EB' },
+    { id: 'teacher', label: t.nav.dashboard, icon: GraduationCap, color: '#7C3AED' },
+    { id: 'ai-mentor', label: t.nav.pedagogyAssistant, icon: Bot, color: '#D97706' },
+    { id: 'ncert', label: t.nav.curriculumHub, icon: BookOpen, color: '#0284C7' }
   ];
 
   const handleLogout = () => {
@@ -46,7 +48,7 @@ export default function Navbar({
     setCurrentTab('landing');
   };
 
-  const currentLangObj = languages.find(l => l.code === currentLang) || languages[0];
+  const currentLangObj = tribalLanguages.find(l => l.code === currentLang) || tribalLanguages[0];
 
   return (
     <header style={{
@@ -84,7 +86,7 @@ export default function Navbar({
             fontSize: '10px'
           }}>
             <ShieldCheck size={12} />
-            <span>GOVT. OF JHARKHAND</span>
+            <span>{t.common.govtHeader}</span>
           </div>
 
           <div style={{
@@ -96,7 +98,7 @@ export default function Navbar({
             fontWeight: '700',
             fontSize: '11px'
           }}>
-            PALASH MTB-MLE · Problem Statement <strong>26042</strong>
+            {t.common.psTag}
           </div>
 
           <div style={{
@@ -112,12 +114,45 @@ export default function Navbar({
             fontSize: '11px'
           }}>
             <span className="pulse-dot"></span>
-            <span>Tablet Offline Mode Ready (&le; 2GB RAM)</span>
+            <span>{t.common.offlineReady}</span>
           </div>
         </div>
 
-        {/* Right Modular Status Blocks */}
+        {/* Right Modular Status Blocks: UI Language Selector + Target Tribal Language */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          {/* UI Interface Language Selector (English / Hindi) */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '5px',
+            backgroundColor: '#FFFBEB',
+            border: '1.5px solid #FCD34D',
+            borderRadius: '8px',
+            padding: '3px 8px',
+            boxShadow: '0 1px 2px rgba(217, 119, 6, 0.08)'
+          }}>
+            <Globe size={13} color="#D97706" />
+            <span style={{ fontSize: '10px', fontWeight: '800', color: '#92400E' }}>UI:</span>
+            <select
+              value={uiLang}
+              onChange={(e) => setUiLang && setUiLang(e.target.value)}
+              style={{
+                background: 'none',
+                border: 'none',
+                fontSize: '11px',
+                fontWeight: '800',
+                color: '#92400E',
+                cursor: 'pointer',
+                outline: 'none'
+              }}
+              title="Change platform interface language"
+            >
+              <option value="en">English (EN)</option>
+              <option value="hi">हिंदी (Hindi)</option>
+            </select>
+          </div>
+
+          {/* Target Tribal Classroom Language */}
           <div style={{
             display: 'flex',
             alignItems: 'center',
@@ -129,6 +164,7 @@ export default function Navbar({
             boxShadow: '0 1px 2px rgba(234, 88, 12, 0.05)'
           }}>
             <Languages size={13} color="#EA580C" />
+            <span style={{ fontSize: '10px', fontWeight: '800', color: '#EA580C' }}>LANG:</span>
             <select
               value={currentLang}
               onChange={(e) => setCurrentLang(e.target.value)}
@@ -141,8 +177,9 @@ export default function Navbar({
                 cursor: 'pointer',
                 outline: 'none'
               }}
+              title="Target MTB-MLE Tribal Language"
             >
-              {languages.map(lang => (
+              {tribalLanguages.map(lang => (
                 <option key={lang.code} value={lang.code}>{lang.name}</option>
               ))}
             </select>
@@ -312,7 +349,7 @@ export default function Navbar({
                 cursor: 'pointer'
               }}
             >
-              Teacher Login →
+              {t.common.teacherLogin} →
             </button>
           )}
         </div>

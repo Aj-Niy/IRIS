@@ -11,6 +11,7 @@ import { askTutor, translateText, askNcertTutor } from '../services/api';
 import { startListening, speakText } from './speechUtils';
 import { videoService } from '../services/supabaseClient';
 import { NCERT_CHAPTERS, STEM_MOCK_DATA, HINTS } from './ncertData';
+import { uiTranslations } from '../services/uiTranslations';
 
 // Helper to render subject icons dynamically
 const getSubjectIcon = (subject, size = 15) => {
@@ -52,12 +53,17 @@ const LANG_OPTIONS = [
 // ─────────────────────────────────────────────
 // MAIN COMPONENT
 // ─────────────────────────────────────────────
-export default function NCERTSection({ setCurrentTab, setSelectedProject }) {
+export default function NCERTSection({ 
+  setCurrentTab, 
+  setSelectedProject,
+  uiLang = 'en'
+}) {
+  const t = uiTranslations[uiLang] || uiTranslations.en;
   const [selectedGrade, setSelectedGrade] = useState('8');
   const [selectedStem, setSelectedStem] = useState('cs');
   const [selectedChap, setSelectedChap] = useState(null);
 
-  const [chatLang, setChatLang] = useState('en');
+  const [chatLang, setChatLang] = useState(uiLang === 'hi' ? 'hi' : 'en');
   const [completedChapters, setCompletedChapters] = useState(() => {
     const saved = localStorage.getItem('cs_completed');
     return saved ? JSON.parse(saved) : [];
@@ -320,13 +326,13 @@ Use simple language, bold key terms, and end with a quick quiz question to check
       <div style={{ marginBottom: '24px' }}>
         <div className="pill-badge" style={{ marginBottom: '8px' }}>
           <BookOpen size={14} />
-          <span>RAG-Grounded NCERT Curriculum · Classes 8–12</span>
+          <span>{t.ncert.badge}</span>
         </div>
         <h1 style={{ fontSize: '30px', fontWeight: '800', letterSpacing: '-0.5px', margin: 0 }}>
-          STEM AI Learning Lab
+          {t.ncert.title}
         </h1>
         <p style={{ fontSize: '14px', color: 'var(--text-muted)', marginTop: '4px' }}>
-          Select a STEM branch · Choose your grade · Read, summarize, and chat with AI Mentor
+          {t.ncert.subtitle}
         </p>
       </div>
 
