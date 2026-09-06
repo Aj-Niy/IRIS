@@ -6,12 +6,14 @@ import {
   BookOpen, 
   FileText, 
   Volume2, 
-  HelpCircle 
+  HelpCircle,
+  Hand
 } from "lucide-react";
 import { irisAskTutor } from "../services/api";
 import { TRIBAL_LANGUAGES } from "../services/apertiumSantaliData";
 import AudioPlayButton from "./AudioPlayButton";
 import { uiTranslations } from "../services/uiTranslations";
+import ISLVideoPlayerModal from "./ISLVideoPlayerModal";
 
 export default function AIMentorPage({ 
   currentLang = 'sat', 
@@ -23,6 +25,17 @@ export default function AIMentorPage({
   const [tutorMode, setTutorMode] = useState("teacher-fln"); // 'teacher-fln' | 'worksheet' | 'live-phrase' | 'pedagogy'
   const [inputQuery, setInputQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  // ISL Video Player state
+  const [isIslModalOpen, setIsIslModalOpen] = useState(false);
+  const [islConcept, setIslConcept] = useState('');
+  const [islText, setIslText] = useState('');
+
+  const handleOpenIsl = (concept, text) => {
+    setIslConcept(concept);
+    setIslText(text || concept);
+    setIsIslModalOpen(true);
+  };
 
   const activeLangObj = TRIBAL_LANGUAGES.find(l => l.code === selectedLang) || TRIBAL_LANGUAGES[0];
 
@@ -299,7 +312,27 @@ export default function AIMentorPage({
               )}
 
               {msg.role === 'assistant' && (
-                <div style={{ marginTop: '8px' }}>
+                <div style={{ marginTop: '8px', display: 'flex', gap: '6px', alignItems: 'center' }}>
+                  <button
+                    onClick={() => handleOpenIsl(msg.hindiText || msg.text, msg.text || msg.hindiText)}
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '4px',
+                      padding: '4px 10px',
+                      borderRadius: '6px',
+                      backgroundColor: '#FFFBEB',
+                      border: '1px solid #FCD34D',
+                      color: '#92400E',
+                      fontSize: '11px',
+                      fontWeight: '700',
+                      cursor: 'pointer'
+                    }}
+                    title="Watch ISL (Indian Sign Language) Clip"
+                  >
+                    <Hand size={11} color="#D97706" />
+                    <span>Watch ISL</span>
+                  </button>
                   <AudioPlayButton
                     text={msg.romanText || msg.text}
                     size="sm"
@@ -375,6 +408,15 @@ export default function AIMentorPage({
           Send
         </button>
       </form>
+
+      {/* ISL Sign Language Video Modal */}
+      <ISLVideoPlayerModal
+        isOpen={isIslModalOpen}
+        onClose={() => setIsIslModalOpen(false)}
+        conceptName={islConcept}
+        fullText={islText}
+        displayText={islText}
+      />
     </div>
   );
 }

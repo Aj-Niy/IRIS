@@ -19,7 +19,8 @@ import {
   HelpCircle,
   Lightbulb,
   Headphones,
-  StopCircle
+  StopCircle,
+  Hand
 } from 'lucide-react';
 import { 
   CLASSROOM_PHRASEBOOK, 
@@ -31,6 +32,7 @@ import { recordOfflineInteraction } from '../services/offlineSync';
 import { startListening, speakText } from './speechUtils';
 import AudioPlayButton from './AudioPlayButton';
 import { uiTranslations } from '../services/uiTranslations';
+import ISLVideoPlayerModal from './ISLVideoPlayerModal';
 
 // Pulsing mic indicator component
 function MicPulse({ color = '#EA580C' }) {
@@ -79,6 +81,17 @@ export default function LivePhrasebook({
   const [childRecognitionResult, setChildRecognitionResult] = useState(null);
   const [selectedChildCategory, setSelectedChildCategory] = useState('All');
   const childRecogRef = useRef(null);
+
+  // ISL Video Player state
+  const [isIslModalOpen, setIsIslModalOpen] = useState(false);
+  const [islConcept, setIslConcept] = useState('');
+  const [islText, setIslText] = useState('');
+
+  const handleOpenIsl = (concept, text) => {
+    setIslConcept(concept);
+    setIslText(text || concept);
+    setIsIslModalOpen(true);
+  };
 
   useEffect(() => {
     if (currentLang && currentLang !== selectedLang) {
@@ -492,11 +505,34 @@ export default function LivePhrasebook({
                 <span style={{ fontSize: '11px', fontWeight: '800', color: '#EA580C', textTransform: 'uppercase' }}>
                   {activeLangObj.name} Spoken Broadcast:
                 </span>
-                <AudioPlayButton
-                  text={selectedPhrase[selectedLang]?.roman || selectedPhrase[selectedLang]?.script}
-                  size="md"
-                  label={t.voice.broadcast}
-                />
+                <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+                  <button
+                    onClick={() => handleOpenIsl(selectedPhrase.hindi, selectedPhrase.english || selectedPhrase.hindi)}
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '4px',
+                      padding: '5px 10px',
+                      borderRadius: '6px',
+                      backgroundColor: '#FFFBEB',
+                      border: '1px solid #FCD34D',
+                      color: '#92400E',
+                      fontSize: '11px',
+                      fontWeight: '700',
+                      cursor: 'pointer',
+                      transition: 'all 0.15s ease'
+                    }}
+                    title="Watch ISL (Indian Sign Language) Clip"
+                  >
+                    <Hand size={12} color="#D97706" />
+                    <span>ISL Sign</span>
+                  </button>
+                  <AudioPlayButton
+                    text={selectedPhrase[selectedLang]?.roman || selectedPhrase[selectedLang]?.script}
+                    size="md"
+                    label={t.voice.broadcast}
+                  />
+                </div>
               </div>
               <div style={{ fontSize: '26px', fontWeight: '900', color: '#0F172A', lineHeight: '1.3' }}>
                 {selectedPhrase[selectedLang]?.script}
@@ -688,12 +724,34 @@ export default function LivePhrasebook({
                     <span style={{ fontSize: '11px', fontWeight: '800', color: '#059669', textTransform: 'uppercase' }}>
                       Tribal ASR Matched · {childRecognitionResult.category}
                     </span>
-                    <span style={{
-                      fontSize: '10px', fontWeight: '800', padding: '2px 6px',
-                      borderRadius: '4px', backgroundColor: '#DCFCE7', color: '#166534'
-                    }}>
-                      {childRecognitionResult.matched ? '✓ Matched' : '~ General'}
-                    </span>
+                    <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+                      <button
+                        onClick={() => handleOpenIsl(displayHindi, displayEnglish || displayHindi)}
+                        style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '3px',
+                          padding: '3px 8px',
+                          borderRadius: '4px',
+                          backgroundColor: '#FFFBEB',
+                          border: '1px solid #FCD34D',
+                          color: '#92400E',
+                          fontSize: '10px',
+                          fontWeight: '700',
+                          cursor: 'pointer'
+                        }}
+                        title="Watch ISL (Indian Sign Language) Clip"
+                      >
+                        <Hand size={10} color="#D97706" />
+                        <span>ISL Sign</span>
+                      </button>
+                      <span style={{
+                        fontSize: '10px', fontWeight: '800', padding: '2px 6px',
+                        borderRadius: '4px', backgroundColor: '#DCFCE7', color: '#166534'
+                      }}>
+                        {childRecognitionResult.matched ? '✓ Matched' : '~ General'}
+                      </span>
+                    </div>
                   </div>
                   <div style={{ fontSize: '22px', fontWeight: '900', color: '#0F172A', lineHeight: '1.3', marginBottom: '4px' }}>
                     {displayScript}
@@ -790,6 +848,15 @@ export default function LivePhrasebook({
         </div>
 
       </div>
+
+      {/* ISL Sign Language Video Modal */}
+      <ISLVideoPlayerModal
+        isOpen={isIslModalOpen}
+        onClose={() => setIsIslModalOpen(false)}
+        conceptName={islConcept}
+        fullText={islText}
+        displayText={islText}
+      />
     </div>
   );
 }

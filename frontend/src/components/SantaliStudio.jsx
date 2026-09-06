@@ -12,7 +12,8 @@ import {
   Headphones,
   Sparkles,
   Layers,
-  GraduationCap
+  GraduationCap,
+  Hand
 } from 'lucide-react';
 import { 
   SAMPLE_FLN_LESSONS, 
@@ -25,6 +26,7 @@ import { irisAskTutor } from '../services/api';
 import AudioPlayButton from './AudioPlayButton';
 import { startListening } from './speechUtils';
 import { uiTranslations } from '../services/uiTranslations';
+import ISLVideoPlayerModal from './ISLVideoPlayerModal';
 import jsPDF from 'jspdf';
 
 export default function SantaliStudio({ 
@@ -46,6 +48,17 @@ export default function SantaliStudio({
   const [isTeacherListening, setIsTeacherListening] = useState(false);
   const [isChildListening, setIsChildListening] = useState(false);
   const [childSpeechMatch, setChildSpeechMatch] = useState(CHILD_TRIBAL_RESPONSES[0]);
+
+  // ISL Video Player state
+  const [isIslModalOpen, setIsIslModalOpen] = useState(false);
+  const [islConcept, setIslConcept] = useState('');
+  const [islText, setIslText] = useState('');
+
+  const handleOpenIsl = (concept, text) => {
+    setIslConcept(concept);
+    setIslText(text || concept);
+    setIsIslModalOpen(true);
+  };
 
   useEffect(() => {
     if (currentLang && currentLang !== selectedLang) {
@@ -532,12 +545,35 @@ export default function SantaliStudio({
                   {t.fln.tribalDelivery} ({activeLangObj.name} · {activeLangObj.script}):
                 </div>
                 
-                {/* Universal Play/Pause/Stop Button */}
-                <AudioPlayButton
-                  text={currentLessonData.romanText || currentLessonData.scriptText}
-                  size="sm"
-                  label={t.fln.pronounce}
-                />
+                <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+                  <button
+                    onClick={() => handleOpenIsl(currentLessonData.title, currentLessonData.sourceText || currentLessonData.title)}
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '4px',
+                      padding: '5px 10px',
+                      borderRadius: '6px',
+                      backgroundColor: '#FFFBEB',
+                      border: '1px solid #FCD34D',
+                      color: '#92400E',
+                      fontSize: '11px',
+                      fontWeight: '700',
+                      cursor: 'pointer',
+                      transition: 'all 0.15s ease'
+                    }}
+                    title="Watch ISL (Indian Sign Language) Clip"
+                  >
+                    <Hand size={12} color="#D97706" />
+                    <span>Watch ISL</span>
+                  </button>
+                  {/* Universal Play/Pause/Stop Button */}
+                  <AudioPlayButton
+                    text={currentLessonData.romanText || currentLessonData.scriptText}
+                    size="sm"
+                    label={t.fln.pronounce}
+                  />
+                </div>
               </div>
 
               {/* Native Script Display */}
@@ -577,14 +613,37 @@ export default function SantaliStudio({
                         backgroundColor: '#FFFDF9',
                         border: '1px solid #FED7AA',
                         display: 'flex',
-                        flexDirection: 'column',
-                        gap: '2px'
+                        justifyContent: 'space-between',
+                        alignItems: 'flex-start',
+                        gap: '6px'
                       }}
                     >
-                      <div style={{ fontSize: '11px', color: '#64748B' }}>{v.hindi}</div>
-                      <div style={{ fontSize: '14px', fontWeight: '800', color: '#0F172A' }}>
-                        {v[selectedLang] || v.sat || 'ᱟᱹᱲᱟᱹ'}
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                        <div style={{ fontSize: '11px', color: '#64748B' }}>{v.hindi}</div>
+                        <div style={{ fontSize: '14px', fontWeight: '800', color: '#0F172A' }}>
+                          {v[selectedLang] || v.sat || 'ᱟᱹᱲᱟᱹ'}
+                        </div>
                       </div>
+                      <button
+                        onClick={() => handleOpenIsl(v.hindi, v.english || v.hindi)}
+                        style={{
+                          padding: '3px 6px',
+                          borderRadius: '4px',
+                          backgroundColor: '#FFFBEB',
+                          border: '1px solid #FDE68A',
+                          color: '#B45309',
+                          fontSize: '10px',
+                          fontWeight: '700',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '3px',
+                          cursor: 'pointer'
+                        }}
+                        title="Watch ISL sign"
+                      >
+                        <Hand size={10} color="#D97706" />
+                        <span>ISL</span>
+                      </button>
                     </div>
                   ))}
                 </div>
@@ -655,6 +714,15 @@ export default function SantaliStudio({
         </div>
 
       </div>
+
+      {/* ISL Sign Language Video Modal */}
+      <ISLVideoPlayerModal
+        isOpen={isIslModalOpen}
+        onClose={() => setIsIslModalOpen(false)}
+        conceptName={islConcept}
+        fullText={islText}
+        displayText={islText}
+      />
     </div>
   );
 }
