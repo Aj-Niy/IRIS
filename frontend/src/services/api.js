@@ -445,11 +445,10 @@ export async function irisGetDashboardStats() {
       nipunOutcomesCovered: 8 + (localStats.worksheetsGenerated || 0),
       offlineSyncStatus: "Offline Mode Active (Cached on Tablet)",
       translationHeatmap: [
-        { word: "Book (ᱯᱚᱛᱚᱵ)", count: 24, subject: "Literacy" },
-        { word: "Read (ᱯᱟᱲᱦᱟᱣ)", count: 19, subject: "Literacy" },
-        { word: "Write (ᱚᱞ)", count: 15, subject: "Literacy" },
-        { word: "Count (ᱞᱮᱠᱷᱟ)", count: 14, subject: "Numeracy" },
-        { word: "Teacher (ᱢᱟᱪᱮᱛ)", count: 11, subject: "Classroom" }
+        { word: 'Book', script: 'ᱯᱚᱛᱚᱵ', count: 142, status: 'Mastered', category: 'Literacy' },
+        { word: 'Read', script: 'ᱯᱟᱲᱦᱟᱣ', count: 98, status: 'Mastered', category: 'Literacy' },
+        { word: 'Write', script: 'ᱚᱞ', count: 74, status: 'Practising', category: 'Literacy' },
+        { word: 'Count', script: 'ᱞᱮᱠᱷᱟ', count: 56, status: 'Next', category: 'Numeracy' }
       ],
       codingModuleSummary: {
         activeStudents: 18,

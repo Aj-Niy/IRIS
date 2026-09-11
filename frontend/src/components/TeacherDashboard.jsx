@@ -64,10 +64,10 @@ export default function TeacherDashboard({
   ];
 
   const words = flnStats?.translationHeatmap || [
-    { word: 'Book', script: 'ᱯᱚᱛᱚᱵ', status: 'Mastered', category: 'Literacy' },
-    { word: 'Read', script: 'ᱯᱟᱲᱦᱟᱣ', count: 74, status: 'Mastered', category: 'Literacy' },
-    { word: 'Write', script: 'ᱚᱞ', status: 'Practising', category: 'Literacy' },
-    { word: 'Count', script: 'ᱞᱮᱠᱷᱟ', status: 'Next', category: 'Numeracy' }
+    { word: 'Book', script: 'ᱯᱚᱛᱚᱵ', count: 142, status: 'Mastered', category: 'Literacy' },
+    { word: 'Read', script: 'ᱯᱟᱲᱦᱟᱣ', count: 98, status: 'Mastered', category: 'Literacy' },
+    { word: 'Write', script: 'ᱚᱞ', count: 74, status: 'Practising', category: 'Literacy' },
+    { word: 'Count', script: 'ᱞᱮᱠᱷᱟ', count: 56, status: 'Next', category: 'Numeracy' }
   ];
 
   return (
@@ -174,21 +174,24 @@ export default function TeacherDashboard({
             <h2 style={{ fontSize: 16, fontWeight: 750, margin: 0 }}>Words in use</h2>
             <span className="pill info" style={{ fontWeight: 700 }}>1,240 Total Words</span>
           </div>
-          {words.slice(0, 4).map((item, idx) => (
-            <div className="list-row" key={idx}>
-              <div>
-                <div style={{ fontSize: 13, fontWeight: 750 }}>
-                  {item.word} {item.script ? `· ${item.script}` : ''}
+          {words.slice(0, 4).map((item, idx) => {
+            const usageCount = item.count || (142 - idx * 28);
+            return (
+              <div className="list-row" key={idx}>
+                <div>
+                  <div style={{ fontSize: 13, fontWeight: 750 }}>
+                    {item.word} {item.script ? `· ${item.script}` : ''}
+                  </div>
+                  <div className="quiet" style={{ fontSize: 12, marginTop: 2 }}>
+                    {item.category || item.subject || 'Classroom'} · <strong style={{ color: 'var(--green-primary)', fontWeight: 700 }}>{usageCount} usages</strong> in class
+                  </div>
                 </div>
-                <div className="quiet">
-                  {item.category || 'Classroom'} · <strong>{item.count || (142 - idx * 28)}</strong> usages in class
-                </div>
+                <span className={`pill ${item.status === 'Mastered' || item.status === 'Completed' ? 'ok' : item.status === 'Next' || item.status === 'Pending' ? 'warn' : 'info'}`}>
+                  {item.status || 'Active'}
+                </span>
               </div>
-              <span className={`pill ${item.status === 'Mastered' || item.status === 'Completed' ? 'ok' : item.status === 'Next' || item.status === 'Pending' ? 'warn' : 'info'}`}>
-                {item.status}
-              </span>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         <div className="card" style={{ textAlign: 'center' }}>

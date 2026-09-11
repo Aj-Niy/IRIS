@@ -402,7 +402,18 @@ export default function WorksheetGenerator({
         {/* Right Column: Printable Worksheet / Flashcard View */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           {activeTab === 'worksheet' && (
-            <div className="card worksheet-printable-area" ref={worksheetRef} id="worksheet-print-area" style={{ padding: '24px' }}>
+            <div
+              className="card worksheet-printable-area"
+              ref={worksheetRef}
+              id="worksheet-print-area"
+              style={{
+                padding: '28px 32px',
+                borderRadius: '24px',
+                border: '1.5px solid #059669',
+                boxShadow: '0 10px 30px -10px rgba(5, 150, 105, 0.12), 0 0 0 1px rgba(16, 185, 129, 0.2)',
+                backgroundColor: '#FFFFFF'
+              }}
+            >
               
               {/* Header Controls */}
               <div className="no-print page-head" style={{ borderBottom: '1px solid var(--border-medium)', paddingBottom: 14, marginBottom: 16 }}>

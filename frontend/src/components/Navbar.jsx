@@ -73,33 +73,6 @@ export default function Navbar({
 
         {/* Right Controls */}
         <div className="nav-right">
-          {/* UI Language Selector */}
-          <div className="nav-select-wrap">
-            <Globe size={12} color="var(--text-muted)" />
-            <span style={{ fontSize: 10, color: 'var(--text-muted)', fontWeight: 600 }}>UI:</span>
-            <select
-              value={uiLang}
-              onChange={(e) => setUiLang && setUiLang(e.target.value)}
-              title="Interface language"
-            >
-              <option value="en">EN</option>
-              <option value="hi">हिं</option>
-            </select>
-          </div>
-
-          {/* Classroom Tribal Language Selector */}
-          <div className="nav-select-wrap">
-            <Languages size={12} color="var(--green-primary)" />
-            <select
-              value={currentLang}
-              onChange={(e) => setCurrentLang(e.target.value)}
-              title="Classroom tribal language"
-            >
-              {tribalLanguages.map(lang => (
-                <option key={lang.code} value={lang.code}>{lang.name}</option>
-              ))}
-            </select>
-          </div>
 
           {/* User Status / Login Button */}
           {userName ? (

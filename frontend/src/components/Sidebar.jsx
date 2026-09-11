@@ -66,7 +66,7 @@ export default function Sidebar({
           );
         })}
 
-        <div className="sidebar-group-label" style={{ marginTop: 18 }}>GENERAL</div>
+        <div className="sidebar-group-label" style={{ marginTop: 18 }}>UI</div>
         <div style={{ padding: '0 8px', display: 'grid', gap: 8 }}>
           <select
             className="field"
