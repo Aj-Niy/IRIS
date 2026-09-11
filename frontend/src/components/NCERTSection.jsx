@@ -13,7 +13,6 @@ import { videoService } from '../services/supabaseClient';
 import { NCERT_CHAPTERS, STEM_MOCK_DATA, HINTS } from './ncertData';
 import { uiTranslations } from '../services/uiTranslations';
 
-// Helper to render subject icons dynamically
 const getSubjectIcon = (subject, size = 15) => {
   switch (subject) {
     case 'cs': return <Binary size={size} />;
@@ -24,7 +23,6 @@ const getSubjectIcon = (subject, size = 15) => {
   }
 };
 
-// Helper to map language codes to locale codes for Speech Synthesis
 const getLocaleCode = (shortCode) => {
   const localeMap = {
     hi: 'hi-IN',
@@ -50,9 +48,6 @@ const LANG_OPTIONS = [
   { code: 'gu', label: 'ગુજરાતી' },
 ];
 
-// ─────────────────────────────────────────────
-// MAIN COMPONENT
-// ─────────────────────────────────────────────
 export default function NCERTSection({ 
   setCurrentTab, 
   setSelectedProject,
@@ -69,23 +64,18 @@ export default function NCERTSection({
     return saved ? JSON.parse(saved) : [];
   });
 
-  // ISL Modal
   const [isIslModalOpen, setIsIslModalOpen] = useState(false);
   const [activeConcept, setActiveConcept] = useState('');
 
-  // Generated Video Modal
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
   const [videoModalData, setVideoModalData] = useState(null);
 
-  // Socratic hint state
   const [hintIndex, setHintIndex] = useState(0);
   const [showHint, setShowHint] = useState(false);
 
-  // STEM summary state
   const [stemSummary, setStemSummary] = useState('');
   const [isSummarizing, setIsSummarizing] = useState(false);
 
-  // Chatbot state
   const [chatMessages, setChatMessages] = useState([
     { role: 'ai', text: '🙏 Namaste! I am your PALASH Curriculum AI Mentor. Select a chapter or STEM branch above, then ask me anything — I will guide you Socratically!' }
   ]);
@@ -106,7 +96,6 @@ export default function NCERTSection({
     }
   }, [chatMessages]);
 
-  // Cancel speech on chapter, grade, or subject switch
   useEffect(() => {
     const synth = window.speechSynthesis;
     if (synth) {
@@ -116,7 +105,6 @@ export default function NCERTSection({
     setIsPausedSpeech(false);
   }, [selectedChap, selectedGrade, selectedStem]);
 
-  // Auto-switch subject when selected grade doesn't support the current subject
   useEffect(() => {
     if (selectedGrade !== 'all') {
       const hasChapters = NCERT_CHAPTERS.some(c => c.grade === selectedGrade && c.subject === selectedStem);
@@ -133,10 +121,9 @@ export default function NCERTSection({
     (c.grade === selectedGrade || selectedGrade === 'all') && c.subject === selectedStem
   );
 
-  const stemInfo = STEM_MOCK_DATA[selectedStem] || { name: '', color: '#000', bgColor: '#fff', grades: {} };
+  const stemInfo = STEM_MOCK_DATA[selectedStem] || { name: '', color: '#0F4C3A', bgColor: '#FFFFFF', grades: {} };
   const gradeData = stemInfo?.grades?.[selectedGrade];
 
-  // ── Mark chapter complete ──
   const markComplete = (chapId) => {
     const updated = completedChapters.includes(chapId)
       ? completedChapters.filter(id => id !== chapId)
@@ -145,20 +132,19 @@ export default function NCERTSection({
     localStorage.setItem('cs_completed', JSON.stringify(updated));
   };
 
-  // ── PDF download ──
   const handleDownloadPdf = (chap) => {
     const doc = new jsPDF();
     doc.setFont('helvetica', 'bold');
-    doc.setFontSize(18);
-    doc.setTextColor(200, 75, 36);
+    doc.setFontSize(16);
+    doc.setTextColor(15, 76, 58);
     doc.text(`NCERT Class ${chap.grade} — ${chap.number}`, 20, 20);
-    doc.setFontSize(13);
-    doc.setTextColor(30, 30, 30);
+    doc.setFontSize(12);
+    doc.setTextColor(17, 24, 39);
     doc.text(chap.title, 20, 30);
     doc.setLineWidth(0.4);
     doc.line(20, 35, 190, 35);
     doc.setFont('helvetica', 'normal');
-    doc.setFontSize(11);
+    doc.setFontSize(10);
     doc.text(`Summary: ${chap.description}`, 20, 45, { maxWidth: 170 });
     doc.setFont('helvetica', 'bold');
     doc.text('Key Topics:', 20, 62);
@@ -172,23 +158,6 @@ export default function NCERTSection({
     doc.save(`NCERT_Class${chap.grade}_${chap.number.replace(' ', '_')}.pdf`);
   };
 
-  // ── STEM AI Summary ──
-  const generateStemSummary = async () => {
-    if (!gradeData) return;
-    setIsSummarizing(true);
-    setStemSummary('');
-    const prompt = `You are a Socratic AI tutor. Summarize in 3 short paragraphs (simple, engaging, Class ${selectedGrade} level) the topic: "${stemInfo.name} for Class ${selectedGrade}". Overview: ${gradeData.overview}. Include these key points: ${gradeData.keyPoints.join(', ')}. End with one real-world connection.`;
-    try {
-      const res = await askTutor(prompt, 'Student');
-      setStemSummary(res?.answer || res?.reply || res?.response || gradeData.overview);
-    } catch {
-      setStemSummary(gradeData.overview + '\n\n📌 Key Points:\n• ' + gradeData.keyPoints.join('\n• ') + '\n\n🌍 Real World: ' + gradeData.realWorld);
-    } finally {
-      setIsSummarizing(false);
-    }
-  };
-
-  // ── Chatbot send ──
   const handleSendChat = async (e) => {
     e?.preventDefault();
     const msg = chatInput.trim();
@@ -213,7 +182,7 @@ export default function NCERTSection({
         try {
           const trans = await translateText(reply, chatLang, 'Student');
           reply = trans?.translatedText || reply;
-        } catch { /* use English fallback */ }
+        } catch { /* English fallback */ }
       }
       setChatMessages(prev => [...prev, { role: 'ai', text: reply }]);
     } catch (err) {
@@ -224,7 +193,6 @@ export default function NCERTSection({
     }
   };
 
-  // ── Global Speech playback (with Play/Pause/Resume functionality) ──
   const handleGlobalSpeakToggle = () => {
     const synth = window.speechSynthesis;
     if (!synth) {
@@ -270,14 +238,12 @@ export default function NCERTSection({
     }
   };
 
-  // ── Global ISL trigger ──
   const handleGlobalIslTrigger = () => {
     const concept = selectedChap ? selectedChap.title : `${stemInfo.name} Class ${selectedGrade}`;
     setActiveConcept(concept);
     setIsIslModalOpen(true);
   };
 
-  // ── NotebookLM-style source summarization chatbot trigger ──
   const handleSummarizeSourceChat = async () => {
     setIsChatLoading(true);
     const sourceTitle = selectedChap ? selectedChap.title : `${stemInfo?.name} Class ${selectedGrade}`;
@@ -300,7 +266,7 @@ Use simple language, bold key terms, and end with a quick quiz question to check
         try {
           const trans = await translateText(reply, chatLang, 'Student');
           reply = trans?.translatedText || reply;
-        } catch { /* use English fallback */ }
+        } catch { /* English fallback */ }
       }
       setChatMessages(prev => [...prev, { role: 'ai', text: reply }]);
     } catch (err) {
@@ -311,213 +277,90 @@ Use simple language, bold key terms, and end with a quick quiz question to check
     }
   };
 
-  // ── Get Hint ──
   const getNextHint = () => {
     const hints = HINTS[selectedStem] || HINTS.cs;
     setShowHint(true);
     setHintIndex(prev => (prev + 1) % hints.length);
   };
 
-  // ─────── RENDER ───────
   return (
-    <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '28px 24px 80px' }}>
-
-      {/* ── Header ── */}
-      <div style={{ marginBottom: '24px' }}>
-        <div className="pill-badge" style={{ marginBottom: '8px' }}>
-          <BookOpen size={14} />
-          <span>{t.ncert.badge}</span>
+    <div>
+      <div className="page-head">
+        <div>
+          <h1>{t.ncert.title}</h1>
+          <p>{t.ncert.subtitle}</p>
         </div>
-        <h1 style={{ fontSize: '30px', fontWeight: '800', letterSpacing: '-0.5px', margin: 0 }}>
-          {t.ncert.title}
-        </h1>
-        <p style={{ fontSize: '14px', color: 'var(--text-muted)', marginTop: '4px' }}>
-          {t.ncert.subtitle}
-        </p>
-        {/* Tribal / Hindi bilingual line */}
-        <div style={{
-          marginTop: '10px',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '10px',
-          flexWrap: 'wrap'
-        }}>
-          <span style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '6px',
-            padding: '4px 12px',
-            borderRadius: '8px',
-            backgroundColor: '#FFF7ED',
-            border: '1.5px solid #FDBA74',
-            fontSize: '12px',
-            fontWeight: '700',
-            color: '#C2410C',
-            letterSpacing: '0.2px'
-          }}>
-            <Languages size={13} color="#EA580C" />
-            {t.ncert.vernacularLine}
-          </span>
-          <span style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '5px',
-            padding: '4px 10px',
-            borderRadius: '8px',
-            backgroundColor: '#ECFDF5',
-            border: '1px solid #A7F3D0',
-            fontSize: '11px',
-            fontWeight: '700',
-            color: '#065F46'
-          }}>
-            <Sparkles size={12} color="#059669" />
-            {uiLang === 'hi' ? 'AI-संचालित सोक्रेटिक शिक्षण' : 'Socratic AI · Mother-Tongue Aware'}
-          </span>
+        <div className="actions">
+          <div className="seg">
+            {['8', '9', '10', '11', '12', 'all'].map(g => (
+              <button
+                key={g}
+                className={selectedGrade === g ? 'active' : ''}
+                onClick={() => { setSelectedGrade(g); setSelectedChap(null); setStemSummary(''); }}
+              >
+                {g === 'all' ? 'All' : g}
+              </button>
+            ))}
+          </div>
+          <button className="btn-secondary" onClick={handleGlobalSpeakToggle}>
+            <Volume2 size={14} />
+            {isPlayingSpeech ? (isPausedSpeech ? 'Resume' : 'Pause') : 'Listen'}
+          </button>
+          <button className="btn-ghost" onClick={handleGlobalIslTrigger}>ISL</button>
         </div>
       </div>
 
-      {/* ── Top Controls Row: Grade + STEM branch tabs + Mode switcher ── */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
-
-        {/* Grade tabs */}
-        <div style={{
-          display: 'flex', gap: '4px',
-          backgroundColor: 'var(--bg-card)', padding: '4px',
-          borderRadius: 'var(--radius-md)', border: '1px solid var(--border-light)'
-        }}>
-          {['8', '9', '10', '11', '12', 'all'].map(g => (
-            <button key={g} onClick={() => { setSelectedGrade(g); setSelectedChap(null); setStemSummary(''); }}
-              style={{
-                padding: '6px 14px', borderRadius: 'var(--radius-sm)',
-                fontSize: '12px', fontWeight: '700',
-                backgroundColor: selectedGrade === g ? 'var(--accent)' : 'transparent',
-                color: selectedGrade === g ? '#fff' : 'var(--text-muted)',
-                transition: 'all 0.15s'
-              }}>
-              {g === 'all' ? 'All' : `Cl ${g}`}
-            </button>
-          ))}
-        </div>
-
-        {/* STEM branch pills */}
-        <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', alignItems: 'center' }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 20 }}>
           {Object.entries(STEM_MOCK_DATA).map(([key, branch]) => {
             const isSelected = selectedStem === key;
             return (
-              <button key={key}
+              <button
+                key={key}
+                className={isSelected ? 'btn-primary' : 'btn-secondary'}
                 onClick={() => { setSelectedStem(key); setSelectedChap(null); setStemSummary(''); setHintIndex(0); setShowHint(false); }}
-                style={{
-                  display: 'flex', alignItems: 'center', gap: '6px',
-                  padding: branch.highlight ? '6px 14px' : '5px 12px',
-                  borderRadius: 'var(--radius-full)',
-                  fontSize: '12px', fontWeight: isSelected ? '800' : '600',
-                  backgroundColor: isSelected ? branch.color : (branch.highlight ? 'rgba(235,94,40,0.07)' : 'var(--bg-card)'),
-                  color: isSelected ? '#fff' : branch.color,
-                  border: branch.highlight
-                    ? `${isSelected ? '2px solid' : '1.5px dashed'} ${branch.color}`
-                    : `1px solid ${isSelected ? branch.color : 'var(--border-light)'}`,
-                  transition: 'all 0.2s',
-                  boxShadow: branch.highlight ? '0 2px 8px rgba(235,94,40,0.15)' : 'none'
-                }}>
+                style={{ padding: '8px 14px' }}
+              >
                 {getSubjectIcon(key)}
                 <span>{branch.name}</span>
-                {branch.highlight && <span style={{
-                  fontSize: '8px', backgroundColor: isSelected ? 'rgba(255,255,255,0.25)' : branch.color,
-                  color: '#fff', padding: '1px 5px', borderRadius: 'var(--radius-full)', fontWeight: '900'
-                }}>CORE</span>}
               </button>
             );
           })}
-
-          <div style={{ width: '1px', height: '20px', backgroundColor: 'var(--border-medium)', margin: '0 6px' }} />
-
-          {/* Audio Reader button */}
-          <button onClick={handleGlobalSpeakToggle}
-            style={{
-              display: 'flex', alignItems: 'center', gap: '5px',
-              padding: '6px 12px', borderRadius: 'var(--radius-full)',
-              fontSize: '12px', fontWeight: '700',
-              backgroundColor: isPlayingSpeech ? (isPausedSpeech ? '#FEF3C7' : '#DCFCE7') : 'var(--bg-card)',
-              color: isPlayingSpeech ? (isPausedSpeech ? '#92400E' : '#15803D') : 'var(--text-muted)',
-              border: `1px solid ${isPlayingSpeech ? (isPausedSpeech ? '#FCD34D' : '#86EFAC') : 'var(--border-medium)'}`,
-              transition: 'all 0.2s',
-              cursor: 'pointer'
-            }}>
-            <Volume2 size={13} style={{ animation: isPlayingSpeech && !isPausedSpeech ? 'pulse 1.5s infinite' : 'none' }} />
-            <span>{isPlayingSpeech ? (isPausedSpeech ? '▶ Resume' : '⏸ Pause') : '🔊 Listen'}</span>
-          </button>
-
-          {/* ISL Guide button */}
-          <button onClick={handleGlobalIslTrigger}
-            style={{
-              display: 'flex', alignItems: 'center', gap: '5px',
-              padding: '6px 12px', borderRadius: 'var(--radius-full)',
-              fontSize: '12px', fontWeight: '700',
-              backgroundColor: '#FEF3C7',
-              color: '#92400E',
-              border: '1px solid #FCD34D',
-              transition: 'all 0.2s',
-              cursor: 'pointer'
-            }}>
-            <Hand size={13} color="#D97706" />
-            <span>ISL Guide</span>
-          </button>
-        </div>
-
-
       </div>
 
-      {/* ── UPPER SECTION: Chapters (left) + STEM Summary (right) ── */}
-      <div className="ncert-main-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 380px', gap: '24px', marginBottom: '28px', alignItems: 'start' }}>
+      {/* Chapters (left) + STEM Summary (right) */}
+      <div className="ncert-main-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 360px', gap: '20px', marginBottom: '24px', alignItems: 'start' }}>
 
         {/* Chapter List */}
         <div>
           {/* STEM overview strip */}
           {gradeData && (
-            <div style={{
-              backgroundColor: stemInfo.highlight ? 'var(--accent-light)' : stemInfo.bgColor,
-              border: `1px solid ${stemInfo.highlight ? 'var(--accent-border)' : stemInfo.color}30`,
-              borderRadius: 'var(--radius-md)', padding: '14px 18px', marginBottom: '16px',
+            <div className="card" style={{
+              padding: '14px 18px', marginBottom: '16px',
               display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px'
             }}>
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                  <span style={{ fontSize: '11px', fontWeight: '700', color: stemInfo.color, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                    {stemInfo.name} · Class {selectedGrade === 'all' ? '8–12' : selectedGrade} Overview
-                  </span>
+                  <span className="quiet">{stemInfo.name} · Class {selectedGrade === 'all' ? '8–12' : selectedGrade}</span>
                   {selectedStem === 'cs' && setCurrentTab && (
-                    <button
-                      onClick={() => setCurrentTab('coding-workspace')}
-                      style={{
-                        fontSize: '11px',
-                        fontWeight: '700',
-                        padding: '2px 8px',
-                        borderRadius: '4px',
-                        backgroundColor: 'var(--accent)',
-                        color: '#FFFFFF',
-                        border: 'none',
-                        cursor: 'pointer'
-                      }}
-                      title="Open Interactive Coding Sandbox & Practice"
-                    >
-                      Open Coding Sandbox 💻
+                    <button className="btn-primary" onClick={() => setCurrentTab('coding-workspace')} style={{ padding: '6px 12px', fontSize: 12 }}>
+                      Coding sandbox
                     </button>
                   )}
                 </div>
-                <p style={{ fontSize: '13px', color: 'var(--text-muted)', lineHeight: '1.5', margin: 0 }}>
+                <p style={{ fontSize: '13px', color: 'var(--text-sub)', lineHeight: '1.5', margin: 0 }}>
                   {gradeData.overview}
                 </p>
               </div>
-              <div style={{ flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', width: '40px', height: '40px', borderRadius: '50%', backgroundColor: stemInfo.color + '20', color: stemInfo.color }}>
-                {getSubjectIcon(selectedStem, 18)}
+              <div style={{ flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', width: '36px', height: '36px', borderRadius: 'var(--radius-sm)', backgroundColor: 'var(--badge-green-bg)', color: 'var(--badge-green-text)' }}>
+                {getSubjectIcon(selectedStem, 16)}
               </div>
             </div>
           )}
 
           {/* Chapter cards */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
             {filteredChapters.length === 0 && (
-              <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-faint)', fontSize: '14px' }}>
+              <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-muted)', fontSize: '14px' }}>
                 📚 No chapters available for {stemInfo?.name} in Class {selectedGrade}.<br />
                 <span style={{ fontSize: '12px' }}>Try switching to Computer Science or All Grades.</span>
               </div>
@@ -528,35 +371,34 @@ Use simple language, bold key terms, and end with a quick quiz question to check
               return (
                 <div key={chap.id} className="card" style={{
                   padding: '0', overflow: 'hidden',
-                  border: isOpen ? '1.5px solid var(--accent)' : isDone ? '1px solid #86EFAC' : '1px solid var(--border-light)',
-                  boxShadow: isOpen ? '0 0 0 2px var(--accent-border)' : 'var(--shadow-sm)'
+                  border: isOpen ? '1.5px solid var(--green-primary)' : '1px solid var(--border-medium)',
+                  backgroundColor: '#FFFFFF'
                 }}>
                   {/* Chapter header row */}
-                  <div style={{ padding: '16px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }}
+                  <div style={{ padding: '14px 18px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }}
                     onClick={() => { setSelectedChap(isOpen ? null : chap); setHintIndex(0); setShowHint(false); }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1 }}>
-                      {/* Complete indicator */}
                       <div onClick={(e) => { e.stopPropagation(); markComplete(chap.id); }}
                         style={{
-                          width: '22px', height: '22px', borderRadius: '50%',
-                          border: isDone ? 'none' : '2px solid var(--border-medium)',
-                          backgroundColor: isDone ? '#22C55E' : 'transparent',
+                          width: '20px', height: '20px', borderRadius: '50%',
+                          border: isDone ? 'none' : '1.5px solid var(--border-dark)',
+                          backgroundColor: isDone ? 'var(--green-accent)' : 'transparent',
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
-                          flexShrink: 0, cursor: 'pointer', transition: 'all 0.2s'
+                          flexShrink: 0, cursor: 'pointer', transition: 'all 0.15s ease'
                         }}>
-                        {isDone && <CheckCheck size={12} color="#fff" />}
+                        {isDone && <CheckCheck size={11} color="#fff" />}
                       </div>
                       <div>
                         <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: '2px' }}>
-                          <span style={{ fontSize: '11px', fontWeight: '700', color: 'var(--accent)' }}>{chap.number}</span>
-                          <span style={{ fontSize: '11px', color: 'var(--text-faint)' }}>Class {chap.grade}</span>
-                          {chap.islAvailable && <span style={{ fontSize: '9px', backgroundColor: '#FEF3C7', color: '#92400E', padding: '1px 6px', borderRadius: 'var(--radius-full)', fontWeight: '700' }}>ISL ✓</span>}
+                          <span style={{ fontSize: '11px', fontWeight: '600', color: 'var(--green-primary)' }}>{chap.number}</span>
+                          <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Class {chap.grade}</span>
+                          {chap.islAvailable && <span className="badge-green" style={{ fontSize: '9px', padding: '1px 5px' }}>ISL ✓</span>}
                         </div>
-                        <h3 style={{ fontSize: '15px', fontWeight: '700', margin: 0 }}>{chap.title}</h3>
+                        <h3 style={{ fontSize: '14px', fontWeight: '600', margin: 0, color: 'var(--text-main)' }}>{chap.title}</h3>
                       </div>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <button onClick={(e) => {
+                      <button className="btn-ghost" onClick={(e) => {
                         e.stopPropagation();
                         setVideoModalData({
                           title: chap.title,
@@ -565,68 +407,58 @@ Use simple language, bold key terms, and end with a quick quiz question to check
                           langCode: chatLang
                         });
                         setIsVideoModalOpen(true);
-                      }}
-                        style={{ padding: '5px 10px', borderRadius: 'var(--radius-sm)', fontSize: '11px', fontWeight: '600', backgroundColor: 'rgba(200,75,36,0.1)', border: '1px solid rgba(200,75,36,0.3)', display: 'flex', alignItems: 'center', gap: '4px', color: 'var(--accent)', cursor: 'pointer' }}>
-                        <Video size={11} color="var(--accent)" /> Video
-                      </button>
-                      <button onClick={(e) => { e.stopPropagation(); handleDownloadPdf(chap); }}
-                        style={{ padding: '5px 10px', borderRadius: 'var(--radius-sm)', fontSize: '11px', fontWeight: '600', backgroundColor: 'var(--bg-subtle)', border: '1px solid var(--border-light)', display: 'flex', alignItems: 'center', gap: '4px', color: 'var(--text-muted)' }}>
-                        <Download size={11} /> PDF
-                      </button>
-                      {chap.islAvailable && (
-                        <button onClick={(e) => { e.stopPropagation(); setActiveConcept(chap.title); setIsIslModalOpen(true); }}
-                          style={{ padding: '5px 10px', borderRadius: 'var(--radius-sm)', fontSize: '11px', fontWeight: '600', backgroundColor: '#FEF3C7', border: '1px solid #FCD34D', display: 'flex', alignItems: 'center', gap: '4px', color: '#92400E' }}>
-                          <Hand size={11} color="#D97706" /> ISL
-                        </button>
-                      )}
-                      <div style={{ color: 'var(--text-faint)', transition: 'transform 0.2s', transform: isOpen ? 'rotate(90deg)' : 'none' }}>
+                      }}>Video</button>
+                      <button className="btn-ghost" onClick={(e) => { e.stopPropagation(); handleDownloadPdf(chap); }}>PDF</button>
+                      <div style={{ color: 'var(--text-muted)', transform: isOpen ? 'rotate(90deg)' : 'none' }}>
                         <ChevronRight size={16} />
                       </div>
                     </div>
                   </div>
 
-                  {/* Expanded: 5-layer reading view */}
+                  {/* Expanded 5-layer view */}
                   {isOpen && (
-                    <div style={{ borderTop: '1px solid var(--border-light)', padding: '20px' }}>
-                      <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '16px', lineHeight: '1.6' }}>{chap.description}</p>
+                    <div style={{ borderTop: '1px solid var(--border-medium)', padding: '18px' }}>
+                      <p style={{ fontSize: '13px', color: 'var(--text-sub)', marginBottom: '14px', lineHeight: '1.6' }}>{chap.description}</p>
 
                       {/* Topic pills */}
-                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '18px' }}>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '16px' }}>
                         {chap.topics.map((t, i) => (
-                          <span key={i} style={{ fontSize: '11px', backgroundColor: 'var(--bg-subtle)', padding: '3px 10px', borderRadius: 'var(--radius-full)', border: '1px solid var(--border-light)' }}>{t}</span>
+                          <span key={i} style={{ fontSize: '11px', backgroundColor: 'var(--bg-subtle)', padding: '3px 8px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-medium)', color: 'var(--text-sub)' }}>{t}</span>
                         ))}
                       </div>
 
                       {/* 5-layer grid */}
                       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '12px' }}>
                         {[
-                          { label: '🎭 Analogy', content: chap.analogy, color: '#EFF6FF', border: '#BFDBFE' },
-                          { label: '📐 Syntax / Formula', content: chap.syntax, color: '#F5F3FF', border: '#C4B5FD', mono: true },
-                          { label: '💻 Code Example', content: chap.codeExample, color: '#F0FDF4', border: '#86EFAC', mono: true },
-                          { label: '⚠️ Common Pitfalls', content: chap.pitfalls, color: '#FEF9C3', border: '#FDE68A' },
+                          { label: 'Analogy', content: chap.analogy, bg: 'var(--bg-subtle)', border: 'var(--border-medium)' },
+                          { label: 'Formula', content: chap.syntax, bg: 'var(--bg-subtle)', border: 'var(--border-medium)', mono: true },
+                          { label: 'Example', content: chap.codeExample, bg: 'var(--badge-green-bg)', border: 'var(--badge-green-border)', mono: true },
+                          { label: 'Pitfalls', content: chap.pitfalls, bg: 'var(--badge-amber-bg)', border: 'var(--badge-amber-border)' },
                         ].map((layer, i) => (
-                          <div key={i} style={{ backgroundColor: layer.color, border: `1px solid ${layer.border}`, borderRadius: 'var(--radius-md)', padding: '12px' }}>
-                            <div style={{ fontSize: '11px', fontWeight: '800', marginBottom: '6px', color: '#374151' }}>{layer.label}</div>
-                            <div style={{ fontSize: '12px', lineHeight: '1.6', color: '#1F2937', fontFamily: layer.mono ? 'monospace' : 'inherit', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{layer.content}</div>
+                          <div key={i} style={{ backgroundColor: layer.bg, border: `1px solid ${layer.border}`, borderRadius: 'var(--radius-sm)', padding: '12px' }}>
+                            <div style={{ fontSize: '11px', fontWeight: '600', marginBottom: '4px', color: 'var(--text-main)' }}>{layer.label}</div>
+                            <div style={{ fontSize: '12px', lineHeight: '1.6', color: 'var(--text-main)', fontFamily: layer.mono ? 'monospace' : 'inherit', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{layer.content}</div>
                           </div>
                         ))}
                       </div>
 
                       {/* Challenge */}
-                      <div style={{ backgroundColor: '#FFF7ED', border: '1px solid #FED7AA', borderRadius: 'var(--radius-md)', padding: '12px', marginBottom: '12px' }}>
-                        <div style={{ fontSize: '11px', fontWeight: '800', color: '#C2410C', marginBottom: '6px' }}>🏆 Practice Challenge</div>
-                        <div style={{ fontSize: '13px', color: '#1F2937', fontWeight: '600' }}>{chap.challenge}</div>
+                      <div style={{ backgroundColor: 'var(--badge-green-bg)', border: '1px solid var(--badge-green-border)', borderRadius: 'var(--radius-sm)', padding: '12px', marginBottom: '12px' }}>
+                        <div style={{ fontSize: '11px', fontWeight: '600', color: 'var(--badge-green-text)', marginBottom: '4px' }}>Challenge</div>
+                        <div style={{ fontSize: '13px', color: 'var(--text-main)', fontWeight: '500' }}>{chap.challenge}</div>
                       </div>
 
                       {/* Mark complete */}
                       <button onClick={() => markComplete(chap.id)}
                         style={{
-                          display: 'flex', alignItems: 'center', gap: '6px', padding: '8px 16px',
-                          borderRadius: 'var(--radius-md)', fontSize: '12px', fontWeight: '700',
-                          backgroundColor: isDone ? '#DCFCE7' : 'var(--accent)', border: isDone ? '1px solid #86EFAC' : 'none',
-                          color: isDone ? '#166534' : '#fff', cursor: 'pointer', marginTop: '8px'
+                          display: 'flex', alignItems: 'center', gap: '6px', padding: '7px 14px',
+                          borderRadius: 'var(--radius-sm)', fontSize: '12px', fontWeight: '600',
+                          backgroundColor: isDone ? 'var(--badge-green-bg)' : 'var(--charcoal)',
+                          border: isDone ? '1px solid var(--badge-green-border)' : 'none',
+                          color: isDone ? 'var(--badge-green-text)' : '#FFFFFF',
+                          cursor: 'pointer', marginTop: '8px'
                         }}>
-                        {isDone ? <><CheckCircle2 size={14} /> Marked Complete ✓</> : <><Star size={14} /> Mark as Complete</>}
+                        {isDone ? 'Completed' : 'Mark complete'}
                       </button>
                     </div>
                   )}
@@ -640,27 +472,27 @@ Use simple language, bold key terms, and end with a quick quiz question to check
         <div style={{ position: 'sticky', top: '24px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
 
           {/* Branch overview card */}
-          <div className="card" style={{ padding: '20px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px' }}>
-              <BrainCircuit size={18} color={stemInfo.color} />
-              <h3 style={{ fontSize: '15px', fontWeight: '800', margin: 0 }}>{stemInfo.name} AI Lab</h3>
+          <div className="card" style={{ padding: '18px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
+              <BrainCircuit size={16} color="var(--green-primary)" />
+              <h3 style={{ fontSize: '14px', fontWeight: '600', margin: 0, color: 'var(--text-main)' }}>{stemInfo.name} AI Lab</h3>
             </div>
 
             {gradeData ? (
               <>
                 <div style={{ marginBottom: '12px' }}>
-                  <div style={{ fontSize: '11px', fontWeight: '700', color: 'var(--text-faint)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '6px' }}>Key Points</div>
+                  <div style={{ fontSize: '10px', fontWeight: '600', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '6px' }}>Key Points</div>
                   {gradeData.keyPoints.map((pt, i) => (
                     <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '6px', fontSize: '12px', marginBottom: '5px', color: 'var(--text-main)' }}>
-                      <span style={{ color: stemInfo.color, flexShrink: 0, marginTop: '2px' }}>▸</span>
+                      <span style={{ color: 'var(--green-primary)', flexShrink: 0, marginTop: '1px' }}>•</span>
                       <span>{pt}</span>
                     </div>
                   ))}
                 </div>
 
-                <div style={{ backgroundColor: 'var(--bg-subtle)', borderRadius: 'var(--radius-md)', padding: '10px 12px', marginBottom: '12px', border: '1px solid var(--border-light)' }}>
-                  <div style={{ fontSize: '10px', fontWeight: '700', color: 'var(--text-faint)', textTransform: 'uppercase', marginBottom: '4px' }}>🌍 Real World</div>
-                  <p style={{ fontSize: '12px', color: 'var(--text-muted)', lineHeight: '1.5', margin: 0 }}>{gradeData.realWorld}</p>
+                <div style={{ backgroundColor: 'var(--bg-subtle)', borderRadius: 'var(--radius-sm)', padding: '10px', marginBottom: '12px', border: '1px solid var(--border-medium)' }}>
+                  <div style={{ fontSize: '10px', fontWeight: '600', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '4px' }}>🌍 Real World</div>
+                  <p style={{ fontSize: '12px', color: 'var(--text-sub)', lineHeight: '1.5', margin: 0 }}>{gradeData.realWorld}</p>
                 </div>
 
                 <button
@@ -673,182 +505,118 @@ Use simple language, bold key terms, and end with a quick quiz question to check
                     });
                     setIsVideoModalOpen(true);
                   }}
-                  className="btn-primary"
                   style={{
-                    width: '100%', padding: '10px 14px', fontSize: '13px',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
-                    background: 'linear-gradient(135deg, var(--accent) 0%, #E55322 100%)',
-                    boxShadow: '0 4px 12px rgba(200,75,36,0.25)',
-                    borderRadius: 'var(--radius-md)', border: 'none', color: '#fff', fontWeight: '700',
-                    cursor: 'pointer', transition: 'all 0.2s ease'
+                    width: '100%', padding: '9px 14px', fontSize: '12px',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
+                    backgroundColor: 'var(--green-primary)',
+                    borderRadius: 'var(--radius-full)', border: 'none', color: '#FFFFFF', fontWeight: '600',
+                    cursor: 'pointer', boxShadow: '0 2px 6px rgba(15,76,58,0.2)'
                   }}>
-                  <Video size={16} />
-                  <span>🎬 AI-Video Lesson Class {selectedGrade === 'all' ? '8-12' : selectedGrade}</span>
+                  <Video size={14} />
+                  <span>Watch lesson</span>
                 </button>
               </>
             ) : (
-              <p style={{ fontSize: '13px', color: 'var(--text-faint)' }}>Select a specific grade to see the {stemInfo.name} overview.</p>
+              <p style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Select a specific grade to see the {stemInfo.name} overview.</p>
             )}
           </div>
 
           {/* Progress tracker */}
           <div className="card" style={{ padding: '16px' }}>
-            <div style={{ fontSize: '12px', fontWeight: '700', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-main)' }}>
-              <CheckCircle2 size={14} color="#22C55E" /> Chapter Progress
+            <div style={{ fontSize: '12px', fontWeight: '600', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-main)' }}>
+              <CheckCircle2 size={14} color="var(--green-accent)" /> Chapter Progress
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <div style={{ flex: 1, height: '6px', backgroundColor: 'var(--bg-subtle)', borderRadius: '99px', overflow: 'hidden' }}>
-                <div style={{ height: '100%', width: `${Math.round((completedChapters.length / Math.max(NCERT_CHAPTERS.length, 1)) * 100)}%`, backgroundColor: '#22C55E', borderRadius: '99px', transition: 'width 0.4s' }} />
+                <div style={{ height: '100%', width: `${Math.round((completedChapters.length / Math.max(NCERT_CHAPTERS.length, 1)) * 100)}%`, backgroundColor: 'var(--green-accent)', borderRadius: '99px', transition: 'width 0.4s' }} />
               </div>
-              <span style={{ fontSize: '11px', fontWeight: '700', color: '#22C55E' }}>{completedChapters.length}/{NCERT_CHAPTERS.length}</span>
+              <span style={{ fontSize: '11px', fontWeight: '600', color: 'var(--green-primary)' }}>{completedChapters.length}/{NCERT_CHAPTERS.length}</span>
             </div>
           </div>
         </div>
       </div>
 
-      {/* ── LOWER SECTION: Full-width AI Chatbot ── */}
+      {/* LOWER SECTION: AI Chatbot */}
       <div className="card" style={{ padding: '0', overflow: 'hidden' }}>
         {/* Chatbot header */}
         <div style={{
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          padding: '16px 20px', backgroundColor: 'var(--bg-subtle)',
-          borderBottom: '1px solid var(--border-light)'
+          padding: '14px 18px', backgroundColor: 'var(--bg-subtle)',
+          borderBottom: '1px solid var(--border-medium)'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <div style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <BrainCircuit size={16} color="#fff" />
+            <div style={{ width: '28px', height: '28px', borderRadius: '6px', backgroundColor: 'var(--green-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <BrainCircuit size={14} color="#fff" />
             </div>
             <div>
-              <div style={{ fontSize: '14px', fontWeight: '800', color: 'var(--text-main)' }}>STEM Socratic AI Mentor</div>
-              <div style={{ fontSize: '11px', color: 'var(--text-faint)' }}>
-                {selectedChap ? `📖 ${selectedChap.title}` : `🔭 ${stemInfo?.name} · Class ${selectedGrade === 'all' ? '8-12' : selectedGrade}`}
+              <div style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text-main)' }}>Ask about this lesson</div>
+              <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
+                {selectedChap ? selectedChap.title : `${stemInfo?.name} · Class ${selectedGrade === 'all' ? '8–12' : selectedGrade}`}
               </div>
             </div>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            {/* Socratic Hint button */}
-            <button onClick={getNextHint}
-              style={{
-                display: 'flex', alignItems: 'center', gap: '6px',
-                padding: '7px 14px', borderRadius: 'var(--radius-md)',
-                backgroundColor: showHint ? '#FEF3C7' : 'var(--bg-card)',
-                border: `1px solid ${showHint ? '#FCD34D' : 'var(--border-medium)'}`,
-                color: showHint ? '#92400E' : 'var(--text-muted)',
-                fontSize: '12px', fontWeight: '700', cursor: 'pointer'
-              }}>
-              <Lightbulb size={14} color={showHint ? '#D97706' : 'currentColor'} />
-              Get Hint
-            </button>
-
-            {/* Language selector */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-medium)', borderRadius: 'var(--radius-md)', padding: '5px 10px' }}>
-              <Globe size={13} color="var(--text-faint)" />
-              <select value={chatLang} onChange={(e) => setChatLang(e.target.value)}
-                style={{ background: 'none', border: 'none', fontSize: '12px', fontWeight: '600', color: 'var(--text-main)', cursor: 'pointer', outline: 'none' }}>
-                {LANG_OPTIONS.map(l => <option key={l.code} value={l.code}>{l.label}</option>)}
-              </select>
-            </div>
-          </div>
+          <select className="field" value={chatLang} onChange={(e) => setChatLang(e.target.value)} style={{ width: 'auto' }}>
+            {LANG_OPTIONS.map(l => <option key={l.code} value={l.code}>{l.label}</option>)}
+          </select>
         </div>
 
-        {/* Hint strip */}
-        {showHint && (
-          <div style={{
-            backgroundColor: '#FFFBEB', borderBottom: '1px solid #FDE68A',
-            padding: '10px 20px', fontSize: '13px', color: '#92400E', fontWeight: '600',
-            display: 'flex', alignItems: 'center', gap: '8px'
-          }}>
-            <Lightbulb size={14} color="#D97706" />
-            <span>{(HINTS[selectedStem] || HINTS.cs)[hintIndex]}</span>
-            <button onClick={() => setShowHint(false)} style={{ marginLeft: 'auto', fontSize: '11px', color: '#D97706', cursor: 'pointer' }}>✕ Hide</button>
-          </div>
-        )}
-
         {/* Chat messages */}
-        <div style={{ height: '320px', overflowY: 'auto', padding: '20px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        <div style={{ height: '300px', overflowY: 'auto', padding: '18px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
           {chatMessages.map((msg, i) => (
             <div key={i} style={{
               alignSelf: msg.role === 'user' ? 'flex-end' : 'flex-start',
-              maxWidth: '75%', padding: '12px 16px', borderRadius: 'var(--radius-md)',
-              fontSize: '13px', lineHeight: '1.6',
-              backgroundColor: msg.role === 'user' ? 'var(--accent)' : 'var(--bg-subtle)',
-              color: msg.role === 'user' ? '#fff' : 'var(--text-main)',
-              border: msg.role === 'user' ? 'none' : '1px solid var(--border-light)'
+              maxWidth: '75%', padding: '10px 14px', borderRadius: 'var(--radius-sm)',
+              fontSize: '13px', lineHeight: '1.5',
+              backgroundColor: msg.role === 'user' ? 'var(--green-primary)' : 'var(--bg-subtle)',
+              color: msg.role === 'user' ? '#FFFFFF' : 'var(--text-main)',
+              border: msg.role === 'user' ? 'none' : '1px solid var(--border-medium)'
             }}>
               {msg.text}
             </div>
           ))}
           {isChatLoading && (
-            <div style={{ alignSelf: 'flex-start', backgroundColor: 'var(--bg-subtle)', border: '1px solid var(--border-light)', borderRadius: 'var(--radius-md)', padding: '12px 16px', display: 'flex', gap: '4px', alignItems: 'center' }}>
+            <div style={{ alignSelf: 'flex-start', backgroundColor: 'var(--bg-subtle)', border: '1px solid var(--border-medium)', borderRadius: 'var(--radius-sm)', padding: '10px 14px', display: 'flex', gap: '4px', alignItems: 'center' }}>
               {[0, 1, 2].map(d => (
-                <div key={d} style={{ width: '7px', height: '7px', borderRadius: '50%', backgroundColor: 'var(--text-faint)', animation: `bounce 1.2s ${d * 0.2}s infinite` }} />
+                <div key={d} style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: 'var(--text-muted)', animation: `bounce 1.2s ${d * 0.2}s infinite` }} />
               ))}
             </div>
           )}
           <div ref={chatEndRef} />
         </div>
 
-        {/* Chat quick starters */}
-        <div style={{ padding: '0 20px 10px', display: 'flex', gap: '6px', flexWrap: 'wrap', alignItems: 'center' }}>
-          <button type="button" onClick={handleSummarizeSourceChat} disabled={isChatLoading}
-            style={{
-              fontSize: '11px',
-              padding: '5px 12px',
-              borderRadius: 'var(--radius-full)',
-              background: 'linear-gradient(135deg, var(--accent) 0%, #F59E0B 100%)',
-              color: '#fff',
-              border: 'none',
-              fontWeight: '700',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '4px',
-              boxShadow: '0 2px 4px rgba(235,94,40,0.2)'
-            }}>
-            <Sparkles size={11} /> Summarize Source
-          </button>
-          {[
-            `Explain ${selectedChap?.title || stemInfo?.name} with a real-life example`,
-            'What are the most common mistakes students make?',
-            'Give me a practice problem to test my understanding',
-            'How is this useful in real life?'
-          ].map((q, i) => (
-            <button key={i} type="button" onClick={() => { setChatInput(q); }}
-              style={{ fontSize: '11px', padding: '4px 10px', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--bg-subtle)', border: '1px solid var(--border-light)', color: 'var(--text-muted)', cursor: 'pointer' }}>
-              💬 {q}
-            </button>
-          ))}
-        </div>
-
-        {/* Chat input */}
-        <form onSubmit={handleSendChat} style={{
-          padding: '12px 20px 16px', borderTop: '1px solid var(--border-light)',
-          display: 'flex', gap: '10px', alignItems: 'center'
-        }}>
+        <form onSubmit={handleSendChat} className="composer" style={{ padding: '10px 18px 14px', borderTop: '1px solid var(--border-medium)' }}>
           <input
-            className="form-input"
+            className="field"
             value={chatInput}
             onChange={(e) => setChatInput(e.target.value)}
-            placeholder={`Ask anything about ${selectedChap?.title || stemInfo?.name || 'STEM'} in ${LANG_OPTIONS.find(l => l.code === chatLang)?.label || 'English'}...`}
-            style={{ flex: 1, fontSize: '13px' }}
+            placeholder={`Ask about ${selectedChap?.title || stemInfo?.name || 'this lesson'}`}
           />
           <button type="button" onClick={() => {
             startListening(getLocaleCode(chatLang), (text) => setChatInput(text));
           }}
           style={{
-            padding: '10px',
-            borderRadius: 'var(--radius-md)',
-            backgroundColor: 'var(--bg-card)',
+            padding: '9px',
+            borderRadius: 'var(--radius-sm)',
+            backgroundColor: '#FFFFFF',
             border: '1px solid var(--border-medium)',
             cursor: 'pointer'
           }}
           title="Speech to Text (Mic)">
-            <Mic size={16} color="var(--accent)" />
+            <Mic size={15} color="var(--green-primary)" />
           </button>
-          <button type="submit" disabled={isChatLoading || !chatInput.trim()} className="btn-primary"
-            style={{ padding: '10px 18px', fontSize: '13px', display: 'flex', alignItems: 'center', gap: '6px', whiteSpace: 'nowrap' }}>
-            <Send size={14} /> Ask Mentor
+          <button type="submit" disabled={isChatLoading || !chatInput.trim()}
+            style={{
+              padding: '9px 16px',
+              borderRadius: 'var(--radius-sm)',
+              backgroundColor: isChatLoading || !chatInput.trim() ? 'var(--border-medium)' : 'var(--green-primary)',
+              color: isChatLoading || !chatInput.trim() ? 'var(--text-muted)' : '#FFFFFF',
+              fontWeight: '600',
+              fontSize: '12px',
+              border: 'none',
+              cursor: isChatLoading || !chatInput.trim() ? 'not-allowed' : 'pointer'
+            }}>
+            <Send size={13} />
           </button>
         </form>
       </div>
@@ -868,24 +636,10 @@ Use simple language, bold key terms, and end with a quick quiz question to check
         subject={videoModalData?.subject}
         langCode={videoModalData?.langCode}
       />
-
-      <style>{`
-        @keyframes bounce {
-          0%, 60%, 100% { transform: translateY(0); }
-          30% { transform: translateY(-6px); }
-        }
-        @keyframes spin {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-      `}</style>
     </div>
   );
 }
 
-// ─────────────────────────────────────────────
-// VIDEO AI GENERATION MODAL (SUPABASE CONNECTED)
-// ─────────────────────────────────────────────
 function VideoAIModal({ isOpen, onClose, chapterTitle, grade, subject, langCode }) {
   const [activeGrade, setActiveGrade] = useState(grade === 'all' || !grade ? '8' : String(grade));
   const [activeChapterTitle, setActiveChapterTitle] = useState(chapterTitle || '');
@@ -893,7 +647,6 @@ function VideoAIModal({ isOpen, onClose, chapterTitle, grade, subject, langCode 
   const [videoUrl, setVideoUrl] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Sync props when modal opens
   useEffect(() => {
     if (isOpen) {
       const initGrade = grade === 'all' || !grade ? '8' : String(grade);
@@ -924,7 +677,7 @@ function VideoAIModal({ isOpen, onClose, chapterTitle, grade, subject, langCode 
 
   const LANG_LABELS = {
     en: 'English', hi: 'हिंदी (Hindi)', ta: 'தமிழ் (Tamil)', te: 'తెలుగు (Telugu)',
-    kn: 'ಕನ್ನಡ (Kannada)', mr: 'मराठी (Marathi)', bn: 'বাংলা (Bengali)', gu: 'ગુજરાતી (Gujarati)'
+    kn: 'ಕನ್ನಡ (Kannada)', mr: 'मराठी (Marathi)', bn: 'বাংলা (Bengali)', gu: '<ctrl42>ગુજરાતી (Gujarati)'
   };
 
   return (
@@ -936,9 +689,9 @@ function VideoAIModal({ isOpen, onClose, chapterTitle, grade, subject, langCode 
       padding: '20px'
     }}>
       <div style={{
-        backgroundColor: '#1E1917',
-        border: '1.5px solid var(--accent)',
-        borderRadius: '16px',
+        backgroundColor: '#18181B',
+        border: '1px solid var(--border-medium)',
+        borderRadius: 'var(--radius-md)',
         width: '100%', maxWidth: '820px',
         overflow: 'hidden',
         boxShadow: '0 20px 50px rgba(0,0,0,0.5)',
@@ -946,25 +699,25 @@ function VideoAIModal({ isOpen, onClose, chapterTitle, grade, subject, langCode 
       }}>
         {/* Header */}
         <div style={{
-          padding: '16px 20px',
-          background: 'linear-gradient(135deg, var(--accent) 0%, #9A3412 100%)',
+          padding: '14px 18px',
+          backgroundColor: 'var(--green-dark)',
+          borderBottom: '1px solid #3F3F46',
           display: 'flex', justifyContent: 'space-between', alignItems: 'center',
           flexWrap: 'wrap', gap: '10px'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <Film size={22} color="#FFF" />
+            <Film size={20} color="#FFFFFF" />
             <div>
-              <h3 style={{ margin: 0, fontSize: '16px', fontWeight: '800', color: '#FFF' }}>
+              <h3 style={{ margin: 0, fontSize: '15px', fontWeight: '600', color: '#FFFFFF' }}>
                 AI Generated Video Lesson
               </h3>
-              <p style={{ margin: 0, fontSize: '11px', color: 'rgba(255,255,255,0.85)' }}>
+              <p style={{ margin: 0, fontSize: '11px', color: '#A1A1AA' }}>
                 NCERT Class {activeGrade} · {activeChapterTitle || 'STEM Fundamentals'}
               </p>
             </div>
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-            {/* Class Selector Dropdown */}
             <select
               value={activeGrade}
               onChange={(e) => {
@@ -978,72 +731,70 @@ function VideoAIModal({ isOpen, onClose, chapterTitle, grade, subject, langCode 
                 }
               }}
               style={{
-                backgroundColor: 'rgba(0,0,0,0.4)',
+                backgroundColor: '#18181B',
                 color: '#FFF',
-                border: '1px solid rgba(255,255,255,0.3)',
-                borderRadius: '8px',
-                padding: '5px 10px',
+                border: '1px solid #3F3F46',
+                borderRadius: '6px',
+                padding: '4px 8px',
                 fontSize: '12px',
-                fontWeight: '700',
+                fontWeight: '500',
                 outline: 'none',
                 cursor: 'pointer'
               }}
             >
-              <option value="8" style={{ backgroundColor: '#1E1917' }}>Class 8</option>
-              <option value="9" style={{ backgroundColor: '#1E1917' }}>Class 9</option>
-              <option value="10" style={{ backgroundColor: '#1E1917' }}>Class 10</option>
-              <option value="11" style={{ backgroundColor: '#1E1917' }}>Class 11</option>
-              <option value="12" style={{ backgroundColor: '#1E1917' }}>Class 12</option>
+              <option value="8">Class 8</option>
+              <option value="9">Class 9</option>
+              <option value="10">Class 10</option>
+              <option value="11">Class 11</option>
+              <option value="12">Class 12</option>
             </select>
 
-            {/* Chapter Selector Dropdown */}
             <select
               value={activeChapterTitle}
               onChange={(e) => setActiveChapterTitle(e.target.value)}
               style={{
-                backgroundColor: 'rgba(0,0,0,0.4)',
+                backgroundColor: '#18181B',
                 color: '#FFF',
-                border: '1px solid rgba(255,255,255,0.3)',
-                borderRadius: '8px',
-                padding: '5px 10px',
+                border: '1px solid #3F3F46',
+                borderRadius: '6px',
+                padding: '4px 8px',
                 fontSize: '12px',
-                fontWeight: '700',
-                maxWidth: '220px',
+                fontWeight: '500',
+                maxWidth: '200px',
                 outline: 'none',
                 cursor: 'pointer'
               }}
             >
               {currentGradeChapters.length > 0 ? (
                 currentGradeChapters.map((c) => (
-                  <option key={c.id} value={c.title} style={{ backgroundColor: '#1E1917' }}>
-                    {c.number}: {c.title.length > 26 ? c.title.slice(0, 26) + '...' : c.title}
+                  <option key={c.id} value={c.title}>
+                    {c.number}: {c.title.length > 24 ? c.title.slice(0, 24) + '...' : c.title}
                   </option>
                 ))
               ) : (
-                <option value={activeChapterTitle} style={{ backgroundColor: '#1E1917' }}>
+                <option value={activeChapterTitle}>
                   {activeChapterTitle}
                 </option>
               )}
             </select>
 
-            {/* Language Selector */}
             <select
               value={selectedLanguage}
               onChange={(e) => setSelectedLanguage(e.target.value)}
               style={{
-                backgroundColor: 'rgba(0,0,0,0.4)',
+                backgroundColor: '#18181B',
                 color: '#FFF',
-                border: '1px solid rgba(255,255,255,0.3)',
-                borderRadius: '8px',
-                padding: '5px 10px',
+                border: '1px solid #3F3F46',
+                borderRadius: '6px',
+                padding: '4px 8px',
                 fontSize: '12px',
-                fontWeight: '700',
+                fontWeight: '500',
                 outline: 'none',
                 cursor: 'pointer'
               }}
             >
               {Object.entries(LANG_LABELS).map(([code, label]) => (
-                <option key={code} value={code} style={{ backgroundColor: '#1E1917', color: '#FFF' }}>
+                <option key={code} value={code}>
                   {label}
                 </option>
               ))}
@@ -1056,17 +807,17 @@ function VideoAIModal({ isOpen, onClose, chapterTitle, grade, subject, langCode 
                 display: 'flex', alignItems: 'center', justifyContent: 'center'
               }}
             >
-              <X size={20} />
+              <X size={18} />
             </button>
           </div>
         </div>
 
         {/* Video Player Display */}
-        <div style={{ position: 'relative', width: '100%', height: '360px', backgroundColor: '#000000', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ position: 'relative', width: '100%', height: '340px', backgroundColor: '#000000', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           {isLoading ? (
-            <div style={{ textAlign: 'center', color: 'var(--accent)' }}>
-              <div style={{ width: '36px', height: '36px', border: '3px solid var(--accent)', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite', margin: '0 auto 12px' }} />
-              <p style={{ fontSize: '13px', fontWeight: '600', color: '#D4D4D4' }}>Connecting to Supabase Video Bucket...</p>
+            <div style={{ textAlign: 'center', color: '#A1A1AA' }}>
+              <div style={{ width: '32px', height: '32px', border: '2px solid var(--green-primary)', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite', margin: '0 auto 10px' }} />
+              <p style={{ fontSize: '12px', fontWeight: '500' }}>Connecting to Supabase Video Bucket...</p>
             </div>
           ) : videoUrl ? (
             <video
@@ -1076,21 +827,21 @@ function VideoAIModal({ isOpen, onClose, chapterTitle, grade, subject, langCode 
               style={{ width: '100%', height: '100%', objectFit: 'contain' }}
             />
           ) : (
-            <div style={{ width: '100%', height: '100%', padding: '24px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'radial-gradient(circle at center, #2C1810 0%, #0F0906 100%)', textAlign: 'center' }}>
-              <div style={{ width: '64px', height: '64px', borderRadius: '50%', backgroundColor: 'rgba(200,75,36,0.25)', border: '2px solid var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '16px' }}>
-                <Play size={28} color="var(--accent)" style={{ marginLeft: '4px' }} />
+            <div style={{ width: '100%', height: '100%', padding: '24px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', backgroundColor: '#09090B', textAlign: 'center' }}>
+              <div style={{ width: '56px', height: '56px', borderRadius: '50%', backgroundColor: '#27272A', border: '1px solid #3F3F46', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '14px' }}>
+                <Play size={24} color="var(--green-primary)" style={{ marginLeft: '3px' }} />
               </div>
-              <h4 style={{ margin: '0 0 8px', fontSize: '18px', fontWeight: '800', color: '#FFF' }}>
+              <h4 style={{ margin: '0 0 6px', fontSize: '16px', fontWeight: '600', color: '#FFFFFF' }}>
                 {activeChapterTitle || 'NCERT Class ' + activeGrade + ' Concept Video'}
               </h4>
-              <p style={{ margin: '0 0 16px', fontSize: '13px', color: '#A3A3A3', maxWidth: '500px', lineHeight: '1.5' }}>
+              <p style={{ margin: '0 0 14px', fontSize: '12px', color: '#A1A1AA', maxWidth: '480px', lineHeight: '1.5' }}>
                 Generated Video lesson in {LANG_LABELS[selectedLanguage] || selectedLanguage} stored securely on Supabase Storage.
               </p>
               <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'center' }}>
-                <span style={{ fontSize: '11px', padding: '4px 12px', borderRadius: '20px', backgroundColor: 'rgba(200,75,36,0.2)', color: 'var(--accent)', fontWeight: '700', border: '1px solid rgba(200,75,36,0.4)' }}>
+                <span className="badge-green">
                   ⚡ Supabase Storage Connected
                 </span>
-                <span style={{ fontSize: '11px', padding: '4px 12px', borderRadius: '20px', backgroundColor: 'rgba(22,163,74,0.2)', color: '#4ADE80', fontWeight: '700', border: '1px solid rgba(22,163,74,0.4)' }}>
+                <span className="badge-blue">
                   ✓ Multi-Lingual Sync: {selectedLanguage.toUpperCase()}
                 </span>
               </div>
@@ -1099,16 +850,16 @@ function VideoAIModal({ isOpen, onClose, chapterTitle, grade, subject, langCode 
         </div>
 
         {/* Footer Info */}
-        <div style={{ padding: '16px 24px', backgroundColor: '#14100E', borderTop: '1px solid #2C221E', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div style={{ fontSize: '12px', color: '#A3A3A3' }}>
-            <span style={{ color: 'var(--accent)', fontWeight: '700' }}>PALASH Curriculum Video Feature</span> · Supabase Storage Live
+        <div style={{ padding: '14px 20px', backgroundColor: '#18181B', borderTop: '1px solid #27272A', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ fontSize: '12px', color: '#A1A1AA' }}>
+            <span style={{ color: '#FFFFFF', fontWeight: '600' }}>PALASH Curriculum Video Feature</span> · Supabase Storage Live
           </div>
           <button
             onClick={onClose}
             style={{
-              padding: '8px 20px', borderRadius: '8px',
-              backgroundColor: 'var(--accent)', border: 'none',
-              color: '#FFF', fontSize: '12px', fontWeight: '700',
+              padding: '6px 16px', borderRadius: 'var(--radius-sm)',
+              backgroundColor: '#27272A', border: '1px solid #3F3F46',
+              color: '#FFFFFF', fontSize: '12px', fontWeight: '500',
               cursor: 'pointer'
             }}
           >

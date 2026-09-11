@@ -1,23 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { Play, Pause, Square, Volume2 } from 'lucide-react';
-import { 
-  speakText, 
-  pauseSpeech, 
-  resumeSpeech, 
-  stopSpeech, 
-  subscribeAudioState 
+import { Play, Pause, Volume2 } from 'lucide-react';
+import {
+  speakText,
+  pauseSpeech,
+  resumeSpeech,
+  subscribeAudioState
 } from './speechUtils';
 
-export default function AudioPlayButton({ 
-  text, 
-  language = 'hi-IN', 
-  label = 'Pronounce', 
+export default function AudioPlayButton({
+  text,
+  language = 'hi-IN',
+  label = 'Play',
   size = 'md',
-  showStop = true,
-  style = {} 
+  showStop = false,
+  style = {}
 }) {
-  const [audioStatus, setAudioStatus] = useState('idle'); // 'idle' | 'playing' | 'paused'
-  const isThisTextActive = audioStatus !== 'idle';
+  const [audioStatus, setAudioStatus] = useState('idle');
 
   useEffect(() => {
     const unsubscribe = subscribeAudioState(({ state, text: currentText }) => {
@@ -41,74 +39,27 @@ export default function AudioPlayButton({
     }
   };
 
-  const handleStop = (e) => {
-    e?.stopPropagation();
-    stopSpeech();
-  };
-
-  const isSmall = size === 'sm';
-  const iconSize = isSmall ? 13 : 15;
+  const iconSize = size === 'sm' ? 13 : 15;
+  const isOn = audioStatus === 'playing';
 
   return (
-    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', ...style }}>
-      <button
-        onClick={handlePlay}
-        type="button"
-        title={audioStatus === 'playing' ? 'Pause Audio' : audioStatus === 'paused' ? 'Resume Audio' : 'Play Audio Pronunciation'}
-        style={{
-          display: 'inline-flex',
-          alignItems: 'center',
-          gap: '6px',
-          padding: isSmall ? '4px 8px' : '6px 12px',
-          borderRadius: '6px',
-          fontSize: isSmall ? '11px' : '12px',
-          fontWeight: '600',
-          border: audioStatus === 'playing' ? '1px solid #16A34A' : '1px solid var(--border-medium)',
-          backgroundColor: audioStatus === 'playing' ? '#DCFCE7' : audioStatus === 'paused' ? '#FEF3C7' : 'var(--bg-subtle)',
-          color: audioStatus === 'playing' ? '#15803D' : audioStatus === 'paused' ? '#B45309' : 'var(--text-main)',
-          cursor: 'pointer',
-          transition: 'all 0.15s ease'
-        }}
-      >
-        {audioStatus === 'playing' ? (
-          <>
-            <Pause size={iconSize} />
-            <span>Pause</span>
-          </>
-        ) : audioStatus === 'paused' ? (
-          <>
-            <Play size={iconSize} />
-            <span>Resume</span>
-          </>
-        ) : (
-          <>
-            <Volume2 size={iconSize} />
-            <span>{label}</span>
-          </>
-        )}
-      </button>
-
-      {showStop && isThisTextActive && (
-        <button
-          onClick={handleStop}
-          type="button"
-          title="Stop Audio"
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: isSmall ? '4px' : '6px',
-            borderRadius: '6px',
-            fontSize: '11px',
-            border: '1px solid #FECACA',
-            backgroundColor: '#FEF2F2',
-            color: '#DC2626',
-            cursor: 'pointer'
-          }}
-        >
-          <Square size={iconSize - 2} fill="#DC2626" />
-        </button>
+    <button
+      type="button"
+      onClick={handlePlay}
+      className={`audio-btn ${size === 'sm' ? 'sm' : ''} ${isOn ? 'on' : ''}`}
+      style={style}
+      title={isOn ? 'Pause' : label}
+    >
+      {audioStatus === 'playing' ? (
+        <Pause size={iconSize} />
+      ) : audioStatus === 'paused' ? (
+        <Play size={iconSize} />
+      ) : (
+        <Volume2 size={iconSize} />
       )}
-    </div>
+      {size !== 'sm' && (
+        <span>{audioStatus === 'playing' ? 'Pause' : audioStatus === 'paused' ? 'Resume' : label}</span>
+      )}
+    </button>
   );
 }

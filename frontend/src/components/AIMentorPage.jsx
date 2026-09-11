@@ -145,62 +145,18 @@ export default function AIMentorPage({
   };
 
   return (
-    <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '24px 20px' }}>
-      {/* Header Banner */}
-      <div style={{
-        backgroundColor: '#FFFFFF',
-        borderRadius: '12px',
-        padding: '22px 28px',
-        border: '1.5px solid #FED7AA',
-        marginBottom: '20px',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        flexWrap: 'wrap',
-        gap: '16px',
-        boxShadow: '0 2px 8px rgba(234,88,12,0.06)'
-      }}>
+    <div>
+      <div className="page-head">
         <div>
-          <div style={{
-            fontSize: '11px',
-            fontWeight: '700',
-            color: '#334155',
-            textTransform: 'uppercase',
-            letterSpacing: '0.5px',
-            marginBottom: '4px'
-          }}>
-            {t.mentor.headerTag}
-          </div>
-          <h1 style={{ fontSize: '22px', fontWeight: '800', margin: '0 0 6px 0', color: '#0F172A' }}>
-            {t.mentor.title}
-          </h1>
-          <p style={{ margin: 0, fontSize: '13px', color: '#334155' }}>
-            {t.mentor.subtitle}
-          </p>
+          <h1>{t.mentor.title}</h1>
+          <p>{t.mentor.subtitle}</p>
         </div>
-
-        {/* Tribal Language Selector */}
-        <div style={{
-          display: 'flex',
-          backgroundColor: '#FFF7ED',
-          borderRadius: '8px',
-          padding: '3px',
-          border: '1.5px solid #FDBA74'
-        }}>
+        <div className="seg">
           {TRIBAL_LANGUAGES.map(lang => (
             <button
               key={lang.code}
+              className={selectedLang === lang.code ? 'active' : ''}
               onClick={() => setSelectedLang(lang.code)}
-              style={{
-                padding: '5px 12px',
-                borderRadius: '6px',
-                fontSize: '12px',
-                fontWeight: '700',
-                border: 'none',
-                backgroundColor: selectedLang === lang.code ? '#EA580C' : 'transparent',
-                color: selectedLang === lang.code ? '#FFFFFF' : '#0F172A',
-                cursor: 'pointer'
-              }}
             >
               {lang.name}
             </button>
@@ -208,203 +164,54 @@ export default function AIMentorPage({
         </div>
       </div>
 
-      {/* 4 Mode Buttons */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(4, 1fr)',
-        gap: '10px',
-        marginBottom: '16px'
-      }}>
-        {Object.entries(MODE_INFO).map(([key, info]) => {
-          const isActive = tutorMode === key;
-          return (
-            <button
-              key={key}
-              onClick={() => setTutorMode(key)}
-              style={{
-                padding: '10px 14px',
-                borderRadius: '8px',
-                border: isActive ? '2px solid #EA580C' : '1.5px solid #FED7AA',
-                backgroundColor: isActive ? '#FFF7ED' : '#FFFFFF',
-                color: isActive ? '#EA580C' : '#0F172A',
-                textAlign: 'left',
-                cursor: 'pointer'
-              }}
-            >
-              <div style={{ fontSize: '12px', fontWeight: '700' }}>{info.title}</div>
-              <div style={{ fontSize: '11px', color: '#64748B', marginTop: '2px' }}>{info.desc.substring(0, 45)}...</div>
-            </button>
-          );
-        })}
-      </div>
-
-      {/* Chat Messages */}
-      <div className="card" style={{
-        padding: '20px',
-        backgroundColor: '#FFFFFF',
-        minHeight: '400px',
-        maxHeight: '520px',
-        overflowY: 'auto',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '16px',
-        marginBottom: '16px'
-      }}>
-        {messages.map((msg, idx) => (
-          <div
-            key={idx}
-            style={{
-              alignSelf: msg.role === 'user' ? 'flex-end' : 'flex-start',
-              maxWidth: '85%',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '4px'
-            }}
-          >
-            <div style={{ fontSize: '11px', fontWeight: '600', color: '#334155' }}>
-              {msg.role === 'user' ? (userName || 'Teacher') : 'PALASH Pedagogy Assistant'}
-            </div>
-
-            <div style={{
-              padding: '14px 18px',
-              borderRadius: '10px',
-              backgroundColor: msg.role === 'user' ? '#EA580C' : '#FFFDF9',
-              color: msg.role === 'user' ? '#FFFFFF' : '#0F172A',
-              border: msg.role === 'user' ? 'none' : '1.5px solid #FED7AA',
-              lineHeight: '1.6',
-              fontSize: '13px'
-            }}>
-              {msg.scriptText && (
-                <div style={{
-                  padding: '10px 12px',
-                  backgroundColor: '#FFFFFF',
-                  borderRadius: '6px',
-                  border: '1px solid #FDBA74',
-                  marginBottom: '8px'
-                }}>
-                  <div style={{ fontSize: '16px', fontWeight: '800', color: '#0F172A', marginBottom: '2px' }}>
-                    {msg.scriptText}
-                  </div>
-                  {msg.romanText && (
-                    <div style={{ fontSize: '12px', fontWeight: '600', color: '#EA580C', fontStyle: 'italic' }}>
-                      "{msg.romanText}"
-                    </div>
-                  )}
-                  {msg.hindiText && (
-                    <div style={{ fontSize: '11px', color: '#334155', marginTop: '4px' }}>
-                      <strong>Hindi Meaning:</strong> {msg.hindiText}
-                    </div>
-                  )}
-                </div>
-              )}
-
-              <div>{msg.text}</div>
-
-              {msg.teachingTips && msg.teachingTips.length > 0 && (
-                <div style={{ marginTop: '8px', fontSize: '11px', borderTop: '1px solid #FED7AA', paddingTop: '6px' }}>
-                  <strong>Pedagogy Instructions:</strong>
-                  <ul style={{ margin: '4px 0 0 0', paddingLeft: '16px' }}>
-                    {msg.teachingTips.map((tip, tIdx) => (
-                      <li key={tIdx}>{tip}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
-              {msg.role === 'assistant' && (
-                <div style={{ marginTop: '8px', display: 'flex', gap: '6px', alignItems: 'center' }}>
-                  <button
-                    onClick={() => handleOpenIsl(msg.hindiText || msg.text, msg.text || msg.hindiText)}
-                    style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '4px',
-                      padding: '4px 10px',
-                      borderRadius: '6px',
-                      backgroundColor: '#FFFBEB',
-                      border: '1px solid #FCD34D',
-                      color: '#92400E',
-                      fontSize: '11px',
-                      fontWeight: '700',
-                      cursor: 'pointer'
-                    }}
-                    title="Watch ISL (Indian Sign Language) Clip"
-                  >
-                    <Hand size={11} color="#D97706" />
-                    <span>Watch ISL</span>
-                  </button>
-                  <AudioPlayButton
-                    text={msg.romanText || msg.text}
-                    size="sm"
-                    label="Pronounce"
-                  />
-                </div>
-              )}
-            </div>
-          </div>
-        ))}
-
-        {isLoading && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#EA580C', fontSize: '12px' }}>
-            <RotateCw size={14} className="animate-spin" />
-            <span>Analyzing FLN curriculum context...</span>
-          </div>
-        )}
-      </div>
-
-      {/* Quick Prompts */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '12px' }}>
-        {(sampleQuestions[tutorMode] || []).map((q, qIdx) => (
+      <div className="mode-grid">
+        {Object.entries(MODE_INFO).map(([key, info]) => (
           <button
-            key={qIdx}
-            onClick={() => setInputQuery(q)}
-            style={{
-              padding: '4px 10px',
-              borderRadius: '4px',
-              backgroundColor: '#FFF7ED',
-              border: '1px solid #FED7AA',
-              fontSize: '11px',
-              color: '#334155',
-              cursor: 'pointer'
-            }}
+            key={key}
+            onClick={() => setTutorMode(key)}
+            className={`item-btn ${tutorMode === key ? 'on' : ''}`}
           >
-            {q}
+            <div style={{ fontSize: 13, fontWeight: 750 }}>{info.title}</div>
           </button>
         ))}
       </div>
 
-      {/* Input */}
-      <form onSubmit={handleSendMessage} style={{ display: 'flex', gap: '8px' }}>
+      <div className="chat-wrap" style={{ marginBottom: 16 }}>
+        {messages.map((msg, idx) => (
+          <div key={idx} className={`bubble ${msg.role === 'user' ? 'me' : 'ai'}`}>
+            {msg.scriptText && (
+              <div style={{ marginBottom: 8 }}>
+                <div className="script-native" style={{ fontSize: 16 }}>{msg.scriptText}</div>
+                {msg.romanText && <div className="script-roman">{msg.romanText}</div>}
+                {msg.hindiText && <div className="quiet" style={{ marginTop: 4 }}>{msg.hindiText}</div>}
+              </div>
+            )}
+            <div>{msg.text}</div>
+            {msg.teachingTips && msg.teachingTips.length > 0 && (
+              <ul style={{ margin: '8px 0 0', paddingLeft: 16, fontSize: 12 }}>
+                {msg.teachingTips.map((tip, tIdx) => <li key={tIdx}>{tip}</li>)}
+              </ul>
+            )}
+            {msg.role === 'assistant' && (
+              <div className="actions" style={{ marginTop: 8 }}>
+                <button className="btn-ghost" onClick={() => handleOpenIsl(msg.hindiText || msg.text, msg.text || msg.hindiText)}>ISL</button>
+                <AudioPlayButton text={msg.romanText || msg.text} size="sm" label="Play" />
+              </div>
+            )}
+          </div>
+        ))}
+        {isLoading && <div className="quiet">Working…</div>}
+      </div>
+
+      <form onSubmit={handleSendMessage} className="composer">
         <input
+          className="field"
           type="text"
           value={inputQuery}
           onChange={(e) => setInputQuery(e.target.value)}
           placeholder={MODE_INFO[tutorMode].placeholder}
-          style={{
-            flex: 1,
-            padding: '12px 16px',
-            borderRadius: '8px',
-            border: '1.5px solid #FED7AA',
-            backgroundColor: '#FFFFFF',
-            color: '#0F172A',
-            fontSize: '13px',
-            outline: 'none'
-          }}
         />
-        <button
-          type="submit"
-          disabled={!inputQuery.trim() || isLoading}
-          style={{
-            padding: '0 20px',
-            borderRadius: '8px',
-            backgroundColor: !inputQuery.trim() || isLoading ? '#FED7AA' : '#EA580C',
-            color: '#FFFFFF',
-            border: 'none',
-            fontWeight: '700',
-            fontSize: '13px',
-            cursor: !inputQuery.trim() || isLoading ? 'not-allowed' : 'pointer'
-          }}
-        >
+        <button type="submit" className="btn-primary" disabled={!inputQuery.trim() || isLoading}>
           Send
         </button>
       </form>

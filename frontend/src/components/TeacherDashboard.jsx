@@ -2,62 +2,24 @@ import React, { useState, useEffect } from 'react';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
 } from 'recharts';
-import {
-  BookOpen, Target, RefreshCw, CheckCircle2, Languages, Radio
-} from 'lucide-react';
+import { RefreshCw, Plus, CheckCircle2, ArrowUpRight, Play } from 'lucide-react';
 import { irisGetDashboardStats, irisSyncOfflineProgress } from '../services/api';
 import { getPendingOfflineLogs, getLastSyncTime } from '../services/offlineSync';
 import { uiTranslations } from '../services/uiTranslations';
 
-function SummaryMetricCard({ label, value, subtext, tag }) {
-  return (
-    <div
-      className="card"
-      style={{
-        padding: '20px',
-        backgroundColor: '#FFFFFF',
-        border: '1.5px solid #FED7AA',
-        borderRadius: '10px'
-      }}
-    >
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-        <span style={{ fontSize: '12px', fontWeight: '700', color: '#334155' }}>{label}</span>
-        {tag && (
-          <span style={{
-            fontSize: '10px',
-            fontWeight: '800',
-            padding: '2px 6px',
-            borderRadius: '4px',
-            backgroundColor: '#ECFDF5',
-            color: '#059669',
-            border: '1px solid #A7F3D0'
-          }}>
-            {tag}
-          </span>
-        )}
-      </div>
-      <div style={{ fontSize: '26px', fontWeight: '900', color: '#0F172A', lineHeight: 1 }}>
-        {value}
-      </div>
-      {subtext && <div style={{ fontSize: '11px', color: '#64748B', marginTop: '6px' }}>{subtext}</div>}
-    </div>
-  );
-}
-
-export default function TeacherDashboard({ 
-  uiLang = 'en', 
-  currentLang = 'sat' 
+export default function TeacherDashboard({
+  uiLang = 'en',
+  currentLang = 'sat',
+  setCurrentTab
 }) {
   const t = uiTranslations[uiLang] || uiTranslations.en;
   const [flnStats, setFlnStats] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [syncing, setSyncing] = useState(false);
   const [syncMessage, setSyncMessage] = useState('');
   const [pendingLogsCount, setPendingLogsCount] = useState(0);
   const [lastSync, setLastSync] = useState(getLastSyncTime());
 
   const loadData = async () => {
-    setLoading(true);
     try {
       const stats = await irisGetDashboardStats();
       setFlnStats(stats);
@@ -65,8 +27,6 @@ export default function TeacherDashboard({
       setLastSync(getLastSyncTime());
     } catch (err) {
       console.warn('Dashboard data fetch error:', err);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -80,220 +40,169 @@ export default function TeacherDashboard({
     try {
       const res = await irisSyncOfflineProgress('teacher-demo-01', 'JH-RANCHI-042');
       if (res.success) {
-        setSyncMessage(`Synchronized ${res.syncedCount || 0} offline classroom logs with Jharkhand Education Cloud.`);
+        setSyncMessage(`Synced ${res.syncedCount || 0} classroom logs.`);
         setPendingLogsCount(0);
         setLastSync(new Date().toLocaleTimeString());
       } else {
-        setSyncMessage('Offline mode active. Logs preserved safely on local tablet storage.');
+        setSyncMessage('Offline. Logs are stored on this tablet.');
       }
     } catch (err) {
-      setSyncMessage('Tablet operating in offline-first mode.');
+      setSyncMessage('Offline-first mode is on.');
     } finally {
       setSyncing(false);
     }
   };
 
   const nipunChartData = [
-    { name: 'L1: Oral Lang', mastered: 88 },
-    { name: 'L2: Letter Sounds', mastered: 76 },
-    { name: 'L3: Word Fluency', mastered: 69 },
-    { name: 'M1: Numbers 1-9', mastered: 94 },
-    { name: 'M2: Place Value', mastered: 82 },
-    { name: 'M3: Basic Ops', mastered: 71 },
+    { name: 'S', mastered: 65 },
+    { name: 'M', mastered: 88 },
+    { name: 'T', mastered: 74 },
+    { name: 'W', mastered: 92 },
+    { name: 'T2', mastered: 68 },
+    { name: 'F', mastered: 85 },
+    { name: 'S2', mastered: 71 },
   ];
 
-  const translationRelianceData = flnStats?.translationHeatmap || [
-    { word: 'Book (ᱯᱚᱛᱚᱵ / ᱯᱩᱛᱷᱤ)', count: 87 },
-    { word: 'Read (ᱯᱟᱲᱦᱟᱣ)', count: 74 },
-    { word: 'Write (ᱚᱞ)', count: 68 },
-    { word: 'Count (ᱞᱮᱠᱷᱟ)', count: 59 },
-    { word: 'Tree (ᱫᱟᱨᱮ / ᱫᱟᱨᱩ)', count: 48 },
-    { word: 'Two (ᱵᱟᱨ / ᱵᱟᱹᱨᱤᱭᱟᱹ)', count: 42 }
+  const words = flnStats?.translationHeatmap || [
+    { word: 'Book', script: 'ᱯᱚᱛᱚᱵ', status: 'Mastered', category: 'Literacy' },
+    { word: 'Read', script: 'ᱯᱟᱲᱦᱟᱣ', count: 74, status: 'Mastered', category: 'Literacy' },
+    { word: 'Write', script: 'ᱚᱞ', status: 'Practising', category: 'Literacy' },
+    { word: 'Count', script: 'ᱞᱮᱠᱷᱟ', status: 'Next', category: 'Numeracy' }
   ];
 
   return (
-    <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '24px 20px' }}>
-      {/* Header Banner */}
-      <div style={{
-        backgroundColor: '#FFFFFF',
-        borderRadius: '12px',
-        padding: '22px 28px',
-        border: '1.5px solid #FED7AA',
-        marginBottom: '24px',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        flexWrap: 'wrap',
-        gap: '16px',
-        boxShadow: '0 2px 8px rgba(234,88,12,0.06)'
-      }}>
+    <div>
+      <div className="page-head">
         <div>
-          <div style={{
-            fontSize: '11px',
-            fontWeight: '700',
-            color: '#334155',
-            textTransform: 'uppercase',
-            letterSpacing: '0.5px',
-            marginBottom: '4px'
-          }}>
-            {t.dashboard.headerTag}
-          </div>
-          <h1 style={{ fontSize: '22px', fontWeight: '800', margin: '0 0 6px 0', color: '#0F172A' }}>
-            {t.dashboard.title}
-          </h1>
-          <p style={{ margin: 0, fontSize: '13px', color: '#334155' }}>
-            {t.dashboard.subtitle}
-          </p>
+          <h1>{t.dashboard.title}</h1>
+          <p>{t.dashboard.subtitle}</p>
         </div>
-
-        {/* Sync Trigger */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <button
-            onClick={handleManualSync}
-            disabled={syncing}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              padding: '8px 14px',
-              borderRadius: '6px',
-              backgroundColor: '#EA580C',
-              color: '#FFFFFF',
-              border: 'none',
-              fontWeight: '700',
-              fontSize: '12px',
-              cursor: syncing ? 'not-allowed' : 'pointer'
-            }}
-          >
-            <RefreshCw size={14} className={syncing ? 'animate-spin' : ''} />
-            <span>{syncing ? 'Syncing...' : t.dashboard.syncBtn}</span>
+        <div className="actions">
+          <button className="btn-primary" onClick={() => setCurrentTab && setCurrentTab('santali-studio')}>
+            <Plus size={16} /> New lesson
+          </button>
+          <button className="btn-secondary" onClick={handleManualSync} disabled={syncing}>
+            <RefreshCw size={14} />
+            {syncing ? 'Syncing…' : 'Sync'}
           </button>
         </div>
       </div>
 
-      {/* Sync Status Banner */}
       {syncMessage && (
-        <div style={{
-          marginBottom: '20px',
-          padding: '10px 16px',
-          borderRadius: '6px',
-          backgroundColor: '#ECFDF5',
-          border: '1px solid #A7F3D0',
-          color: '#065F46',
-          fontSize: '12px',
-          fontWeight: '600',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '8px'
-        }}>
-          <CheckCircle2 size={16} color="#059669" />
-          <span>{syncMessage}</span>
+        <div className="card" style={{ marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8, padding: '12px 16px' }}>
+          <CheckCircle2 size={16} color="var(--green-accent)" />
+          <span style={{ fontSize: 13 }}>{syncMessage}</span>
         </div>
       )}
 
-      {/* 4 Clean Metric Cards */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px', marginBottom: '24px' }}>
-        <SummaryMetricCard
-          label={t.dashboard.metric1}
-          value={flnStats?.flnLessonsDelivered || 42}
-          subtext="Covered across Santhali, Ho, and Mundari"
-          tag="Active MTB-MLE"
-        />
-        <SummaryMetricCard
-          label={t.dashboard.metric2}
-          value={flnStats?.motherTongueTranslationsUsed || 318}
-          subtext="Classroom phrase dialogues conducted"
-          tag="+32% this term"
-        />
-        <SummaryMetricCard
-          label={t.dashboard.metric3}
-          value={flnStats?.nipunOutcomesCovered || 16}
-          subtext="Out of 20 foundational competencies"
-        />
-        <SummaryMetricCard
-          label={t.dashboard.metric4}
-          value="100%"
-          subtext={`Pending: ${pendingLogsCount} logs · Last sync: ${lastSync}`}
-          tag="Offline-Ready"
-        />
+      <div className="stats-grid">
+        <div className="stat-card-featured">
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <span style={{ fontSize: 13, opacity: 0.9 }}>{t.dashboard.metric1}</span>
+            <div className="stat-icon-circle" style={{ background: '#fff', border: 'none' }}>
+              <ArrowUpRight size={16} color="var(--green-primary)" />
+            </div>
+          </div>
+          <div className="metric">{flnStats?.flnLessonsDelivered || 24}</div>
+          <span className="pill" style={{ background: 'rgba(255,255,255,0.16)', color: '#fff' }}>This month</span>
+        </div>
+
+        <div className="stat-card-white">
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <span style={{ fontSize: 13, fontWeight: 650 }}>{t.dashboard.metric2}</span>
+            <div className="stat-icon-circle"><ArrowUpRight size={16} /></div>
+          </div>
+          <div className="metric">{flnStats?.totalSpokenPhrases || 10}</div>
+          <span className="pill ok">Phrases used</span>
+        </div>
+
+        <div className="stat-card-white">
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <span style={{ fontSize: 13, fontWeight: 650 }}>{t.dashboard.metric3}</span>
+            <div className="stat-icon-circle"><ArrowUpRight size={16} /></div>
+          </div>
+          <div className="metric">{flnStats?.averageApertiumLatency ? `${flnStats.averageApertiumLatency}` : '12'}</div>
+          <span className="pill info">Lakshyas</span>
+        </div>
+
+        <div className="stat-card-white">
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <span style={{ fontSize: 13, fontWeight: 650 }}>{t.dashboard.metric4}</span>
+            <div className="stat-icon-circle"><ArrowUpRight size={16} /></div>
+          </div>
+          <div className="metric">{pendingLogsCount || flnStats?.activeStudentsCount || 2}</div>
+          <span className="pill warn">{pendingLogsCount ? 'Pending sync' : 'Up to date'}</span>
+        </div>
       </div>
 
-      {/* Analytics Grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '24px' }}>
-        {/* NIPUN Bharat Competency Progression Chart */}
-        <div className="card" style={{ padding: '24px', backgroundColor: '#FFFFFF' }}>
-          <h3 style={{ fontSize: '15px', fontWeight: '800', margin: '0 0 4px 0', color: '#0F172A' }}>
-            NIPUN Bharat Competency Mastery (%)
-          </h3>
-          <p style={{ margin: '0 0 16px 0', fontSize: '12px', color: '#334155' }}>
-            Classroom average achievement in Foundational Literacy &amp; Numeracy
-          </p>
-
-          <div style={{ height: '280px', width: '100%' }}>
+      <div className="dash-row a">
+        <div className="card">
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12 }}>
+            <h2 style={{ fontSize: 16, fontWeight: 750 }}>NIPUN progress</h2>
+            <span className="pill ok">74%</span>
+          </div>
+          <div style={{ height: 220 }}>
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={nipunChartData} margin={{ top: 10, right: 10, left: -20, bottom: 20 }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#FED7AA" />
-                <XAxis dataKey="name" stroke="#334155" fontSize={11} angle={-15} textAnchor="end" />
-                <YAxis stroke="#334155" fontSize={11} domain={[0, 100]} />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: '#0F172A',
-                    borderRadius: '6px',
-                    border: 'none',
-                    color: '#FFFFFF',
-                    fontSize: '12px'
-                  }}
-                />
-                <Bar dataKey="mastered" fill="#EA580C" radius={[4, 4, 0, 0]} name="Mastery %" />
+              <BarChart data={nipunChartData} margin={{ top: 8, right: 8, left: -24, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border-medium)" />
+                <XAxis dataKey="name" tick={{ fontSize: 11, fill: 'var(--text-muted)' }} axisLine={false} tickLine={false} />
+                <YAxis domain={[0, 100]} tick={{ fontSize: 11, fill: 'var(--text-muted)' }} axisLine={false} tickLine={false} />
+                <Tooltip contentStyle={{ borderRadius: 12, border: '1px solid var(--border-medium)', fontSize: 12 }} />
+                <Bar dataKey="mastered" fill="var(--green-primary)" radius={[10, 10, 10, 10]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
 
-        {/* Translation Reliance Heatmap */}
-        <div className="card" style={{ padding: '24px', backgroundColor: '#FFFFFF' }}>
-          <h3 style={{ fontSize: '15px', fontWeight: '800', margin: '0 0 4px 0', color: '#0F172A' }}>
-            Translation Reliance Heatmap
-          </h3>
-          <p style={{ margin: '0 0 16px 0', fontSize: '12px', color: '#334155' }}>
-            Concepts where teachers relied most on tribal language translation
-          </p>
+        <div className="card" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+          <div>
+            <div className="quiet" style={{ marginBottom: 10, fontWeight: 700, letterSpacing: '0.08em' }}>TODAY</div>
+            <h3 style={{ fontSize: 20, fontWeight: 800, color: 'var(--green-primary)', marginBottom: 6 }}>
+              Grade 2 oral reading circle
+            </h3>
+            <p className="quiet">09:30 – 10:15 · Mother tongue: {currentLang === 'hoc' ? 'Ho' : currentLang === 'unr' ? 'Mundari' : 'Santhali'}</p>
+          </div>
+          <button className="btn-primary" onClick={() => setCurrentTab && setCurrentTab('phrasebook')}>
+            <Play size={14} fill="#fff" /> Open voice
+          </button>
+        </div>
+      </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            {translationRelianceData.map((item, idx) => (
-              <div key={idx} style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', fontWeight: '600' }}>
-                  <span style={{ color: '#0F172A' }}>{item.word}</span>
-                  <span style={{ color: '#EA580C', fontWeight: '700' }}>{item.count} occurrences</span>
-                </div>
-                <div style={{
-                  width: '100%',
-                  height: '6px',
-                  borderRadius: '3px',
-                  backgroundColor: '#FFF7ED',
-                  overflow: 'hidden'
-                }}>
-                  <div style={{
-                    width: `${Math.min(100, (item.count / 100) * 100)}%`,
-                    height: '100%',
-                    backgroundColor: '#EA580C'
-                  }} />
-                </div>
+      <div className="dash-row b">
+        <div className="card">
+          <h2 style={{ fontSize: 16, fontWeight: 750, marginBottom: 8 }}>Words in use</h2>
+          {words.slice(0, 4).map((item, idx) => (
+            <div className="list-row" key={idx}>
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 750 }}>{item.word} {item.script ? `· ${item.script}` : ''}</div>
+                <div className="quiet">{item.category || 'Classroom'}</div>
               </div>
-            ))}
-          </div>
+              <span className={`pill ${item.status === 'Mastered' || item.status === 'Completed' ? 'ok' : item.status === 'Next' || item.status === 'Pending' ? 'warn' : 'info'}`}>
+                {item.status}
+              </span>
+            </div>
+          ))}
+        </div>
 
-          <div style={{
-            marginTop: '20px',
-            padding: '12px',
-            borderRadius: '6px',
-            backgroundColor: '#FFF7ED',
-            border: '1px solid #FDE68A',
-            fontSize: '11px',
-            color: '#334155'
-          }}>
-            District: <strong>Ranchi / Kolhan Tribal Area (5,000+ Schools)</strong> · Android Tablet Target: <strong>&le; 2GB RAM (Offline Mode)</strong>
+        <div className="card" style={{ textAlign: 'center' }}>
+          <h2 style={{ fontSize: 16, fontWeight: 750, textAlign: 'left' }}>This week</h2>
+          <div className="ring">
+            <div className="ring-inner">
+              <div>
+                <div style={{ fontSize: 26, fontWeight: 800 }}>41%</div>
+                <div className="quiet">NIPUN</div>
+              </div>
+            </div>
           </div>
+          <div className="quiet">Completed · Practising · Next</div>
+        </div>
+
+        <div className="dark-widget">
+          <div className="quiet" style={{ color: '#A7F3D0' }}>Tablet sync</div>
+          <div style={{ fontSize: 22, fontWeight: 800 }}>{lastSync || 'Not yet'}</div>
+          <p style={{ fontSize: 13, color: '#D1FAE5' }}>
+            {pendingLogsCount ? `${pendingLogsCount} logs waiting` : 'Classroom logs are current.'}
+          </p>
         </div>
       </div>
     </div>

@@ -19,82 +19,82 @@ export const uiTranslations = {
 
     // Navigation Tabs
     nav: {
-      flnStudio: "FLN Lesson Studio",
-      voiceEngine: "Real-Time Voice",
-      worksheets: "NIPUN Worksheets",
-      dashboard: "Teacher Dashboard",
-      pedagogyAssistant: "Pedagogy Assistant",
-      curriculumHub: "Curriculum Hub"
+      flnStudio: "Lessons",
+      voiceEngine: "Voice",
+      worksheets: "Worksheets",
+      dashboard: "Dashboard",
+      pedagogyAssistant: "Assistant",
+      curriculumHub: "Curriculum"
     },
 
     // Landing Page
     landing: {
-      badge: "AI-Powered Vernacular Pedagogy & Real-Time Translation",
-      title: "Mother Tongue-Based Primary Education for 5,000+ Tribal Schools in Jharkhand",
-      subtitle: "Enables non-native speaking, Hindi-medium primary school teachers to deliver foundational literacy and numeracy (FLN) in Santhali (Ol Chiki ᱚᱞ ᱪᱤᱠᱤ), Ho (Warang Chiti 𑢹𑣉𑣉), and Mundari without prior language training.",
-      launchBtn: "Launch FLN Studio",
-      voiceBtn: "Real-Time Voice Tool",
-      worksheetsBtn: "NIPUN Worksheets",
-      pillar1Title: "FLN Lesson Translator",
-      pillar1Desc: "Hindi to Santhali, Ho & Mundari (Grades 1–3)",
-      pillar2Title: "Two-Way Voice Dialogue",
-      pillar2Desc: "Push-to-talk & child speech recognition (< 1.5s)",
-      pillar3Title: "NIPUN Worksheets",
-      pillar3Desc: "L1-L5 / M1-M5 Printable Unicode PDF",
-      pillar4Title: "100% Offline Tablet Engine",
-      pillar4Desc: "Runs smoothly on ≤ 2GB RAM Devices"
+      badge: "PALASH · FLN",
+      title: "Teach in the mother tongue",
+      subtitle: "Help Hindi-medium teachers deliver FLN in Santhali, Ho, and Mundari.",
+      launchBtn: "Open FLN Studio",
+      voiceBtn: "Live voice",
+      worksheetsBtn: "Worksheets",
+      pillar1Title: "Lesson studio",
+      pillar1Desc: "Hindi to Santhali, Ho and Mundari for Grades 1–3",
+      pillar2Title: "Classroom voice",
+      pillar2Desc: "Speak Hindi, hear the mother tongue",
+      pillar3Title: "NIPUN worksheets",
+      pillar3Desc: "Printable bilingual practice sheets",
+      pillar4Title: "Offline tablets",
+      pillar4Desc: "Works on school devices"
     },
 
     // FLN Studio
     fln: {
-      headerTag: "Jharkhand PALASH MTB-MLE · FLN Curriculum Bridge",
-      title: "FLN Lesson Translation & Scripting Studio",
-      subtitle: "Prepares non-native Hindi teachers with lesson scripts, pronunciation aids, and vocabulary breakdowns for",
-      preloadedLessons: "Preloaded FLN Lessons",
-      allGrades: "All Grades",
-      grade1: "Grade 1 (NIPUN Foundational)",
-      grade2: "Grade 2 (NIPUN Intermediate)",
-      grade3: "Grade 3 (NIPUN Advanced/Bridge)",
-      customPassage: "Translate Custom FLN Passage",
-      translateBtn: "Translate to",
-      dualScript: "Dual Script",
-      nativeOnly: "Native Only",
-      exportNotes: "Export Notes",
-      hindiSource: "1. Standard Hindi Source (शिक्षक मूल पाठ)",
-      tribalDelivery: "2. Classroom Delivery Script",
-      pronounce: "Pronounce",
-      vocabBreakdown: "Key Vocabulary Breakdown (শব্দ ভাণ্ডার / शब्द सूची)",
-      phoneticGuide: "Teacher Phonetic Guide"
+      headerTag: "FLN",
+      title: "Lesson studio",
+      subtitle: "Translate a Hindi passage, then speak it in the mother tongue.",
+      preloadedLessons: "Lessons",
+      allGrades: "All",
+      grade1: "Grade 1",
+      grade2: "Grade 2",
+      grade3: "Grade 3",
+      customPassage: "Your Hindi passage",
+      translateBtn: "Translate",
+      dualScript: "Both",
+      nativeOnly: "Script",
+      exportNotes: "PDF",
+      hindiSource: "Hindi",
+      tribalDelivery: "Classroom script",
+      pronounce: "Play",
+      vocabBreakdown: "Words",
+      phoneticGuide: "Pronunciation"
     },
 
     // Vernacular Pedagogy Engine (Live Voice)
     voice: {
-      title: "Real-Time Classroom Dialogue",
-      subtitle: "Two-Way Vernacular Pedagogy Engine",
-      twoWayDesc: "Instant two-way voice translation between Hindi-medium teachers and tribal students with real-time recognition of answering child's voice in",
+      title: "Classroom voice",
+      subtitle: "Speak Hindi. Hear Santhali, Ho, or Mundari.",
+      twoWayDesc: "Two-way classroom speech for",
       latencyBadge: "Real-Time (< 1.5s Pass)",
-      teacherChannel: "Channel 1: Teacher Hindi → Tribal Audio Broadcast",
-      teacherMicPrompt: "Push-to-Talk or select classroom instructions",
-      pushToTalk: "Push-to-Talk (Mic)",
+      teacherChannel: "Teacher",
+      teacherMicPrompt: "Speak Hindi, then play it for the class",
+      pushToTalk: "Speak",
       listening: "Listening…",
-      hindiPrompt: "HINDI CLASSROOM STATEMENT",
-      broadcast: "Broadcast Audio",
-      phonetic: "Phonetics",
-      classroomPhrases: "Classroom Phrases",
-      childChannel: "Channel 2: Answering Child's Voice → Hindi Translation",
-      childMicPrompt: "Listens to tribal speech & recognizes common child responses",
-      listenToChild: "Listen to Child Voice",
-      listeningChild: "Listening to Child…",
-      childSaid: "CHILD SPOKE IN TRIBAL MOTHER TONGUE",
-      teacherMeaning: "INSTANT MEANING FOR TEACHER",
-      commonChildWords: "Common Tribal Child Responses"
+      hindiPrompt: "Hindi",
+      broadcast: "Play",
+      phonetic: "Pronunciation",
+      classroomPhrases: "Phrases",
+      childChannel: "Student",
+      childMicPrompt: "Listen to the child’s reply",
+      listenToChild: "Listen",
+      listeningChild: "Listening…",
+      childSaid: "Heard",
+      teacherMeaning: "Meaning",
+      commonChildWords: "Common replies"
     },
 
     // Worksheets
     worksheets: {
-      headerTag: "NIPUN Bharat Outcomes Framework · Jharkhand MTB-MLE",
-      title: "Auto-Generated Bilingual Worksheets & Visual Flashcards",
-      subtitle: "Generate classroom worksheets and printable flashcard decks aligned with Foundational Literacy and Numeracy Lakshyas.",
+      headerTag: "NIPUN",
+      title: "Worksheets",
+      subtitle: "Print bilingual sheets aligned to NIPUN lakshyas.",
       worksheetView: "Worksheet View",
       flashcardsView: "Flashcards",
       printBtn: "Print",
@@ -103,32 +103,32 @@ export const uiTranslations = {
 
     // Teacher Dashboard
     dashboard: {
-      headerTag: "Jharkhand PALASH MTB-MLE Programme · School Implementation Monitoring",
-      title: "Teacher Instruction & FLN Progress Dashboard",
-      subtitle: "Monitors tribal language lesson delivery, mother-tongue translation reliance heatmaps, NIPUN Bharat competency progress, and tablet synchronization across 5,000+ tribal primary schools.",
+      headerTag: "PALASH",
+      title: "Dashboard",
+      subtitle: "Plan the day. Track FLN delivery and tablet sync.",
       syncBtn: "Sync Tablet Logs",
-      metric1: "FLN Lessons Delivered",
-      metric2: "Mother-Tongue Translations Used",
-      metric3: "NIPUN Outcomes Covered",
-      metric4: "Tablet Offline Sync Status"
+      metric1: "Lessons",
+      metric2: "Phrases",
+      metric3: "Lakshyas",
+      metric4: "Pending logs"
     },
 
     // AI Mentor / Pedagogy Assistant
     mentor: {
-      headerTag: "Jharkhand PALASH MTB-MLE · AI Pedagogy Assistant",
-      title: "Vernacular Pedagogy & Curriculum Assistant",
-      subtitle: "Assists non-native Hindi teachers with lesson scripts, activity instructions, and pedagogical guidance across Santhali, Ho, and Mundari.",
-      mode1: "FLN Lesson Scripting",
-      mode2: "NIPUN Worksheets & Practice",
-      mode3: "Classroom Dialogue Phrases",
-      mode4: "Teacher MTB-MLE Pedagogy"
+      headerTag: "Assistant",
+      title: "Teaching assistant",
+      subtitle: "Ask for a script, a phrase, or a worksheet prompt.",
+      mode1: "Lesson",
+      mode2: "Worksheet",
+      mode3: "Phrase",
+      mode4: "Teaching"
     },
 
     // NCERT Hub
     ncert: {
-      badge: "RAG-Grounded NCERT & JCERT Curriculum · Classes 8–12",
-      title: "STEM AI Learning Lab",
-      subtitle: "Select a STEM branch · Choose your grade · Read, summarize, and chat with AI Mentor",
+      badge: "NCERT",
+      title: "Curriculum",
+      subtitle: "Choose a class and subject, then read or ask.",
       vernacularLine: "ᱥᱮᱬᱮᱞ ᱠᱚᱡᱤ (Ol Chiki) · विज्ञान, गणित और कम्प्यूटर — AI मेंटर से सीखें",
       gradeLabel: "Class",
       allGrades: "All Classes"
@@ -150,82 +150,82 @@ export const uiTranslations = {
 
     // Navigation Tabs
     nav: {
-      flnStudio: "FLN पाठ स्टूडियो",
-      voiceEngine: "मातृभाषा ध्वनि इंजन",
-      worksheets: "निपुण कार्यपत्रक",
-      dashboard: "शिक्षक डैशबोर्ड",
-      pedagogyAssistant: "शिक्षण सहायक AI",
-      curriculumHub: "पाठ्यक्रम केंद्र"
+      flnStudio: "पाठ",
+      voiceEngine: "ध्वनि",
+      worksheets: "कार्यपत्रक",
+      dashboard: "डैशबोर्ड",
+      pedagogyAssistant: "सहायक",
+      curriculumHub: "पाठ्यक्रम"
     },
 
     // Landing Page
     landing: {
-      badge: "AI-संचालित मातृभाषा शिक्षण एवं रीयल-टाइम अनुवाद",
-      title: "झारखण्ड के ५,०००+ जनजातीय विद्यालयों में मातृभाषा-आधारित प्राथमिक शिक्षा",
-      subtitle: "हिंदी माध्यम प्रशिक्षित प्राथमिक शिक्षकों को बिना पूर्व भाषा प्रशिक्षण के संथाली (ओल चिकी ᱚᱞ ᱪᱤᱠᱤ), हो (वारंग क्षिति 𑢹𑣉𑣉) और मुंडारी में बुनियादी साक्षरता और संख्या ज्ञान (FLN) पढ़ाने में सक्षम बनाता है।",
-      launchBtn: "FLN स्टूडियो शुरू करें",
-      voiceBtn: "रीयल-टाइम ध्वनि उपकरण",
-      worksheetsBtn: "निपुण कार्यपत्रक",
-      pillar1Title: "FLN पाठ अनुवादक",
-      pillar1Desc: "हिंदी से संथाली, हो एवं मुंडारी (कक्षा १–३)",
-      pillar2Title: "दोतरफा ध्वनि संवाद",
-      pillar2Desc: "पुश-टू-टॉक एवं बाल स्वर पहचान (< १.५ से.)",
+      badge: "पलाश · FLN",
+      title: "मातृभाषा में पढ़ाएँ",
+      subtitle: "हिंदी माध्यम शिक्षकों को संथाली, हो और मुंडारी में FLN पढ़ाने में मदद।",
+      launchBtn: "FLN स्टूडियो खोलें",
+      voiceBtn: "ध्वनि",
+      worksheetsBtn: "कार्यपत्रक",
+      pillar1Title: "पाठ स्टूडियो",
+      pillar1Desc: "हिंदी से संथाली, हो और मुंडारी — कक्षा १–३",
+      pillar2Title: "कक्षा ध्वनि",
+      pillar2Desc: "हिंदी बोलें, मातृभाषा सुनें",
       pillar3Title: "निपुण कार्यपत्रक",
-      pillar3Desc: "L1-L5 / M1-M5 प्रिंट योग्य यूनिकोड PDF",
-      pillar4Title: "१००% ऑफलाइन टैबलेट इंजन",
-      pillar4Desc: "≤ २GB RAM उपकरणों पर सहज संचालन"
+      pillar3Desc: "द्विभाषी प्रिंट शीट",
+      pillar4Title: "ऑफलाइन टैबलेट",
+      pillar4Desc: "स्कूल उपकरणों पर चलता है"
     },
 
     // FLN Studio
     fln: {
       headerTag: "झारखण्ड पलाश MTB-MLE · FLN पाठ्यक्रम सेतु",
-      title: "FLN पाठ अनुवाद एवं स्क्रिप्टिंग स्टूडियो",
-      subtitle: "गैर-मूलभाषी हिंदी शिक्षकों को कक्षा १, २ और ३ के लिए पाठ स्क्रिप्ट, उच्चारण सहायता और शब्दावली विश्लेषण से लैस करता है—",
-      preloadedLessons: "पाठ्यक्रम FLN पाठ",
-      allGrades: "सभी कक्षाएं",
-      grade1: "कक्षा १ (निपुण बुनियादी)",
-      grade2: "कक्षा २ (निपुण मध्यम)",
-      grade3: "कक्षा ३ (निपुण सेतु/उन्नत)",
-      customPassage: "कस्टम FLN वाक्य का अनुवाद करें",
-      translateBtn: "अनुवाद करें",
-      dualScript: "दोहरी लिपि",
-      nativeOnly: "केवल मूल लिपि",
-      exportNotes: "नोट्स PDF निर्यात",
-      hindiSource: "1. मानक हिंदी मूल पाठ (शिक्षक पाठ)",
-      tribalDelivery: "2. कक्षा में बोलने योग्य स्क्रिप्ट",
-      pronounce: "उच्चारण सुनें",
-      vocabBreakdown: "मुख्य शब्दावली विश्लेषण (शब्द सूची)",
-      phoneticGuide: "शिक्षक उच्चारण मार्गदर्शिका"
+      title: "पाठ स्टूडियो",
+      subtitle: "हिंदी पाठ का अनुवाद करें, फिर मातृभाषा में बोलें।",
+      preloadedLessons: "पाठ",
+      allGrades: "सभी",
+      grade1: "कक्षा १",
+      grade2: "कक्षा २",
+      grade3: "कक्षा ३",
+      customPassage: "अपना हिंदी पाठ",
+      translateBtn: "अनुवाद",
+      dualScript: "दोनों",
+      nativeOnly: "लिपि",
+      exportNotes: "PDF",
+      hindiSource: "हिंदी",
+      tribalDelivery: "कक्षा स्क्रिप्ट",
+      pronounce: "चलाएँ",
+      vocabBreakdown: "शब्द",
+      phoneticGuide: "उच्चारण"
     },
 
     // Vernacular Pedagogy Engine (Live Voice)
     voice: {
-      title: "रीयल-टाइम कक्षा संवाद",
-      subtitle: "दोतरफा मातृभाषा शिक्षण एवं ध्वनि इंजन",
+      title: "कक्षा ध्वनि",
+      subtitle: "हिंदी बोलें। संथाली, हो या मुंडारी सुनें।",
       twoWayDesc: "हिंदी माध्यम शिक्षकों और जनजातीय छात्रों के बीच त्वरित दोतरफा ध्वनि अनुवाद, जिसमें उत्तर देने वाले बच्चे की आवाज़ की रीयल-टाइम पहचान शामिल है—",
       latencyBadge: "रीयल-टाइम (< १.५ से. सफल)",
-      teacherChannel: "चैनल १: शिक्षक हिंदी → जनजातीय ऑडियो प्रसारण",
-      teacherMicPrompt: "पुश-टू-टॉक दबाएं या कक्षा निर्देश चुनें",
-      pushToTalk: "पुश-टू-टॉक (माइक)",
+      teacherChannel: "शिक्षक",
+      teacherMicPrompt: "हिंदी बोलें, फिर कक्षा में चलाएँ",
+      pushToTalk: "बोलें",
       listening: "सुन रहे हैं…",
-      hindiPrompt: "हिंदी कक्षा वक्तव्य",
-      broadcast: "कक्षा में सुनाएं",
+      hindiPrompt: "हिंदी",
+      broadcast: "चलाएँ",
       phonetic: "उच्चारण",
-      classroomPhrases: "कक्षा निर्देश",
-      childChannel: "चैनल २: उत्तर देने वाले बच्चे की आवाज़ → हिंदी अनुवाद",
-      childMicPrompt: "जनजातीय बच्चे की आवाज़ सुनकर तुरंत हिंदी में अनुवाद करता है",
-      listenToChild: "बच्चे की आवाज़ सुनें",
-      listeningChild: "बच्चे की आवाज़ सुन रहे हैं…",
-      childSaid: "बच्चे ने मातृभाषा में कहा",
-      teacherMeaning: "शिक्षक के लिए त्वरित हिंदी अर्थ",
-      commonChildWords: "सामान्य जनजातीय बाल उत्तर"
+      classroomPhrases: "वाक्य",
+      childChannel: "छात्र",
+      childMicPrompt: "बच्चे का उत्तर सुनें",
+      listenToChild: "सुनें",
+      listeningChild: "सुन रहे हैं…",
+      childSaid: "सुना",
+      teacherMeaning: "अर्थ",
+      commonChildWords: "सामान्य उत्तर"
     },
 
     // Worksheets
     worksheets: {
       headerTag: "निपुण भारत अधिगम प्रतिफल ढांचा · झारखण्ड MTB-MLE",
-      title: "स्वतः उत्पन्न द्विभाषी कार्यपत्रक एवं दृश्य फ्लैशकार्ड",
-      subtitle: "बुनियादी साक्षरता और संख्यात्मक लक्ष्यों के अनुरूप कक्षा कार्यपत्रक और प्रिंट करने योग्य फ्लैशकार्ड उत्पन्न करें।",
+      title: "कार्यपत्रक",
+      subtitle: "निपुण लक्ष्यों के अनुरूप द्विभाषी शीट प्रिंट करें।",
       worksheetView: "कार्यपत्रक दृश्य",
       flashcardsView: "फ्लैशकार्ड",
       printBtn: "प्रिंट करें",
@@ -235,8 +235,8 @@ export const uiTranslations = {
     // Teacher Dashboard
     dashboard: {
       headerTag: "झारखण्ड पलाश MTB-MLE कार्यक्रम · विद्यालय क्रियान्वयन निगरानी",
-      title: "शिक्षक शिक्षण एवं FLN प्रगति डैशबोर्ड",
-      subtitle: "५,०००+ प्राथमिक विद्यालयों में जनजातीय भाषा पाठ वितरण, मातृभाषा अनुवाद निर्भरता हीटमैप, निपुण भारत दक्षता प्रगति और टैबलेट सिंक्रोनाइज़ेशन की निगरानी करता है।",
+      title: "डैशबोर्ड",
+      subtitle: "आज की कक्षा, FLN प्रगति और टैबलेट सिंक।",
       syncBtn: "टैबलेट लॉग सिंक करें",
       metric1: "दिए गए FLN पाठ",
       metric2: "उपयोग किए गए मातृभाषा अनुवाद",
@@ -247,19 +247,19 @@ export const uiTranslations = {
     // AI Mentor / Pedagogy Assistant
     mentor: {
       headerTag: "झारखण्ड पलाश MTB-MLE · AI शिक्षण सहायक",
-      title: "मातृभाषा शिक्षण एवं पाठ्यक्रम सहायक",
-      subtitle: "संथाली, हो और मुंडारी में गैर-मूलभाषी हिंदी शिक्षकों को पाठ स्क्रिप्ट, गतिविधि निर्देश और शिक्षण मार्गदर्शन प्रदान करता है।",
-      mode1: "FLN पाठ स्क्रिप्टिंग",
-      mode2: "निपुण कार्यपत्रक एवं अभ्यास",
-      mode3: "कक्षा संवाद वाक्यांश",
-      mode4: "शिक्षक MTB-MLE शिक्षाशास्त्र"
+      title: "शिक्षण सहायक",
+      subtitle: "स्क्रिप्ट, वाक्यांश या अभ्यास पूछें।",
+      mode1: "पाठ",
+      mode2: "कार्यपत्रक",
+      mode3: "वाक्य",
+      mode4: "शिक्षण"
     },
 
     // NCERT Hub
     ncert: {
       badge: "NCERT एवं JCERT पाठ्यक्रम संरेखण · कक्षा ८–१२",
-      title: "STEM AI शिक्षण लैब",
-      subtitle: "STEM शाखा चुनें · अपनी कक्षा चुनें · पढ़ें, सारांश देखें और AI मेंटर से चर्चा करें",
+      title: "पाठ्यक्रम",
+      subtitle: "कक्षा और विषय चुनें।",
       vernacularLine: "ᱥᱮᱬᱮᱞ ᱠᱚᱡᱤ (ओल चिकी) · विज्ञान, गणित और कम्प्यूटर — AI गुरुजी से सीखें",
       gradeLabel: "कक्षा",
       allGrades: "सभी कक्षाएं"
