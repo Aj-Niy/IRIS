@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Volume2, Mic, Search, Headphones } from 'lucide-react';
+import { Volume2, Mic, Search, Headphones, Hand, Sparkles } from 'lucide-react';
 import {
   CLASSROOM_PHRASEBOOK,
   TRIBAL_LANGUAGES,
@@ -11,6 +11,7 @@ import { startListening } from './speechUtils';
 import AudioPlayButton from './AudioPlayButton';
 import { uiTranslations } from '../services/uiTranslations';
 import ISLVideoPlayerModal from './ISLVideoPlayerModal';
+import ISLGestureRecognizerModal from './ISLGestureRecognizerModal';
 
 export default function LivePhrasebook({
   uiLang = 'en',
@@ -37,6 +38,8 @@ export default function LivePhrasebook({
   const [isIslModalOpen, setIsIslModalOpen] = useState(false);
   const [islConcept, setIslConcept] = useState('');
   const [islText, setIslText] = useState('');
+
+  const [isGestureModalOpen, setIsGestureModalOpen] = useState(false);
 
   const handleOpenIsl = (concept, text) => {
     setIslConcept(concept);
@@ -189,7 +192,31 @@ export default function LivePhrasebook({
     <div>
       <div className="page-head">
         <div>
-          <h1>{t.voice.title}</h1>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '4px' }}>
+            <h1 style={{ margin: 0 }}>{t.voice.title}</h1>
+            <button
+              onClick={() => setIsGestureModalOpen(true)}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                padding: '4px 12px',
+                borderRadius: '20px',
+                backgroundColor: 'var(--green-light)',
+                border: '1.5px solid var(--green-border)',
+                color: 'var(--green-primary)',
+                fontSize: '12px',
+                fontWeight: '700',
+                cursor: 'pointer',
+                boxShadow: 'var(--shadow-xs)'
+              }}
+              title="Open Live ISL Gesture Recognition AI Pop-up"
+            >
+              <Hand size={14} color="var(--green-primary)" />
+              <span>Live Gesture AI</span>
+              <Sparkles size={12} color="var(--amber)" />
+            </button>
+          </div>
           <p>{t.voice.subtitle}</p>
         </div>
         <div className="seg">
@@ -347,6 +374,12 @@ export default function LivePhrasebook({
         conceptName={islConcept}
         fullText={islText}
         displayText={islText}
+      />
+
+      <ISLGestureRecognizerModal
+        isOpen={isGestureModalOpen}
+        onClose={() => setIsGestureModalOpen(false)}
+        currentLang={selectedLang}
       />
     </div>
   );
