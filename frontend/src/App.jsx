@@ -74,7 +74,9 @@ print("Final Sum:", total)
         setUserRole={setUserRole}
         setUserName={handleSetUserName}
         uiLang={uiLang}
+        setUiLang={setUiLang}
         currentLang={currentLang}
+        setCurrentLang={setCurrentLang}
       />
     );
   }
@@ -104,6 +106,7 @@ print("Final Sum:", total)
           currentTab={currentTab}
           setCurrentTab={handleSetTab}
           uiLang={uiLang}
+          setUiLang={setUiLang}
           currentLang={currentLang}
           userName={userName}
           onMenu={() => setSidebarOpen(true)}

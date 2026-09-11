@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { Search, Menu } from 'lucide-react';
+import { Search, Menu, Globe } from 'lucide-react';
 
 export default function TopHeader({
   setCurrentTab,
   currentLang = 'sat',
+  uiLang = 'en',
+  setUiLang,
   userName,
   onMenu
 }) {
@@ -41,12 +43,26 @@ export default function TopHeader({
           type="text"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Search lessons, phrases, worksheets"
+          placeholder={uiLang === 'hi' ? "पाठ, वाक्य, कार्यपत्रक खोजें..." : "Search lessons, phrases, worksheets"}
         />
         <span className="kbd">⌘F</span>
       </form>
 
       <div className="header-actions">
+        {/* UI Language Switcher */}
+        <div className="nav-select-wrap" style={{ backgroundColor: 'var(--bg-main)', borderRadius: '8px', padding: '3px 8px', display: 'flex', alignItems: 'center', gap: '4px', border: '1px solid var(--border-medium)' }}>
+          <Globe size={12} color="var(--text-muted)" />
+          <span style={{ fontSize: 10, color: 'var(--text-muted)', fontWeight: 600 }}>UI:</span>
+          <select
+            value={uiLang}
+            onChange={(e) => setUiLang && setUiLang(e.target.value)}
+            style={{ border: 'none', background: 'transparent', fontSize: '11px', fontWeight: '700', cursor: 'pointer', outline: 'none', color: 'var(--text-main)' }}
+          >
+            <option value="en">EN</option>
+            <option value="hi">हिं</option>
+          </select>
+        </div>
+
         <span className="quiet" style={{ fontWeight: 600, fontSize: 12, color: 'var(--text-sub)' }}>
           {langNames[currentLang] || 'Santhali'}
         </span>
