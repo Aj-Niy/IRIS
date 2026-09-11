@@ -44,9 +44,9 @@ export default function Sidebar({
     <aside className={`app-sidebar ${open ? 'open' : ''}`}>
       <div>
         <div className="sidebar-header" onClick={() => setCurrentTab('landing')} style={{ cursor: 'pointer' }}>
-          <img src="/iris-logo.png" alt="PALASH IRIS" className="sidebar-logo" />
+          <img src="/iris-logo.png" alt="ShikshaSetu" className="sidebar-logo" />
           <div>
-            <div className="sidebar-brand">PALASH <span>IRIS</span></div>
+            <div className="sidebar-brand">Shiksha<span>Setu</span></div>
           </div>
         </div>
 

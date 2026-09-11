@@ -47,11 +47,9 @@ export default function TopHeader({
       </form>
 
       <div className="header-actions">
-        <span className="quiet">{langNames[currentLang] || 'Santhali'}</span>
-        <div className="user-chip">
-          <div className="avatar">{userName ? userName.charAt(0).toUpperCase() : 'T'}</div>
-          <span style={{ fontSize: 13, fontWeight: 700 }}>{userName || 'Teacher'}</span>
-        </div>
+        <span className="quiet" style={{ fontWeight: 600, fontSize: 12, color: 'var(--text-sub)' }}>
+          {langNames[currentLang] || 'Santhali'}
+        </span>
       </div>
     </header>
   );

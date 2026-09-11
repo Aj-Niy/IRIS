@@ -77,7 +77,7 @@ export default function NCERTSection({
   const [isSummarizing, setIsSummarizing] = useState(false);
 
   const [chatMessages, setChatMessages] = useState([
-    { role: 'ai', text: '🙏 Namaste! I am your PALASH Curriculum AI Mentor. Select a chapter or STEM branch above, then ask me anything — I will guide you Socratically!' }
+    { role: 'ai', text: '🙏 Namaste! I am your ShikshaSetu Curriculum AI Mentor. Select a chapter or STEM branch above, then ask me anything — I will guide you Socratically!' }
   ]);
   const [chatInput, setChatInput] = useState('');
   const [isChatLoading, setIsChatLoading] = useState(false);
@@ -852,7 +852,7 @@ function VideoAIModal({ isOpen, onClose, chapterTitle, grade, subject, langCode 
         {/* Footer Info */}
         <div style={{ padding: '14px 20px', backgroundColor: '#18181B', borderTop: '1px solid #27272A', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div style={{ fontSize: '12px', color: '#A1A1AA' }}>
-            <span style={{ color: '#FFFFFF', fontWeight: '600' }}>PALASH Curriculum Video Feature</span> · Supabase Storage Live
+            <span style={{ color: '#FFFFFF', fontWeight: '600' }}>ShikshaSetu Curriculum Video Feature</span> · Supabase Storage Live
           </div>
           <button
             onClick={onClose}

@@ -19,6 +19,17 @@ import AudioPlayButton from './AudioPlayButton';
 import { uiTranslations } from '../services/uiTranslations';
 import ISLVideoPlayerModal from './ISLVideoPlayerModal';
 
+const FLASHCARD_COLOR_SCHEMES = [
+  { bg: '#EFF6FF', border: '#BFDBFE', badgeClass: 'badge-blue', text: '#1E40AF', subText: '#2563EB' },   // Light Blue
+  { bg: '#FFF7ED', border: '#FED7AA', badgeClass: 'badge-orange', text: '#9A3412', subText: '#EA580C' }, // Warm Peach / Orange
+  { bg: '#ECFDF5', border: '#A7F3D0', badgeClass: 'badge-green', text: '#065F46', subText: '#059669' },  // Soft Mint
+  { bg: '#FFF1F2', border: '#FECDD3', badgeClass: 'badge-rose', text: '#9F1239', subText: '#E11D48' },   // Soft Rose
+  { bg: '#FFFBEB', border: '#FDE68A', badgeClass: 'badge-amber', text: '#92400E', subText: '#D97706' },  // Soft Amber
+  { bg: '#FAF5FF', border: '#E9D5FF', badgeClass: 'badge-purple', text: '#6B21A8', subText: '#9333EA' }, // Soft Lavender
+  { bg: '#F0FDFA', border: '#99F6E4', badgeClass: 'badge-blue', text: '#115E59', subText: '#0D9488' },   // Teal
+  { bg: '#F0F9FF', border: '#BAE6FD', badgeClass: 'badge-blue', text: '#075985', subText: '#0284C7' }    // Sky Blue
+];
+
 const NIPUN_TRIBAL_WORKSHEETS = {
   "L1.1": {
     nipunCode: "L1.1",
@@ -75,10 +86,22 @@ const NIPUN_TRIBAL_WORKSHEETS = {
       }
     ],
     flashcards: [
-      { front: "ᱡᱚᱦᱟᱨ", roman: "Johar", back: "नमस्ते (Greetings / Johar)", category: "Social" },
+      { front: "ᱡᱚᱦᱟᱨ", roman: "Johar", back: "नमस्ते (Greetings / Hello)", category: "Social" },
       { front: "ᱢᱟᱪᱮᱛ", roman: "Machet", back: "शिक्षक (Teacher)", category: "People" },
+      { front: "ᱯᱚᱛᱚᱵ", roman: "Potob", back: "किताब (Book)", category: "Classroom" },
       { front: "ᱫᱟᱨᱮ", roman: "Dare", back: "पेड़ (Tree)", category: "Nature" },
-      { front: "ᱡᱚ", roman: "Jo", back: "फल (Fruit)", category: "Nature" }
+      { front: "ᱵᱟᱦᱟ", roman: "Baha", back: "फूल (Flower)", category: "Nature" },
+      { front: "ᱯᱟᱴᱟ", roman: "Pata", back: "स्लेट (Slate / Board)", category: "Classroom" },
+      { front: "ᱫᱟᱜ", roman: "Da'", back: "पानी (Water)", category: "Nature" },
+      { front: "ᱥᱤᱝ", roman: "Siñ", back: "सूर्य / सूरज (Sun)", category: "Sky" },
+      { front: "ᱪᱟᱸᱫᱚ", roman: "Chando", back: "चन्द्रमा / चाँद (Moon)", category: "Sky" },
+      { front: "ᱪᱮᱬᱮ", roman: "Cheṇe", back: "पक्षिया / चिड़िया (Bird)", category: "Animals" },
+      { front: "ᱢᱤᱫ", roman: "Mit'", back: "एक (1 / One)", category: "Numbers" },
+      { front: "ᱵᱟᱨ", roman: "Bar", back: "दो (2 / Two)", category: "Numbers" },
+      { front: "ᱯᱮ", roman: "Pe", back: "तीन (3 / Three)", category: "Numbers" },
+      { front: "ᱯᱩᱱ", roman: "Pun", back: "चार (4 / Four)", category: "Numbers" },
+      { front: "ᱢᱚᱬᱮ", roman: "Mõṛẽ", back: "पाँच (5 / Five)", category: "Numbers" },
+      { front: "ᱚᱲᱟᱜ", roman: "Oṛag", back: "घर (Home / House)", category: "Family" }
     ]
   },
   "L1.2": {
@@ -139,7 +162,15 @@ const NIPUN_TRIBAL_WORKSHEETS = {
       { front: "ᱯᱚᱛᱚᱵ", roman: "Potob", back: "किताब (Book)", category: "Classroom" },
       { front: "ᱫᱟᱨᱮ", roman: "Dare", back: "पेड़ (Tree)", category: "Nature" },
       { front: "ᱵᱟᱦᱟ", roman: "Baha", back: "फूल (Flower)", category: "Nature" },
-      { front: "ᱯᱟᱴᱟ", roman: "Pata", back: "स्लेट (Slate)", category: "Classroom" }
+      { front: "ᱯᱟᱴᱟ", roman: "Pata", back: "स्लेट (Slate)", category: "Classroom" },
+      { front: "ᱫᱟᱜ", roman: "Da'", back: "पानी (Water)", category: "Nature" },
+      { front: "ᱥᱤᱝ", roman: "Siñ", back: "सूरज (Sun)", category: "Sky" },
+      { front: "ᱪᱟᱸᱫᱚ", roman: "Chando", back: "चाँद (Moon)", category: "Sky" },
+      { front: "ᱪᱮᱬᱮ", roman: "Cheṇe", back: "चिड़िया (Bird)", category: "Animals" },
+      { front: "ᱢᱤᱫ", roman: "Mit'", back: "एक (1 / One)", category: "Numbers" },
+      { front: "ᱵᱟᱨ", roman: "Bar", back: "दो (2 / Two)", category: "Numbers" },
+      { front: "ᱯᱮ", roman: "Pe", back: "तीन (3 / Three)", category: "Numbers" },
+      { front: "ᱯᱩᱱ", roman: "Pun", back: "चार (4 / Four)", category: "Numbers" }
     ]
   },
   "M1.1": {
@@ -170,7 +201,13 @@ const NIPUN_TRIBAL_WORKSHEETS = {
     ],
     flashcards: [
       { front: "ᱢᱤᱫ", roman: "Mit'", back: "एक (1 / One)", category: "Numbers" },
-      { front: "ᱵᱟᱨ", roman: "Bar", back: "दो (2 / Two)", category: "Numbers" }
+      { front: "ᱵᱟᱨ", roman: "Bar", back: "दो (2 / Two)", category: "Numbers" },
+      { front: "ᱯᱮ", roman: "Pe", back: "तीन (3 / Three)", category: "Numbers" },
+      { front: "ᱯᱩᱱ", roman: "Pun", back: "चार (4 / Four)", category: "Numbers" },
+      { front: "ᱢᱚᱬᱮ", roman: "Mõṛẽ", back: "पाँच (5 / Five)", category: "Numbers" },
+      { front: "ᱛᱩᱨᱩᱭ", roman: "Turui", back: "छह (6 / Six)", category: "Numbers" },
+      { front: "ᱮᱭᱟᱭ", roman: "Eyai", back: "सात (7 / Seven)", category: "Numbers" },
+      { front: "ᱤᱨᱟᱹᱞ", roman: "Irạl", back: "आठ (8 / Eight)", category: "Numbers" }
     ]
   }
 };
@@ -289,7 +326,7 @@ export default function WorksheetGenerator({
         }
       }
 
-      pdf.save(`PALASH_NIPUN_${currentWorksheet.nipunCode}_${selectedLang}_${isTeacherMode ? 'TeacherKey' : 'StudentWorksheet'}.pdf`);
+      pdf.save(`ShikshaSetu_NIPUN_${currentWorksheet.nipunCode}_${selectedLang}_${isTeacherMode ? 'TeacherKey' : 'StudentWorksheet'}.pdf`);
     } catch (err) {
       console.error('PDF export error:', err);
       window.print();
@@ -399,7 +436,7 @@ export default function WorksheetGenerator({
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <div>
                     <div style={{ fontSize: '11px', fontWeight: '700', color: 'var(--green-primary)', textTransform: 'uppercase', marginBottom: '2px' }}>
-                      PALASH MTB-MLE Programme · Government of Jharkhand
+                      ShikshaSetu MTB-MLE Programme · Government of Jharkhand
                     </div>
                     <div style={{ fontSize: '14px', fontWeight: '700', color: 'var(--text-main)' }}>
                       NIPUN Bharat {currentWorksheet.nipunCode} — {activeLangObj.name} ({activeLangObj.script})
@@ -410,7 +447,7 @@ export default function WorksheetGenerator({
                   </div>
                   {isTeacherMode && (
                     <span className="badge-green">
-                      👩‍🏫 TEACHER EVALUATION KEY
+                      TEACHER EVALUATION KEY
                     </span>
                   )}
                 </div>
@@ -608,7 +645,7 @@ export default function WorksheetGenerator({
                           color: 'var(--badge-amber-text)',
                           fontWeight: '600'
                         }}>
-                          💡 <strong>शिक्षक मूल्यांकन मार्गदर्शन (Pedagogy Note):</strong> {q.pedagogyNote || `Assesses NIPUN competency ${currentWorksheet.nipunCode}`}
+                          <strong>शिक्षक मूल्यांकन मार्गदर्शन (Pedagogy Note):</strong> {q.pedagogyNote || `Assesses NIPUN competency ${currentWorksheet.nipunCode}`}
                         </div>
                       )}
                     </div>
@@ -630,7 +667,7 @@ export default function WorksheetGenerator({
                 flexWrap: 'wrap',
                 gap: '8px'
               }}>
-                <span>Government of Jharkhand · PALASH MTB-MLE Programme</span>
+                <span>Government of Jharkhand · ShikshaSetu MTB-MLE Programme</span>
                 <span>NIPUN Bharat FLN Alignment · {activeLangObj.name} ({activeLangObj.script})</span>
               </div>
             </div>
@@ -638,47 +675,55 @@ export default function WorksheetGenerator({
 
           {activeTab === 'flashcards' && (
             <div className="card" style={{ padding: '24px' }}>
-              <h3 className="card-title" style={{ marginBottom: 16 }}>{activeLangObj.name} flashcards</h3>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+                <div>
+                  <h3 className="card-title" style={{ margin: 0 }}>{activeLangObj.name} Flashcards</h3>
+                  <div className="quiet" style={{ fontSize: 12, marginTop: 2 }}>Interactive vocabulary deck with audio pronunciation</div>
+                </div>
+                <span className="badge-blue" style={{ fontSize: 11, fontWeight: 700 }}>{currentWorksheet.flashcards.length} Cards Deck</span>
+              </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '12px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(210px, 1fr))', gap: '14px' }}>
                 {currentWorksheet.flashcards.map((card, idx) => {
                   const isFlipped = flippedCardIndex === idx;
+                  const scheme = FLASHCARD_COLOR_SCHEMES[idx % FLASHCARD_COLOR_SCHEMES.length];
+
                   return (
                     <div
                       key={idx}
                       onClick={() => setFlippedCardIndex(isFlipped ? null : idx)}
                       style={{
-                        height: '160px',
-                        borderRadius: 'var(--radius-md)',
-                        padding: '14px',
-                        backgroundColor: isFlipped ? 'var(--badge-green-bg)' : '#FFFFFF',
-                        border: isFlipped ? '1.5px solid var(--green-primary)' : '1px solid var(--border-medium)',
+                        height: '165px',
+                        borderRadius: '14px',
+                        padding: '16px',
+                        backgroundColor: isFlipped ? '#FFFFFF' : scheme.bg,
+                        border: isFlipped ? '2px solid var(--green-primary)' : `1.5px solid ${scheme.border}`,
                         cursor: 'pointer',
                         display: 'flex',
                         flexDirection: 'column',
                         justifyContent: 'space-between',
                         alignItems: 'center',
                         textAlign: 'center',
-                        transition: 'all 0.15s ease',
-                        boxShadow: 'var(--shadow-sm)'
+                        transition: 'transform 0.15s ease, box-shadow 0.15s ease',
+                        boxShadow: isFlipped ? 'var(--shadow-md)' : 'var(--shadow-xs)'
                       }}
                     >
-                      <span className="badge-green" style={{ fontSize: '9px', textTransform: 'uppercase' }}>
+                      <span className={scheme.badgeClass} style={{ fontSize: '9px', textTransform: 'uppercase', padding: '2px 8px' }}>
                         {card.category} · {isFlipped ? 'Hindi' : activeLangObj.name}
                       </span>
 
                       {!isFlipped ? (
                         <div>
-                          <div style={{ fontSize: '22px', fontWeight: '800', color: 'var(--text-main)', marginBottom: '2px' }}>
+                          <div style={{ fontSize: '24px', fontWeight: '800', color: scheme.text, marginBottom: '2px' }}>
                             {card.front}
                           </div>
-                          <div style={{ fontSize: '12px', fontWeight: '600', color: 'var(--green-primary)' }}>
-                            ({card.roman})
+                          <div style={{ fontSize: '13px', fontWeight: '600', color: scheme.subText }}>
+                            ("{card.roman}")
                           </div>
                         </div>
                       ) : (
                         <div>
-                          <div style={{ fontSize: '14px', fontWeight: '700', color: 'var(--text-main)' }}>
+                          <div style={{ fontSize: '15px', fontWeight: '700', color: 'var(--text-main)' }}>
                             {card.back}
                           </div>
                           <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '4px' }}>
@@ -692,7 +737,7 @@ export default function WorksheetGenerator({
                           text={card.roman || card.front}
                           size="sm"
                           showStop={false}
-                          label="Audio"
+                          label="Listen"
                         />
                       </div>
                     </div>

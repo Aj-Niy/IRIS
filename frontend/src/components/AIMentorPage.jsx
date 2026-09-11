@@ -65,10 +65,10 @@ export default function AIMentorPage({
   const [messages, setMessages] = useState([
     {
       role: "assistant",
-      text: "नमस्ते! I am your PALASH Teacher Pedagogy Assistant for Jharkhand's MTB-MLE Programme. How can I assist your classroom delivery today?",
-      scriptText: "ᱡᱚᱦᱟᱨ! ᱤᱧ ᱫᱚ PALASH ᱢᱟᱪᱮᱛ ᱜᱚᱲᱚ-ᱮᱢᱚᱜ ᱤᱧᱡᱤᱱ ᱠᱟᱱᱟᱹᱧ᱾",
-      romanText: "Johar! Iñ do PALASH machet goṛo-emog injin kanañ.",
-      hindiText: "नमस्ते! मैं झारखण्ड PALASH मातृभाषा शिक्षण सहायक हूँ। आज मैं आपकी कक्षा के लिए क्या तैयार करूँ?"
+      text: "नमस्ते! I am your ShikshaSetu Teacher Pedagogy Assistant for Jharkhand's MTB-MLE Programme. How can I assist your classroom delivery today?",
+      scriptText: "ᱡᱚᱦᱟᱨ! ᱤᱧ ᱫᱚ ShikshaSetu ᱢᱟᱪᱮᱛ ᱜᱚᱲᱚ-ᱮᱢᱚᱜ ᱤᱧᱡᱤᱱ ᱠᱟᱱᱟᱹᱧ᱾",
+      romanText: "Johar! Iñ do ShikshaSetu machet goṛo-emog injin kanañ.",
+      hindiText: "नमस्ते! मैं झारखण्ड शिक्षासेतु मातृभाषा शिक्षण सहायक हूँ। आज मैं आपकी कक्षा के लिए क्या तैयार करूँ?"
     }
   ]);
 

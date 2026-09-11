@@ -155,7 +155,7 @@ export default function SantaliStudio({
     const doc = new jsPDF();
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(14);
-    doc.text("PALASH MTB-MLE Programme — Government of Jharkhand", 20, 20);
+    doc.text("ShikshaSetu MTB-MLE Programme — Government of Jharkhand", 20, 20);
     doc.setFontSize(11);
     doc.text(`FLN Classroom Lesson Plan (${activeLangObj.name} Language Bridge)`, 20, 28);
     doc.setFont('helvetica', 'normal');
@@ -195,7 +195,7 @@ export default function SantaliStudio({
     y += 6;
     doc.text("- Reinforce key classroom vocabulary through concrete objects and slate drawings.", 20, y);
 
-    doc.save(`PALASH_FLN_Lesson_${selectedLang}.pdf`);
+    doc.save(`ShikshaSetu_FLN_Lesson_${selectedLang}.pdf`);
   };
 
   return (
@@ -222,12 +222,28 @@ export default function SantaliStudio({
         <div className="col-stack">
           <div className="card">
             <h3 className="card-title" style={{ marginBottom: 12 }}>{t.fln.preloadedLessons}</h3>
-            <div className="seg" style={{ marginBottom: 12, flexWrap: 'wrap' }}>
-              {['All', 'Grade 1', 'Grade 2', 'Grade 3'].map(gr => (
-                <button key={gr} className={selectedGrade === gr ? 'active' : ''} onClick={() => setSelectedGrade(gr)}>
-                  {gr === 'All' ? t.fln.allGrades : gr === 'Grade 1' ? t.fln.grade1 : gr === 'Grade 2' ? t.fln.grade2 : t.fln.grade3}
-                </button>
-              ))}
+            <div style={{ marginBottom: 12 }}>
+              <select
+                value={selectedGrade}
+                onChange={(e) => setSelectedGrade(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '8px 12px',
+                  borderRadius: '8px',
+                  border: '1px solid var(--border-medium)',
+                  backgroundColor: '#FFFFFF',
+                  fontSize: '13px',
+                  fontWeight: '600',
+                  color: 'var(--text-main)',
+                  outline: 'none',
+                  cursor: 'pointer'
+                }}
+              >
+                <option value="All">{t.fln.allGrades}</option>
+                <option value="Grade 1">{t.fln.grade1}</option>
+                <option value="Grade 2">{t.fln.grade2}</option>
+                <option value="Grade 3">{t.fln.grade3}</option>
+              </select>
             </div>
             <div className="col-stack" style={{ maxHeight: 360, overflowY: 'auto', gap: 8 }}>
               {filteredLessons.map((lesson) => {

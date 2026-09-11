@@ -8,7 +8,7 @@ export const uiTranslations = {
     // Common Institutional Header / Sub-bar
     common: {
       govtHeader: "GOVT. OF JHARKHAND",
-      psTag: "PALASH MTB-MLE · Problem Statement 26042",
+      psTag: "ShikshaSetu MTB-MLE · Problem Statement 26042",
       offlineReady: "Tablet Offline Mode Ready (≤ 2GB RAM)",
       uiLangLabel: "UI Language",
       targetLangLabel: "Tribal Language",
@@ -29,7 +29,7 @@ export const uiTranslations = {
 
     // Landing Page
     landing: {
-      badge: "PALASH · FLN",
+      badge: "ShikshaSetu · FLN",
       title: "Teach in the mother tongue",
       subtitle: "Help Hindi-medium teachers deliver FLN in Santhali, Ho, and Mundari.",
       launchBtn: "Open FLN Studio",
@@ -139,7 +139,7 @@ export const uiTranslations = {
     // Common Institutional Header / Sub-bar
     common: {
       govtHeader: "झारखण्ड सरकार",
-      psTag: "पलाश MTB-MLE · समस्या विवरण 26042",
+      psTag: "शिक्षासेतु MTB-MLE · समस्या विवरण 26042",
       offlineReady: "टैबलेट ऑफलाइन मोड तैयार (≤ 2GB RAM)",
       uiLangLabel: "इंटरफ़ेस भाषा",
       targetLangLabel: "मातृभाषा शिक्षण",
@@ -160,7 +160,7 @@ export const uiTranslations = {
 
     // Landing Page
     landing: {
-      badge: "पलाश · FLN",
+      badge: "शिक्षासेतु · FLN",
       title: "मातृभाषा में पढ़ाएँ",
       subtitle: "हिंदी माध्यम शिक्षकों को संथाली, हो और मुंडारी में FLN पढ़ाने में मदद।",
       launchBtn: "FLN स्टूडियो खोलें",

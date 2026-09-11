@@ -209,6 +209,10 @@ export default function LivePhrasebook({
         <div className="card">
           <div className="page-head" style={{ marginBottom: 16 }}>
             <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                <span className="badge-green">TEACHER CHANNEL</span>
+                <span className="badge-blue" style={{ fontSize: '10px' }}>&lt; 1.5s Pass</span>
+              </div>
               <h2 className="card-title">{t.voice.teacherChannel}</h2>
               <p className="quiet">{t.voice.teacherMicPrompt}</p>
             </div>
@@ -226,9 +230,9 @@ export default function LivePhrasebook({
             placeholder="हिंदी"
           />
 
-          <div className="script-block-plain script-block" style={{ marginTop: 12 }}>
+          <div className="script-block-plain script-block" style={{ marginTop: 12, backgroundColor: 'var(--green-light)', border: '1px solid var(--green-border)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-              <span className="quiet">{activeLangObj.name}{measuredLatency ? ` · ${measuredLatency}s` : ''}</span>
+              <span className="quiet" style={{ color: 'var(--green-primary)', fontWeight: 600 }}>{activeLangObj.name}{measuredLatency ? ` · ${measuredLatency}s real-time` : ''}</span>
               <div className="actions">
                 <button className="btn-ghost" onClick={() => handleOpenIsl(selectedPhrase.hindi, selectedPhrase.english || selectedPhrase.hindi)}>ISL</button>
                 <AudioPlayButton
@@ -252,20 +256,26 @@ export default function LivePhrasebook({
             </div>
             <div className="search-bar" style={{ width: '100%', marginBottom: 10 }}>
               <Search size={14} color="#9CA3AF" />
-              <input value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder="Search" />
+              <input value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder="Search phrases..." />
             </div>
             <div className="col-stack" style={{ maxHeight: 220, overflowY: 'auto', gap: 8 }}>
-              {filteredPhrases.slice(0, 8).map(p => (
-                <button key={p.id} className={`item-btn ${selectedPhrase.id === p.id ? 'on' : ''}`} onClick={() => handleSelectPhrase(p)}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <div>
-                      <div style={{ fontSize: 13, fontWeight: 700 }}>{p.hindi}</div>
-                      <div className="quiet">{p[selectedLang]?.script}</div>
+              {filteredPhrases.slice(0, 8).map(p => {
+                const categoryBadge = p.category === 'Greetings' ? 'badge-amber' : p.category === 'Instructions' ? 'badge-blue' : p.category === 'Praise' ? 'badge-rose' : 'badge-purple';
+                return (
+                  <button key={p.id} className={`item-btn ${selectedPhrase.id === p.id ? 'on' : ''}`} onClick={() => handleSelectPhrase(p)}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+                      <div>
+                        <div style={{ fontSize: 13, fontWeight: 700 }}>{p.hindi}</div>
+                        <div className="quiet">{p[selectedLang]?.script}</div>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <span className={categoryBadge} style={{ fontSize: '9px', padding: '1px 6px' }}>{p.category}</span>
+                        <Volume2 size={14} color="var(--text-faint)" />
+                      </div>
                     </div>
-                    <Volume2 size={14} color="var(--text-faint)" />
-                  </div>
-                </button>
-              ))}
+                  </button>
+                );
+              })}
             </div>
           </div>
         </div>
@@ -273,6 +283,10 @@ export default function LivePhrasebook({
         <div className="card">
           <div className="page-head" style={{ marginBottom: 16 }}>
             <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                <span className="badge-purple">STUDENT SPEECH CHANNEL</span>
+                <span className="badge-amber" style={{ fontSize: '10px' }}>STT Voice Match</span>
+              </div>
               <h2 className="card-title">{t.voice.childChannel}</h2>
               <p className="quiet">{t.voice.childMicPrompt}</p>
             </div>

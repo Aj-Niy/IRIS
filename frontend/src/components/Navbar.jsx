@@ -46,12 +46,12 @@ export default function Navbar({
         <div className="nav-brand" onClick={() => setCurrentTab('landing')}>
           <img
             src="/iris-logo.png"
-            alt="PALASH IRIS Logo"
+            alt="ShikshaSetu Logo"
             style={{ width: 34, height: 34, borderRadius: 8, objectFit: 'cover' }}
           />
           <div>
             <div className="nav-brand-name" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <span>PALASH IRIS</span>
+              <span>ShikshaSetu</span>
               <span className="badge-green" style={{ fontSize: '9px', padding: '1px 5px' }}>v2.0</span>
             </div>
             <div className="nav-brand-sub">Vernacular Pedagogy Engine</div>
@@ -103,24 +103,15 @@ export default function Navbar({
 
           {/* User Status / Login Button */}
           {userName ? (
-            <div className="nav-user-pill">
-              <div style={{
-                width: 22, height: 22, borderRadius: 6,
-                backgroundColor: 'var(--badge-green-bg)',
-                border: '1px solid var(--badge-green-border)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center'
-              }}>
-                <User size={12} color="var(--badge-green-text)" />
-              </div>
-              <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-main)' }}>{userName}</span>
-              <button
-                className="nav-logout-btn"
-                onClick={handleLogout}
-                title="Sign out"
-              >
-                <LogOut size={11} />
-              </button>
-            </div>
+            <button
+              className="nav-logout-btn"
+              onClick={handleLogout}
+              title="Sign out"
+              style={{ padding: '6px 12px', fontSize: '11px', display: 'flex', alignItems: 'center', gap: '4px' }}
+            >
+              <span>Sign out</span>
+              <LogOut size={12} />
+            </button>
           ) : (
             <button
               className="nav-cta-btn"
