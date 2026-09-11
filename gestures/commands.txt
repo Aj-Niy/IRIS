@@ -1,0 +1,42 @@
+================================================================================
+  ISL Gesture Recognition (TensorFlow LSTM Video Sequence Pipeline)
+================================================================================
+
+STEP 1 — Collect video sequences (50 sequences per sign, 30 frames each)
+   python collect_data_video.py <label> [num_sequences]
+   
+   Examples:
+      python collect_data_video.py hello 50
+      python collect_data_video.py ok 50
+      python collect_data_video.py please 50
+      python collect_data_video.py unclear 50
+      python collect_data_video.py 1 50
+      python collect_data_video.py 2 50
+
+   Controls in camera window:
+      's' -> start auto-recording (with 2s countdown) or pause
+      'q' -> quit early
+
+
+STEP 2 — Train the LSTM neural network
+   python train_model_lstm.py
+   
+   - Automatically loads all signs from isl_data/
+   - Trains a 2-layer LSTM model with early stopping
+   - Saves: isl_model_lstm.h5 and isl_labels.json
+
+
+STEP 3 — Run live prediction on webcam
+   python predict_live_lstm.py
+   
+   - Shows live predicted sign + confidence percentage
+   - Press 'q' to quit
+
+
+HELPFUL UTILITIES:
+   # Delete all sequences for a specific sign (to re-record)
+   Remove-Item -Recurse -Force isl_data\<label>      # PowerShell
+   rmdir /s /q isl_data\<label>                      # CMD
+
+   # Delete entire dataset to start completely fresh
+   Remove-Item -Recurse -Force isl_data\*            # PowerShell
