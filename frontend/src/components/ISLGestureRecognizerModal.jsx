@@ -7,8 +7,8 @@ export default function ISLGestureRecognizerModal({ isOpen, onClose, currentLang
   const [detectedGesture, setDetectedGesture] = useState("hello");
   const [confidence, setConfidence] = useState(94);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [mediaStream, setMediaStream] = useState(null);
   const videoRef = useRef(null);
-  const canvasRef = useRef(null);
 
   const gestureDetails = {
     hello: { label: "Hello / Namaste", script: "ᱡᱚᱦᱟᱨ", roman: "Johar", hindi: "नमस्ते / जोहार", category: "Greeting" },
@@ -24,42 +24,100 @@ export default function ISLGestureRecognizerModal({ isOpen, onClose, currentLang
   // Toggle Webcam Camera Stream
   const toggleCamera = async () => {
     if (isCameraActive) {
-      if (videoRef.current && videoRef.current.srcObject) {
-        const tracks = videoRef.current.srcObject.getTracks();
-        tracks.forEach(track => track.stop());
+      if (mediaStream) {
+        mediaStream.getTracks().forEach(track => track.stop());
+      }
+      if (videoRef.current) {
         videoRef.current.srcObject = null;
       }
+      setMediaStream(null);
       setIsCameraActive(false);
     } else {
       try {
         setIsProcessing(true);
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-        }
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: { width: { ideal: 640 }, height: { ideal: 480 }, facingMode: "user" }
+        });
+        setMediaStream(stream);
         setIsCameraActive(true);
       } catch (err) {
         console.warn("Webcam access error:", err);
-        alert("Camera permission denied or camera unavailable. Running simulated MediaPipe gesture recognition engine.");
-        setIsCameraActive(true);
+        alert("Camera permission denied or camera is in use by another app: " + (err.message || err));
       } finally {
         setIsProcessing(false);
       }
     }
   };
 
-  // Simulate gesture detection when camera active
+  // Attach media stream whenever available and video is mounted
   useEffect(() => {
-    let timer;
-    if (isOpen && isCameraActive) {
-      timer = setInterval(() => {
-        const keys = ["hello", "please", "ok", "1", "2"];
-        const randomKey = keys[Math.floor(Math.random() * keys.length)];
-        setDetectedGesture(randomKey);
-        setConfidence(Math.floor(Math.random() * 15) + 84);
-      }, 3000);
+    if (videoRef.current && mediaStream && isCameraActive) {
+      videoRef.current.srcObject = mediaStream;
+      videoRef.current.play().catch(err => console.warn("Video play error:", err));
     }
-    return () => clearInterval(timer);
+  }, [mediaStream, isCameraActive]);
+
+  // Clean up media stream on unmount or when modal closes
+  useEffect(() => {
+    return () => {
+      if (mediaStream) {
+        mediaStream.getTracks().forEach(track => track.stop());
+      }
+    };
+  }, [mediaStream]);
+
+  const [isAiConnected, setIsAiConnected] = useState(false);
+  const canvasRef = useRef(null);
+
+  // Send real camera frames to Python Gesture AI backend (http://localhost:5005/predict)
+  useEffect(() => {
+    let intervalId;
+    let isRequestInProgress = false;
+
+    if (isOpen && isCameraActive) {
+      if (!canvasRef.current) {
+        canvasRef.current = document.createElement("canvas");
+        canvasRef.current.width = 320;
+        canvasRef.current.height = 240;
+      }
+
+      intervalId = setInterval(async () => {
+        if (!videoRef.current || isRequestInProgress || videoRef.current.readyState < 2) {
+          return;
+        }
+
+        try {
+          isRequestInProgress = true;
+          const canvas = canvasRef.current;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
+          const base64Image = canvas.toDataURL("image/jpeg", 0.7);
+
+          const res = await fetch("http://localhost:5005/predict", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ image: base64Image })
+          });
+
+          if (res.ok) {
+            const data = await res.json();
+            setIsAiConnected(true);
+            if (data.gesture && data.gesture !== "buffering") {
+              setDetectedGesture(data.gesture);
+              setConfidence(Math.round(data.confidence));
+            }
+          }
+        } catch (err) {
+          setIsAiConnected(false);
+        } finally {
+          isRequestInProgress = false;
+        }
+      }, 100);
+    }
+
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+    };
   }, [isOpen, isCameraActive]);
 
   if (!isOpen) return null;
@@ -141,15 +199,20 @@ export default function ISLGestureRecognizerModal({ isOpen, onClose, currentLang
               justifyContent: "center",
               border: "1.5px solid var(--border-medium)"
             }}>
-              {isCameraActive ? (
-                <video
-                  ref={videoRef}
-                  autoPlay
-                  playsInline
-                  muted
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                />
-              ) : (
+              <video
+                ref={videoRef}
+                autoPlay
+                playsInline
+                muted
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  transform: "scaleX(-1)",
+                  display: isCameraActive ? "block" : "none"
+                }}
+              />
+              {!isCameraActive && (
                 <div style={{ textAlign: "center", color: "#A1A1AA", padding: "20px" }}>
                   <Camera size={36} color="#A1A1AA" style={{ marginBottom: "8px" }} />
                   <div style={{ fontSize: "13px", fontWeight: "600" }}>Camera Disconnected</div>
@@ -162,7 +225,7 @@ export default function ISLGestureRecognizerModal({ isOpen, onClose, currentLang
                 <div style={{
                   position: "absolute",
                   top: "10px", left: "10px",
-                  backgroundColor: "rgba(15, 76, 58, 0.85)",
+                  backgroundColor: isAiConnected ? "rgba(15, 76, 58, 0.9)" : "rgba(220, 38, 38, 0.9)",
                   color: "#FFFFFF",
                   padding: "4px 10px",
                   borderRadius: "6px",
@@ -172,8 +235,8 @@ export default function ISLGestureRecognizerModal({ isOpen, onClose, currentLang
                   alignItems: "center",
                   gap: "6px"
                 }}>
-                  <span style={{ width: 6, height: 6, borderRadius: "50%", backgroundColor: "#34D399" }}></span>
-                  <span>126 Landmarks Active</span>
+                  <span style={{ width: 6, height: 6, borderRadius: "50%", backgroundColor: isAiConnected ? "#34D399" : "#F87171" }}></span>
+                  <span>{isAiConnected ? "Real Python LSTM AI Connected" : "Connecting to gestures/gesture_api.py..."}</span>
                 </div>
               )}
 
