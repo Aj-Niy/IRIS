@@ -1,0 +1,191 @@
+# Translation Routing Configuration Matrix
+
+version: "1.0"
+
+# Provider definitions and defaults
+providers:
+  bhashini:
+    name: "Bhashini ULCA API"
+    type: "bhashini"
+    enabled: true
+    timeout_seconds: 8.0
+    max_retries: 2
+    circuit_breaker:
+      failure_threshold: 3
+      recovery_time_seconds: 60
+    config:
+      pipeline_url: "https://dhruva-api.bhashini.gov.in/services/inference/pipeline"
+      # Environment variables BHASHINI_USER_ID, BHASHINI_API_KEY, BHASHINI_INFERENCE_KEY
+
+  indictrans2:
+    name: "IndicTrans2 Self-Hosted Service"
+    type: "indictrans2"
+    enabled: true
+    timeout_seconds: 10.0
+    max_retries: 2
+    circuit_breaker:
+      failure_threshold: 3
+      recovery_time_seconds: 60
+    config:
+      endpoint_url: "http://localhost:8001/translate"
+      # Model supports: sat_Olck, hin_Deva, etc.
+
+  nllb:
+    name: "NLLB-200 Evaluation/Teacher Service"
+    type: "nllb"
+    enabled: false # Evaluation/distillation only unless non-commercial license explicitly approved
+    timeout_seconds: 12.0
+    max_retries: 1
+    circuit_breaker:
+      failure_threshold: 3
+      recovery_time_seconds: 60
+    config:
+      endpoint_url: "http://localhost:8002/translate"
+
+  custom_mundari:
+    name: "Custom Fine-Tuned Mundari Checkpoint"
+    type: "custom_mundari"
+    enabled: true
+    timeout_seconds: 10.0
+    max_retries: 2
+    circuit_breaker:
+      failure_threshold: 3
+      recovery_time_seconds: 60
+    config:
+      endpoint_url: "http://localhost:8003/translate"
+      status: "early_beta"
+
+  mock:
+    name: "Deterministic Local Mock Provider"
+    type: "mock"
+    enabled: true
+    timeout_seconds: 1.0
+    max_retries: 0
+    config:
+      simulated_latency_ms: 15
+
+# Routing Matrix: Defines ordered fallback chain per language pair (src_lang:tgt_lang)
+routes:
+  "hin:sat":
+    priority:
+      - bhashini
+      - indictrans2
+      - nllb
+      - mock
+    fallback_enabled: true
+
+  "sat:hin":
+    priority:
+      - bhashini
+      - indictrans2
+      - nllb
+      - mock
+    fallback_enabled: true
+
+  "hin:unr":
+    priority:
+      - custom_mundari
+      - mock
+    fallback_enabled: true
+
+  "unr:hin":
+    priority:
+      - custom_mundari
+      - mock
+    fallback_enabled: true
+
+  "hin:hoc":
+    priority:
+      - mock
+    fallback_enabled: true
+
+  "hoc:hin":
+    priority:
+      - mock
+    fallback_enabled: true
+
+  "sat:hoc":
+    priority:
+      - mock
+    fallback_enabled: true
+
+  "hoc:sat":
+    priority:
+      - mock
+    fallback_enabled: true
+
+  "unr:hoc":
+    priority:
+      - mock
+    fallback_enabled: true
+
+  "hoc:unr":
+    priority:
+      - mock
+    fallback_enabled: true
+
+  # English pairs if needed
+  "eng:sat":
+    priority:
+      - bhashini
+      - indictrans2
+      - mock
+    fallback_enabled: true
+
+  "sat:eng":
+    priority:
+      - bhashini
+      - indictrans2
+      - mock
+    fallback_enabled: true
+
+  "eng:hoc":
+    priority:
+      - mock
+    fallback_enabled: true
+
+  "hoc:eng":
+    priority:
+      - mock
+    fallback_enabled: true
+
+  "eng:hin":
+    priority:
+      - mock
+    fallback_enabled: true
+
+  "hin:eng":
+    priority:
+      - mock
+    fallback_enabled: true
+
+  "hin:hin":
+    priority:
+      - mock
+    fallback_enabled: true
+
+  "eng:eng":
+    priority:
+      - mock
+    fallback_enabled: true
+
+  "sat:sat":
+    priority:
+      - mock
+    fallback_enabled: true
+
+  "unr:unr":
+    priority:
+      - mock
+    fallback_enabled: true
+
+  "hoc:hoc":
+    priority:
+      - mock
+    fallback_enabled: true
+
+# Cache Settings
+cache:
+  backend: "memory" # "memory" or "redis"
+  default_ttl_seconds: 86400 # 24 hours
+  redis_url: "redis://localhost:6379/0"
