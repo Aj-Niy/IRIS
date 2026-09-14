@@ -364,20 +364,29 @@ export async function irisAskTutor({
   }
 }
 
+import { translateAadiVaani } from './aadiVaaniTranslator';
+
 /**
- * Translate lesson or phrase into Santali (Ol Chiki + Roman + Hindi)
+ * Translate lesson or phrase into Santali (Ol Chiki + Roman + Hindi) using Aadi Vaani Engine
  */
 export async function irisTranslateSantali(text, targetLang = 'Santali') {
   try {
-    const response = await fetch(`${BASE_URL}/api/iris/translate`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text, targetLanguage: targetLang })
+    const langCode = targetLang.toLowerCase().startsWith('san') || targetLang.toLowerCase() === 'sat' ? 'sat' :
+                     targetLang.toLowerCase().startsWith('mun') || targetLang.toLowerCase() === 'unr' ? 'unr' : 'hoc';
+    const res = await translateAadiVaani({
+      text,
+      sourceLang: 'hin',
+      targetLang: langCode
     });
-    if (response.ok) return await response.json();
-    throw new Error('Backend failed');
+    return {
+      success: true,
+      olChiki: res.translatedText,
+      roman: res.romanPhonetic || res.translatedText,
+      hindi: text,
+      gloss: []
+    };
   } catch (err) {
-    // Offline lookup
+    // Offline lookup fallback
     const q = text.toLowerCase().trim();
     const matchedVocab = Object.entries(APERTIUM_SANTALI_LEXICON).find(([k]) => q.includes(k));
     if (matchedVocab) {
