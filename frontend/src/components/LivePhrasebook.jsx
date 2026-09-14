@@ -12,7 +12,7 @@ import AudioPlayButton from './AudioPlayButton';
 import { uiTranslations } from '../services/uiTranslations';
 import ISLVideoPlayerModal from './ISLVideoPlayerModal';
 import ISLGestureRecognizerModal from './ISLGestureRecognizerModal';
-import { translateAadiVaani } from '../services/aadiVaaniTranslator';
+import { translateAadiVaani, isOlChiki, devanagariToOlChiki } from '../services/aadiVaaniTranslator';
 
 export default function LivePhrasebook({
   uiLang = 'en',
@@ -106,16 +106,17 @@ export default function LivePhrasebook({
       if (!isCancelled) {
         setChildRecognitionResult(prev => ({
           matched: true,
-          script: childTranscript,
+          script: res.script || (isOlChiki(childTranscript) ? childTranscript : (selectedLang === 'sat' ? devanagariToOlChiki(childTranscript) : childTranscript)),
           roman: res.romanPhonetic || childTranscript,
-          hindi: res.translatedText,
-          english: res.romanPhonetic || '',
-          category: prev?.category || 'Classroom Interaction'
+          hindi: res.hindiMeaning || res.translatedText,
+          english: res.englishMeaning || '',
+          latency: res.latency || 0.18,
+          category: prev?.category || 'Child Speech'
         }));
       }
     };
 
-    const timer = setTimeout(runChildTranslation, 100);
+    const timer = setTimeout(runChildTranslation, 80);
     return () => {
       isCancelled = true;
       clearTimeout(timer);
@@ -440,14 +441,38 @@ export default function LivePhrasebook({
           />
 
           {childRecognitionResult ? (
-            <div className="script-block" style={{ marginTop: 12 }}>
-              <div className="quiet">{t.voice.teacherMeaning}</div>
-              <div className="script-native" style={{ fontSize: 20 }}>{displayScript}</div>
-              <div style={{ fontWeight: 700, marginTop: 8 }}>{displayHindi}</div>
-              {displayEnglish && <div className="quiet">{displayEnglish}</div>}
+            <div className="script-block" style={{ marginTop: 12, backgroundColor: 'var(--green-light)', border: '1.5px solid var(--green-border)', borderRadius: '12px', padding: '14px 16px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+                <span className="badge-purple" style={{ fontSize: '10px' }}>
+                  {childRecognitionResult.category || 'Child Speech'} · {childRecognitionResult.latency || 0.18}s
+                </span>
+                <AudioPlayButton
+                  text={childRecognitionResult.roman || childRecognitionResult.script || childTranscript}
+                  size="sm"
+                  label="Listen"
+                />
+              </div>
+              <div className="script-native" style={{ fontSize: 22, fontWeight: 800, color: 'var(--text-main)' }}>
+                {childRecognitionResult.script || displayScript}
+              </div>
+              {childRecognitionResult.roman && (
+                <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--green-primary)', fontStyle: 'italic', marginTop: 2 }}>
+                  "{childRecognitionResult.roman}"
+                </div>
+              )}
+              <div style={{ fontWeight: 700, fontSize: 14, color: 'var(--text-main)', marginTop: 8 }}>
+                <span style={{ color: 'var(--text-muted)', fontSize: 12, fontWeight: 500 }}>Hindi Meaning: </span>
+                {displayHindi}
+              </div>
+              {displayEnglish && (
+                <div style={{ fontSize: 12, color: 'var(--text-sub)', marginTop: 2 }}>
+                  <span style={{ color: 'var(--text-muted)', fontSize: 12, fontWeight: 500 }}>English: </span>
+                  {displayEnglish}
+                </div>
+              )}
             </div>
           ) : (
-            <div className="script-block" style={{ marginTop: 12 }}>
+            <div className="script-block" style={{ marginTop: 12, borderRadius: '12px' }}>
               <div className="quiet">Listen, then the meaning appears here.</div>
             </div>
           )}
