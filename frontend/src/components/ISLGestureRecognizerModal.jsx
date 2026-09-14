@@ -16,7 +16,7 @@ export default function ISLGestureRecognizerModal({ isOpen, onClose, currentLang
     ok: { label: "OK / Good", script: "ᱴᱷᱤᱠ ᱜᱮᱭᱟ", roman: "Ṭhik geya", hindi: "ठीक है / बहुत बढ़िया", category: "Affirmation" },
     "1": { label: "Number 1", script: "ᱢᱤᱫ", roman: "Mit'", hindi: "एक (1)", category: "Counting" },
     "2": { label: "Number 2", script: "ᱵᱟᱨ", roman: "Bar", hindi: "दो (2)", category: "Counting" },
-    unclear: { label: "Analyzing...", script: "—", roman: "—", hindi: "स्पष्ट नहीं है", category: "System" }
+    unclear: { label: "Unclear", script: "—", roman: "—", hindi: "स्पष्ट नहीं है", category: "System" }
   };
 
   const currentInfo = gestureDetails[detectedGesture] || gestureDetails.hello;
@@ -112,7 +112,7 @@ export default function ISLGestureRecognizerModal({ isOpen, onClose, currentLang
         } finally {
           isRequestInProgress = false;
         }
-      }, 100);
+      }, 33);
     }
 
     return () => {

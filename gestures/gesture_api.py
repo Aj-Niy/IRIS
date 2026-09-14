@@ -129,7 +129,8 @@ class GestureRequestHandler(BaseHTTPRequestHandler):
                 np_arr = np.frombuffer(img_bytes, np.uint8)
                 bgr = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
                 rgb = cv2.cvtColor(bgr, cv2.COLOR_BGR2RGB)
-
+                rgb = cv2.flip(rgb, 1)  # Mirror to match OpenCV training data
+                
                 prediction = process_image_and_predict(rgb)
 
                 self.send_response(200)
