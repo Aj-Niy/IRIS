@@ -1,0 +1,12 @@
+{"source_lang": "hin", "target_lang": "unr", "source_text": "नमस्ते", "target_text": "जोहार", "script": "devanagari", "domain": "greeting"}
+{"source_lang": "hin", "target_lang": "unr", "source_text": "आप कैसे हैं?", "target_text": "अम चिलका मेनामा?", "script": "devanagari", "domain": "conversation"}
+{"source_lang": "hin", "target_lang": "unr", "source_text": "हम स्कूल जा रहे हैं", "target_text": "अले इस्कुल सेन ताना", "script": "devanagari", "domain": "education"}
+{"source_lang": "hin", "target_lang": "unr", "source_text": "पानी", "target_text": "दाः", "script": "devanagari", "domain": "vocabulary"}
+{"source_lang": "hin", "target_lang": "unr", "source_text": "घर", "target_text": "ओड़ाः", "script": "devanagari", "domain": "vocabulary"}
+{"source_lang": "hin", "target_lang": "unr", "source_text": "गाँव", "target_text": "हातु", "script": "devanagari", "domain": "geography"}
+{"source_lang": "hin", "target_lang": "unr", "source_text": "सूरज निकल रहा है", "target_text": "सिंगी ओडोंक ताना", "script": "devanagari", "domain": "nature"}
+{"source_lang": "hin", "target_lang": "unr", "source_text": "वह खाना खा रहा है", "target_text": "एनी मांडी जोम ताना", "script": "devanagari", "domain": "daily_life"}
+{"source_lang": "hin", "target_lang": "unr", "source_text": "बच्चे खेल रहे हैं", "target_text": "होन को ईनूंग तानाको", "script": "devanagari", "domain": "daily_life"}
+{"source_lang": "hin", "target_lang": "unr", "source_text": "यह बहुत सुंदर है", "target_text": "नेनी पुरोः सुगुन ताना", "script": "devanagari", "domain": "description"}
+{"source_lang": "hin", "target_lang": "unr", "source_text": "घर में निकल जा रहा है मैं और वैद्य मुंहतोड़", "target_text": "ओड़ाः रे ओडोंक सेन ताना आईंग ओड़ोः वैद्य मुंहतोड़", "script": "devanagari", "domain": "complex"}
+{"source_lang": "hin", "target_lang": "unr", "source_text": "धन्यवाद", "target_text": "दोन्यावाद / जोहार", "script": "devanagari", "domain": "politeness"}

@@ -1,0 +1,10 @@
+{"source_lang": "hin", "target_lang": "hoc", "source_text": "नमस्ते", "target_text": "जोहार", "script": "devanagari", "domain": "greeting", "target_text_warang_citi": "𑢮𑢩𑢹𑢡𑢼"}
+{"source_lang": "hin", "target_lang": "hoc", "source_text": "आप कैसे हैं?", "target_text": "अम चिलका मेनामा?", "script": "devanagari", "domain": "conversation", "target_text_warang_citi": "𑢡𑢶 𑢯𑢦𑢺𑢬𑢡 𑢶𑢨𑢳𑢡𑢶𑢡?"}
+{"source_lang": "hin", "target_lang": "hoc", "source_text": "हम स्कूल जा रहे हैं", "target_text": "अले इस्कुल सेन तानाले", "script": "devanagari", "domain": "education", "target_text_warang_citi": "𑢡𑢺𑢨 𑢦𑢾𑢬𑢧𑢺 𑢾𑢨𑢳 𑢵𑢡𑢳𑢡𑢺𑢨"}
+{"source_lang": "hin", "target_lang": "hoc", "source_text": "पानी", "target_text": "दाः", "script": "devanagari", "domain": "vocabulary", "target_text_warang_citi": "𑢴𑢡𑢹"}
+{"source_lang": "hin", "target_lang": "hoc", "source_text": "घर", "target_text": "ओड़ाः", "script": "devanagari", "domain": "vocabulary", "target_text_warang_citi": "𑢩𑢻𑢡𑢹"}
+{"source_lang": "hin", "target_lang": "hoc", "source_text": "गाँव", "target_text": "हातु", "script": "devanagari", "domain": "geography", "target_text_warang_citi": "𑢹𑢡𑢵𑢧"}
+{"source_lang": "hin", "target_lang": "hoc", "source_text": "सूरज निकल रहा है", "target_text": "सिंगी ओडोंक ताना", "script": "devanagari", "domain": "nature", "target_text_warang_citi": "𑢾𑢦𑢠𑢋𑢦 𑢩𑢱𑢩𑢠𑢬 𑢵𑢡𑢳𑢡"}
+{"source_lang": "hin", "target_lang": "hoc", "source_text": "वह खाना खा रहा है", "target_text": "एनी मांडी जोम ताना", "script": "devanagari", "domain": "daily_life", "target_text_warang_citi": "𑢨𑢳𑢦 𑢶𑢡𑢠𑢴𑢦 𑢮𑢩𑢶 𑢵𑢡𑢳𑢡"}
+{"source_lang": "hin", "target_lang": "hoc", "source_text": "घर में निकल जा रहा है मैं और वैद्य मुंहतोड़", "target_text": "ओड़ाः रे ओडोंक सेन ताना आईंग ओड़ोः वैद्य मुंहतोड़", "script": "devanagari", "domain": "complex"}
+{"source_lang": "hin", "target_lang": "hoc", "source_text": "धन्यवाद", "target_text": "दोन्यावाद / जोहार", "script": "devanagari", "domain": "politeness"}
