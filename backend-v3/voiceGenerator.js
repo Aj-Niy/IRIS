@@ -1,5 +1,5 @@
 // =============================================================================
-// voiceGenerator.js -- Smart TTS Fallback Engine for CodeSeekho
+// voiceGenerator.js -- Smart TTS Fallback Engine for Shiksha Setu
 //
 // Fallback chain (in order):
 //   1. ElevenLabs API  -- Human-quality AI voice (10K chars/month free)
@@ -25,20 +25,40 @@ import { promisify }  from 'util';
 
 const execAsync = promisify(exec);
 
-// ── ElevenLabs config ─────────────────────────────────────────────────────────
-const EL_VOICE_ID = 'pNInz6obpgDQGcFmaJgB';  // Adam -- clear male teacher
-const EL_MODEL    = 'eleven_turbo_v2';         // Fastest model on free tier
+// ── Sarvam AI config (India's Sovereign Voice AI - Native Accents) ────────────
+const SARVAM_MODEL = 'bulbul:v3';
+const SARVAM_LANG_MAP = {
+  'English':   'en-IN',
+  'Hindi':     'hi-IN',
+  'Hinglish':  'hi-IN',
+  'Santhali':  'hi-IN',
+  'Ho':        'hi-IN',
+  'Mundari':   'hi-IN',
+  'Bengali':   'bn-IN',
+  'Gujarati':  'gu-IN',
+  'Kannada':   'kn-IN',
+  'Malayalam': 'ml-IN',
+  'Marathi':   'mr-IN',
+  'Odia':      'od-IN',
+  'Punjabi':   'pa-IN',
+  'Tamil':     'ta-IN',
+  'Telugu':    'te-IN',
+};
 
-// ── Google Cloud TTS config ───────────────────────────────────────────────────
-const GCP_VOICE = { languageCode: 'en-US', name: 'en-US-Neural2-J', ssmlGender: 'MALE' };
+// ── ElevenLabs config ─────────────────────────────────────────────────────────
+const EL_VOICE_ID = 'pNInz6obpgDQGcFmaJgB';  // Adam
+const EL_MODEL    = 'eleven_multilingual_v2'; // Multilingual model for Indian accents & Hinglish
+
+// ── Google Cloud TTS config (Indian English Neural Voice) ─────────────────────
+const GCP_VOICE = { languageCode: 'en-IN', name: 'en-IN-Neural2-B', ssmlGender: 'MALE' };
 const GCP_AUDIO = { audioEncoding: 'MP3', speakingRate: 0.95, pitch: 0 };
 
-// ── edge-tts config ───────────────────────────────────────────────────────────
+// ── edge-tts config (Indian English Neural Default) ───────────────────────────
 const EDGE_TTS_PATH = [
   'C:\\Users\\Sribendu Prasad\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python313\\Scripts\\edge-tts.exe',
 ].find(p => existsSync(p));
 const TTS_CMD   = EDGE_TTS_PATH ?? 'edge-tts';
-const TTS_VOICE = 'en-US-GuyNeural';  // Best free Microsoft Neural male voice
+const TTS_VOICE = 'en-IN-PrabhatNeural';  // Authentic Microsoft Neural Indian male voice
 
 // =============================================================================
 // generateSpeech
@@ -49,22 +69,66 @@ const TTS_VOICE = 'en-US-GuyNeural';  // Best free Microsoft Neural male voice
 //   engine         -- 'ElevenLabs' | 'Google TTS' | 'edge-tts'
 //   fallbackReason -- why we fell back (null if primary succeeded)
 // =============================================================================
+// ── Ol Chiki (Santhali) phonetic transliterator for TTS audio engines ─────────
+const OL_CHIKI_MAP = {
+  'ᱚ': 'o', 'ᱛ': 't', 'ᱜ': 'g', 'ᱝ': 'ng', 'ᱞ': 'l',
+  'ᱟ': 'a', 'ᱠ': 'k', 'ᱡ': 'j', 'ᱢ': 'm', 'ᱣ': 'w',
+  'ᱤ': 'i', 'ᱥ': 's', 'ᱦ': 'h', 'ᱨ': 'r', 'ᱩ': 'u',
+  'ᱪ': 'ch','ᱫ': 'd', 'ᱬ': 'n', 'ᱭ': 'y', 'ᱮ': 'e',
+  'ᱯ': 'p', 'ᱰ': 'd', 'ᱱ': 'n', 'ᱲ': 'r', 'ᱳ': 'o',
+  'ᱴ': 't', 'ᱵ': 'b', 'ᱶ': 'w', 'ᱷ': 'h',
+  'ᱸ': '',  'ᱹ': '',  'ᱺ': '',  'ᱻ': '',  'ᱼ': '',  'ᱽ': '', '᱾': '.', '᱿': '.',
+  '᱐': '0', '᱑': '1', '᱒': '2', '᱓': '3', '᱔': '4',
+  '᱕': '5', '᱖': '6', '᱗': '7', '᱘': '8', '᱙': '9'
+};
+
+function prepareVoiceText(text) {
+  if (!text) return '';
+  if (/[\u1C50-\u1C7F]/.test(text)) {
+    return text.split('').map(c => OL_CHIKI_MAP[c] !== undefined ? OL_CHIKI_MAP[c] : c).join('');
+  }
+  return text;
+}
+
 export async function generateSpeech(text, outputPath, targetLanguage = 'English') {
-  const dgKey  = process.env.DEEPGRAM_API_KEY?.trim();
-  const elKey  = process.env.ELEVENLABS_API_KEY?.trim();
-  const gcpKey = process.env.GOOGLE_TTS_API_KEY?.trim();
+  const sarvamKey = process.env.SARVAM_API_KEY?.trim();
+  const dgKey     = process.env.DEEPGRAM_API_KEY?.trim();
+  const elKey     = process.env.ELEVENLABS_API_KEY?.trim();
+  const gcpKey    = process.env.GOOGLE_TTS_API_KEY?.trim();
 
   const isEnglish = (targetLanguage === 'English');
+  const spokenText = prepareVoiceText(text);
 
   // ─────────────────────────────────────────────────────────────────────────
-  // ATTEMPT 1: Deepgram Aura (English only)
+  // ATTEMPT 1: Sarvam AI (Authentic Indian Native Voice - Bulbul v3)
+  // Supports Indian English (en-IN) and regional Indian languages natively!
+  // ─────────────────────────────────────────────────────────────────────────
+  if (sarvamKey && sarvamKey.length > 10) {
+    try {
+      console.log(`   🎙️  [Voice] Trying Sarvam AI (Native Indian Accent - ${targetLanguage})...`);
+      await _sarvamAI(spokenText, outputPath, sarvamKey, targetLanguage);
+      console.log('   ✅  [Voice] Sarvam AI succeeded (authentic Indian accent)');
+      return { engine: 'Sarvam AI (Indian Native)', fallbackReason: null };
+
+    } catch (err) {
+      const reason = classifyError(err, 'Sarvam AI');
+      console.warn(`   ⚠️  [Voice] Sarvam AI FAILED — ${reason}`);
+      console.warn(`   ↪️  Switching to next fallback...`);
+      await safeDelete(outputPath);
+    }
+  } else {
+    console.log('   ℹ️  [Voice] Sarvam AI key not set — skipping');
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // ATTEMPT 2: Deepgram Aura (English only)
   // ─────────────────────────────────────────────────────────────────────────
   if (isEnglish && dgKey && dgKey.length > 10) {
     try {
       console.log('   🎙️  [Voice] Trying Deepgram Aura...');
-      await _deepgram(text, outputPath, dgKey);
+      await _deepgram(spokenText, outputPath, dgKey);
       console.log('   ✅  [Voice] Deepgram succeeded');
-      return { engine: 'Deepgram', fallbackReason: null };
+      return { engine: 'Deepgram', fallbackReason: 'Sarvam AI failed or not configured' };
 
     } catch (err) {
       const reason = classifyError(err, 'Deepgram');
@@ -77,17 +141,16 @@ export async function generateSpeech(text, outputPath, targetLanguage = 'English
   }
 
   // ─────────────────────────────────────────────────────────────────────────
-  // ATTEMPT 2: ElevenLabs (English only for our hardcoded voice, with rotation)
+  // ATTEMPT 3: ElevenLabs (with Multilingual model and rotation)
   // ─────────────────────────────────────────────────────────────────────────
   const elKeys = elKey ? elKey.split(',').map(k => k.trim()).filter(k => k.length > 10) : [];
-  if (isEnglish && elKeys.length > 0) {
-    let elSuccess = false;
+  if (elKeys.length > 0) {
     for (let i = 0; i < elKeys.length; i++) {
       try {
-        console.log(`   🎙️  [Voice] Trying ElevenLabs (Key ${i+1}/${elKeys.length})...`);
-        await _elevenLabs(text, outputPath, elKeys[i]);
+        console.log(`   🎙️  [Voice] Trying ElevenLabs (Multilingual v2 - ${targetLanguage} - Key ${i+1}/${elKeys.length})...`);
+        await _elevenLabs(spokenText, outputPath, elKeys[i]);
         console.log('   ✅  [Voice] ElevenLabs succeeded');
-        return { engine: 'ElevenLabs', fallbackReason: null };
+        return { engine: 'ElevenLabs', fallbackReason: 'Sarvam AI failed or not configured' };
       } catch (err) {
         const reason = classifyError(err, 'ElevenLabs');
         console.warn(`   ⚠️  [Voice] ElevenLabs Key ${i+1} FAILED — ${reason}`);
@@ -95,19 +158,19 @@ export async function generateSpeech(text, outputPath, targetLanguage = 'English
       }
     }
     console.warn(`   ↪️  All ElevenLabs keys exhausted. Switching to next fallback...`);
-  } else if (isEnglish) {
+  } else {
     console.log('   ℹ️  [Voice] ElevenLabs keys not set — skipping');
   }
 
   // ─────────────────────────────────────────────────────────────────────────
-  // ATTEMPT 3: Google Cloud TTS (English only for our hardcoded voice)
+  // ATTEMPT 4: Google Cloud TTS (Indian English en-IN Neural2)
   // ─────────────────────────────────────────────────────────────────────────
   if (isEnglish && gcpKey && gcpKey.length > 10) {
     try {
-      console.log('   🎙️  [Voice] Trying Google Cloud TTS...');
+      console.log('   🎙️  [Voice] Trying Google Cloud TTS (en-IN)...');
       await _googleTTS(text, outputPath, gcpKey);
       console.log('   ✅  [Voice] Google TTS succeeded');
-      return { engine: 'Google TTS', fallbackReason: 'ElevenLabs failed' };
+      return { engine: 'Google TTS', fallbackReason: 'Primary voices failed' };
 
     } catch (err) {
       const reason = classifyError(err, 'Google TTS');
@@ -120,15 +183,15 @@ export async function generateSpeech(text, outputPath, targetLanguage = 'English
   }
 
   // ─────────────────────────────────────────────────────────────────────────
-  // ATTEMPT 4: edge-tts (ALWAYS works, supports all languages natively)
+  // ATTEMPT 5: edge-tts (ALWAYS works, Microsoft Neural en-IN-Prabhat / regional)
   // ─────────────────────────────────────────────────────────────────────────
   try {
     console.log(`   🎙️  [Voice] Using edge-tts (${targetLanguage})...`);
-    await _edgeTTS(text, outputPath, targetLanguage);
+    await _edgeTTS(spokenText, outputPath, targetLanguage);
     console.log('   ✅  [Voice] edge-tts succeeded');
     return {
       engine:         'edge-tts',
-      fallbackReason: isEnglish ? 'Primary AI voices failed or not configured' : `Native ${targetLanguage} voice used`,
+      fallbackReason: isEnglish ? 'Cloud AI voices failed or not configured' : `Native ${targetLanguage} voice used`,
     };
   } catch (err) {
     // This should almost never happen
@@ -140,17 +203,113 @@ export async function generateSpeech(text, outputPath, targetLanguage = 'English
 // getVoiceStatus -- Used by /health endpoint
 // =============================================================================
 export function getVoiceStatus() {
-  const dgActive = !!(process.env.DEEPGRAM_API_KEY?.trim().length > 10);
-  const elActive  = !!(process.env.ELEVENLABS_API_KEY?.trim().length > 10);
-  const gcpActive = !!(process.env.GOOGLE_TTS_API_KEY?.trim().length > 10);
+  const sarvamActive = !!(process.env.SARVAM_API_KEY?.trim().length > 10);
+  const dgActive     = !!(process.env.DEEPGRAM_API_KEY?.trim().length > 10);
+  const elActive     = !!(process.env.ELEVENLABS_API_KEY?.trim().length > 10);
+  const gcpActive    = !!(process.env.GOOGLE_TTS_API_KEY?.trim().length > 10);
 
-  let activeEngine = 'edge-tts (fallback)';
-  if (dgActive) activeEngine = 'Deepgram → ElevenLabs → edge-tts';
+  let activeEngine = 'edge-tts (en-IN fallback)';
+  if (sarvamActive) activeEngine = 'Sarvam AI (Indian Native) → ElevenLabs → edge-tts';
+  else if (dgActive) activeEngine = 'Deepgram → ElevenLabs → edge-tts';
   else if (elActive && gcpActive)  activeEngine = 'ElevenLabs → Google TTS → edge-tts';
-  else if (elActive)           activeEngine = 'ElevenLabs → edge-tts';
-  else if (gcpActive)          activeEngine = 'Google TTS → edge-tts';
+  else if (elActive) activeEngine = 'ElevenLabs → edge-tts';
+  else if (gcpActive) activeEngine = 'Google TTS → edge-tts';
 
-  return { deepgram: dgActive, elevenlabs: elActive, googleTTS: gcpActive, edgeTTS: true, activeEngine };
+  return { sarvam: sarvamActive, deepgram: dgActive, elevenlabs: elActive, googleTTS: gcpActive, edgeTTS: true, activeEngine };
+}
+
+// Split long narrations into <= 450 character chunks at sentence boundaries for Sarvam AI
+function splitIntoSarvamChunks(text, maxLen = 450) {
+  if (!text) return [];
+  const safeText = text.replace(/\r?\n/g, ' ').replace(/\s+/g, ' ').trim();
+  if (safeText.length <= maxLen) return [safeText];
+
+  const sentenceRegex = /[^.!?।\n]+[.!?।\n]+|[^.!?।\n]+$/g;
+  const rawSentences = safeText.match(sentenceRegex) || [safeText];
+  const chunks = [];
+  let currentChunk = '';
+
+  for (let s of rawSentences) {
+    s = s.trim();
+    if (!s) continue;
+
+    if (s.length > maxLen) {
+      const words = s.split(/\s+/);
+      for (const w of words) {
+        if ((currentChunk + ' ' + w).trim().length > maxLen) {
+          if (currentChunk.trim()) chunks.push(currentChunk.trim());
+          currentChunk = w;
+        } else {
+          currentChunk = (currentChunk + ' ' + w).trim();
+        }
+      }
+    } else {
+      if ((currentChunk + ' ' + s).trim().length > maxLen) {
+        if (currentChunk.trim()) chunks.push(currentChunk.trim());
+        currentChunk = s;
+      } else {
+        currentChunk = (currentChunk + ' ' + s).trim();
+      }
+    }
+  }
+
+  if (currentChunk.trim()) {
+    chunks.push(currentChunk.trim());
+  }
+
+  return chunks.filter(c => c.length > 0);
+}
+
+// =============================================================================
+// _sarvamAI -- Sarvam AI Bulbul v3 REST call (Authentic Indian Accents)
+// =============================================================================
+async function _sarvamAI(text, outputPath, apiKey, targetLanguage = 'English') {
+  const langCode = SARVAM_LANG_MAP[targetLanguage] || 'en-IN';
+  const speaker  = (langCode === 'en-IN') ? 'aditya' : 'aditya';
+
+  const chunks = splitIntoSarvamChunks(text, 450);
+  if (chunks.length === 0) throw new Error('Empty text passed to Sarvam AI');
+
+  let res;
+  try {
+    res = await fetch(
+      'https://api.sarvam.ai/text-to-speech',
+      {
+        method:  'POST',
+        headers: {
+          'api-subscription-key': apiKey,
+          'Content-Type':         'application/json'
+        },
+        body: JSON.stringify({
+          inputs: chunks,
+          target_language_code: langCode,
+          speaker: speaker,
+          model: SARVAM_MODEL,
+          pace: 1.0,
+        }),
+        signal: AbortSignal.timeout(45_000),
+      }
+    );
+  } catch (netErr) {
+    throw new Error(`Network error: ${netErr.message}`);
+  }
+
+  if (!res.ok) {
+    const errText = await res.text().catch(() => 'Unknown error');
+    throw new Error(`HTTP ${res.status}: ${errText}`);
+  }
+
+  const data = await res.json();
+  if (!data?.audios || !Array.isArray(data.audios) || data.audios.length === 0) {
+    throw new Error('Sarvam AI returned empty audio array');
+  }
+  const buffers = data.audios
+    .filter(Boolean)
+    .map(a => Buffer.from(a, 'base64'))
+    .filter(b => b.length > 0);
+  if (buffers.length === 0) throw new Error('Sarvam AI returned empty audio payload');
+  const finalBuffer = Buffer.concat(buffers);
+  await fs.writeFile(outputPath, finalBuffer);
 }
 
 // =============================================================================
@@ -274,9 +433,12 @@ async function _googleTTS(text, outputPath, apiKey) {
 // =============================================================================
 function getEdgeVoice(lang) {
   const map = {
-    'English': 'en-US-GuyNeural',
+    'English': 'en-IN-PrabhatNeural',
     'Hindi': 'hi-IN-MadhurNeural',
     'Hinglish': 'hi-IN-MadhurNeural',
+    'Santhali': 'hi-IN-MadhurNeural',
+    'Ho': 'hi-IN-MadhurNeural',
+    'Mundari': 'hi-IN-MadhurNeural',
     'Bengali': 'bn-IN-BashkarNeural',
     'Marathi': 'mr-IN-ManoharNeural',
     'Telugu': 'te-IN-MohanNeural',
@@ -287,7 +449,7 @@ function getEdgeVoice(lang) {
     'Punjabi': 'pa-IN-OjasNeural',
     'Urdu': 'ur-IN-SalmanNeural'
   };
-  return map[lang] || 'en-US-GuyNeural';
+  return map[lang] || 'en-IN-PrabhatNeural';
 }
 
 async function _edgeTTS(text, outputPath, targetLanguage = 'English') {

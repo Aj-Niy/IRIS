@@ -3,158 +3,271 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>CodeSeekho V3 -- AI Avatar</title>
+<title>Shiksha Setu — Student Video Generator</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+Ol+Chiki:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'Segoe UI',Arial,sans-serif;background:#07071a;color:#fff;min-height:100vh;}
-header{display:flex;align-items:center;justify-content:space-between;padding:16px 36px;background:rgba(255,255,255,.04);border-bottom:1px solid rgba(124,58,237,.3);position:sticky;top:0;z-index:100;}
+body{font-family:'Plus Jakarta Sans','Segoe UI',Arial,sans-serif;background:#F4F7F5;color:#111827;min-height:100vh;line-height:1.5;}
+
+/* Header */
+header{display:flex;align-items:center;justify-content:space-between;padding:14px 32px;background:rgba(244,247,245,0.96);backdrop-filter:blur(16px);border-bottom:1.5px solid #D1E3DA;position:sticky;top:0;z-index:100;box-shadow:0 4px 20px rgba(19,78,63,.06);}
 .logo{display:flex;align-items:center;gap:12px;}
-.logo-icon{width:42px;height:42px;background:linear-gradient(135deg,#7c3aed,#4f46e5);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;}
-.logo h1{font-size:20px;font-weight:700;background:linear-gradient(90deg,#a78bfa,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-.logo p{font-size:11px;color:#6b7280;}
-.v2-badge{background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;padding:5px 14px;border-radius:20px;font-size:13px;font-weight:600;}
-main{max-width:860px;margin:36px auto;padding:0 20px;}
-h2{font-size:26px;font-weight:700;text-align:center;margin-bottom:6px;}
-.sub{text-align:center;color:#6b7280;margin-bottom:30px;font-size:14px;}
-/* avatar preview */
+.logo-icon{width:42px;height:42px;background:linear-gradient(135deg,#134E3F,#0E3F33);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff;box-shadow:0 4px 12px rgba(19,78,63,0.25);}
+.logo h1{font-size:20px;font-weight:800;color:#134E3F;letter-spacing:-0.02em;}
+.logo p{font-size:11px;color:#6B7280;font-weight:500;}
+.nav-links{display:flex;gap:10px;align-items:center;}
+.nav-link{padding:7px 16px;border-radius:999px;font-size:12.5px;font-weight:700;text-decoration:none;transition:.2s;}
+.nav-link.active{background:linear-gradient(135deg,#134E3F,#0E3F33);color:#fff;box-shadow:0 2px 10px rgba(19,78,63,0.3);}
+.nav-link.outline{background:#FFFFFF;border:1.5px solid #D1E3DA;color:#134E3F;}
+.nav-link.outline:hover{background:#EBF4F0;border-color:#134E3F;}
+.v2-badge{background:linear-gradient(135deg,#134E3F,#0E3F33);color:#fff;padding:5px 14px;border-radius:20px;font-size:12px;font-weight:800;letter-spacing:0.04em;}
+
+main{max-width:880px;margin:32px auto 60px;padding:0 20px;}
+h2{font-size:28px;font-weight:800;text-align:center;margin-bottom:6px;color:#134E3F;letter-spacing:-0.02em;}
+.sub{text-align:center;color:#6B7280;margin-bottom:24px;font-size:14.5px;font-weight:500;}
+
+/* Feature highlights */
+.feature-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:28px;}
+@media(max-width:720px){.feature-row{grid-template-columns:1fr 1fr;}}
+.feat-item{background:#FFFFFF;border:1.5px solid #D1E3DA;border-radius:14px;padding:14px 12px;text-align:center;box-shadow:0 2px 8px rgba(19,78,63,0.04);transition:.2s;}
+.feat-item:hover{border-color:#134E3F;transform:translateY(-2px);box-shadow:0 8px 20px rgba(19,78,63,0.08);}
+.feat-icon{font-size:24px;margin-bottom:4px;}
+.feat-title{font-size:13px;font-weight:800;color:#134E3F;margin-bottom:2px;}
+.feat-desc{font-size:11px;color:#6B7280;line-height:1.35;font-weight:500;}
+
+/* Avatar Card */
 .avatar-preview{display:flex;justify-content:center;margin-bottom:28px;}
-.avatar-card{background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.3);border-radius:16px;padding:20px 32px;display:flex;align-items:center;gap:20px;}
-.avatar-svg{width:80px;height:96px;flex-shrink:0;}
-.avatar-info h3{font-size:16px;margin-bottom:4px;}
-.avatar-info p{font-size:13px;color:#9ca3af;}
+.avatar-card{background:#FFFFFF;border:1.5px solid #D1E3DA;border-radius:18px;padding:22px 32px;display:flex;align-items:center;gap:24px;box-shadow:0 4px 18px rgba(19,78,63,0.06);max-width:680px;width:100%;}
+.avatar-svg{width:82px;height:98px;flex-shrink:0;}
+.avatar-info h3{font-size:16px;font-weight:800;color:#134E3F;margin-bottom:4px;}
+.avatar-info p{font-size:13px;color:#4B5563;line-height:1.4;}
 .engines{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
-.eng{font-size:11px;padding:3px 10px;border-radius:12px;border:1px solid;}
-.eng-el{border-color:rgba(124,58,237,.5);color:#a78bfa;background:rgba(124,58,237,.1);}
-.eng-did{border-color:rgba(245,158,11,.5);color:#fbbf24;background:rgba(245,158,11,.1);}
-.eng-free{border-color:rgba(16,185,129,.5);color:#34d399;background:rgba(16,185,129,.1);}
-/* tabs */
-.tabs{display:flex;gap:4px;background:rgba(255,255,255,.05);border-radius:12px;padding:4px;margin-bottom:24px;}
-.tab{flex:1;padding:10px;border:none;background:transparent;color:#9ca3af;border-radius:9px;cursor:pointer;font-size:14px;font-weight:500;transition:.2s;}
-.tab.active{background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;box-shadow:0 4px 15px rgba(124,58,237,.4);}
-.panel{display:none;} .panel.active{display:block;}
-textarea{width:100%;height:150px;background:rgba(255,255,255,.05);border:1px solid rgba(124,58,237,.3);border-radius:12px;color:#fff;padding:14px;font-size:14px;resize:vertical;outline:none;}
-textarea:focus{border-color:#7c3aed;}
-textarea::placeholder{color:#4b5563;}
-.dropzone{border:2px dashed rgba(124,58,237,.4);border-radius:16px;padding:44px 20px;text-align:center;cursor:pointer;transition:.3s;background:rgba(124,58,237,.04);position:relative;}
-.dropzone:hover{border-color:#7c3aed;background:rgba(124,58,237,.1);}
+.eng{font-size:11px;padding:3px 10px;border-radius:999px;border:1px solid;font-weight:700;}
+.eng-el{border-color:rgba(19,78,63,.4);color:#134E3F;background:#EBF4F0;}
+.eng-did{border-color:rgba(234,88,12,.4);color:#EA580C;background:#FFF7ED;}
+.eng-free{border-color:rgba(16,185,129,.4);color:#059669;background:#ECFDF5;}
+
+/* Tabs */
+.tabs{display:flex;gap:6px;background:#EAEFEA;border-radius:14px;padding:5px;margin-bottom:22px;border:1px solid #D1E3DA;}
+.tab{flex:1;padding:11px 8px;border:none;background:transparent;color:#6B7280;border-radius:10px;cursor:pointer;font-size:13.5px;font-weight:700;transition:.2s;display:flex;align-items:center;justify-content:center;gap:6px;}
+.tab:hover{color:#134E3F;background:rgba(255,255,255,.5);}
+.tab.active{background:#FFFFFF;color:#134E3F;box-shadow:0 3px 10px rgba(19,78,63,.12);border:1px solid #D1E3DA;}
+
+/* Panels */
+.panel{display:none;background:#FFFFFF;border:1.5px solid #D1E3DA;border-radius:20px;padding:26px;box-shadow:0 4px 20px rgba(19,78,63,0.05);}
+.panel.active{display:block;}
+
+textarea{width:100%;height:155px;background:#FAFCFA;border:1.5px solid #D1E3DA;border-radius:14px;color:#111827;padding:16px;font-size:14.5px;font-family:inherit;resize:vertical;outline:none;transition:.2s;}
+textarea:focus{border-color:#134E3F;background:#FFFFFF;box-shadow:0 0 0 3px rgba(19,78,63,0.1);}
+textarea::placeholder{color:#9CA3AF;}
+
+/* Dropzone */
+.dropzone{border:2.5px dashed #D1E3DA;border-radius:16px;padding:46px 20px;text-align:center;cursor:pointer;transition:.25s;background:#FAFCFA;position:relative;}
+.dropzone:hover{border-color:#134E3F;background:#F0F6F3;}
 .dropzone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
-.dropzone .icon{font-size:46px;margin-bottom:12px;}
-.dropzone h3{font-size:16px;margin-bottom:4px;}
-.dropzone p{color:#6b7280;font-size:13px;}
-.file-sel{background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.4);border-radius:10px;padding:10px 14px;margin-top:14px;display:none;align-items:center;gap:10px;}
+.dropzone .icon{font-size:48px;margin-bottom:12px;display:block;}
+.dropzone h3{font-size:16.5px;font-weight:800;color:#134E3F;margin-bottom:4px;}
+.dropzone p{color:#6B7280;font-size:13px;}
+
+.file-sel{background:#EBF4F0;border:1.5px solid #D1E3DA;border-radius:12px;padding:12px 16px;margin-top:16px;display:none;align-items:center;gap:12px;}
 .file-sel.show{display:flex;}
-.file-sel .fname{flex:1;font-size:14px;}
-.rm{background:rgba(239,68,68,.2);border:none;color:#f87171;border-radius:6px;padding:3px 10px;cursor:pointer;font-size:13px;}
-.btn{width:100%;padding:14px;border:none;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;border-radius:12px;font-size:16px;font-weight:600;cursor:pointer;margin-top:14px;transition:.2s;}
-.btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 8px 25px rgba(124,58,237,.5);}
-.btn:disabled{background:#374151;cursor:not-allowed;}
-/* progress */
-.prog-card{background:rgba(255,255,255,.04);border:1px solid rgba(124,58,237,.2);border-radius:14px;padding:22px;margin-top:22px;display:none;}
+.file-sel .fname{flex:1;font-size:14px;font-weight:700;color:#134E3F;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.rm{background:#FEE2E2;border:1px solid #FCA5A5;color:#DC2626;border-radius:8px;padding:4px 12px;cursor:pointer;font-size:13px;font-weight:700;transition:.2s;}
+.rm:hover{background:#FCA5A5;color:#991B1B;}
+
+/* Language Row */
+.lang-row{display:flex;align-items:center;gap:12px;margin:18px 0 16px;padding:12px 18px;background:#F8FAF8;border:1.5px solid #D1E3DA;border-radius:14px;}
+.lang-label{font-size:13.5px;color:#134E3F;font-weight:800;white-space:nowrap;display:flex;align-items:center;gap:6px;}
+.lang-select{flex:1;background:#FFFFFF;color:#111827;border:1.5px solid #D1E3DA;border-radius:10px;padding:10px 14px;font-size:14px;font-weight:600;cursor:pointer;outline:none;font-family:inherit;transition:.2s;}
+.lang-select:focus{border-color:#134E3F;box-shadow:0 0 0 3px rgba(19,78,63,.1);}
+
+/* Organized Action Buttons */
+.action-box{margin-top:20px;display:flex;flex-direction:column;gap:12px;}
+.btn-primary-generate{width:100%;padding:16px;border:none;background:linear-gradient(135deg,#134E3F 0%,#0E3F33 100%);color:#fff;border-radius:14px;font-size:16px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 6px 18px rgba(19,78,63,0.3);transition:.2s;letter-spacing:0.02em;}
+.btn-primary-generate:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 10px 24px rgba(19,78,63,0.4);}
+.btn-primary-generate:disabled{background:#9CA3AF;box-shadow:none;cursor:not-allowed;opacity:.7;}
+
+.action-row-tools{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+@media(max-width:600px){.action-row-tools{grid-template-columns:1fr;}}
+.btn-tool{background:#FFFFFF;border:1.5px solid #D1E3DA;color:#134E3F;padding:12px;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;transition:.2s;display:flex;align-items:center;justify-content:center;gap:6px;box-shadow:0 2px 6px rgba(0,0,0,0.02);}
+.btn-tool:hover:not(:disabled){background:#F0F6F3;border-color:#134E3F;transform:translateY(-1px);}
+.btn-tool:disabled{opacity:.4;cursor:not-allowed;border-color:#E5E7EB;}
+.btn-tool.fc{border-color:#DDD6FE;color:#6D28D9;}
+.btn-tool.fc:hover:not(:disabled){background:#F5F3FF;border-color:#8B5CF6;}
+.btn-tool.ws{border-color:#BAE6FD;color:#0369A1;}
+.btn-tool.ws:hover:not(:disabled){background:#F0F9FF;border-color:#0284C7;}
+
+/* Progress Card */
+.prog-card{background:#FFFFFF;border:1.5px solid #D1E3DA;border-radius:18px;padding:24px;margin-top:24px;display:none;box-shadow:0 8px 24px rgba(19,78,63,0.08);}
 .prog-card.show{display:block;}
-.steps{display:flex;flex-direction:column;gap:8px;margin-bottom:16px;}
-.step{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;background:rgba(255,255,255,.03);}
-.step.done{background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.2);}
-.step.active{background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.3);}
-.step.wait{opacity:.35;}
-.step-icon{font-size:18px;width:28px;}
-.step-text{flex:1;font-size:13px;}
-.step-badge{font-size:11px;padding:2px 10px;border-radius:12px;}
-.step.done .step-badge{background:rgba(16,185,129,.2);color:#34d399;}
-.step.active .step-badge{background:rgba(124,58,237,.3);color:#a78bfa;}
-.step.wait .step-badge{background:rgba(255,255,255,.05);color:#4b5563;}
-.lang-row{display:flex;align-items:center;gap:12px;margin:14px 0 10px;padding:12px 16px;background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.2);border-radius:12px;}
-.lang-label{font-size:13px;color:#a78bfa;font-weight:600;white-space:nowrap;}
-.lang-select{flex:1;background:#1e1b4b;color:#e2e8f0;border:1px solid rgba(124,58,237,.4);border-radius:8px;padding:8px 12px;font-size:13px;cursor:pointer;outline:none;}
-.lang-select:focus{border-color:#7c3aed;box-shadow:0 0 0 2px rgba(124,58,237,.2);}
-.lang-select option{background:#1e1b4b;color:#e2e8f0;}
-.pb-wrap{height:6px;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden;}
-.pb{height:100%;background:linear-gradient(90deg,#7c3aed,#4f46e5);border-radius:99px;width:0%;transition:width .5s;}
-.prog-label{text-align:center;margin-top:10px;color:#6b7280;font-size:13px;}
-/* result */
-.result{background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.3);border-radius:14px;padding:22px;margin-top:22px;display:none;}
+.steps{display:flex;flex-direction:column;gap:10px;margin-bottom:18px;}
+.step{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:12px;background:#F9FBFA;border:1px solid #E5EBE7;transition:.2s;}
+.step.done{background:#ECFDF5;border-color:#A7F3D0;}
+.step.active{background:#EBF4F0;border-color:#134E3F;box-shadow:0 2px 8px rgba(19,78,63,0.08);}
+.step.wait{opacity:.45;}
+.step-icon{font-size:20px;width:30px;text-align:center;}
+.step-text{flex:1;font-size:13.5px;font-weight:600;color:#1F2937;}
+.step-badge{font-size:11px;font-weight:800;padding:3px 12px;border-radius:999px;}
+.step.done .step-badge{background:#D1FAE5;color:#065F46;}
+.step.active .step-badge{background:#134E3F;color:#FFFFFF;}
+.step.wait .step-badge{background:#E5E7EB;color:#6B7280;}
+
+.pb-wrap{height:8px;background:#E5ECE8;border-radius:999px;overflow:hidden;}
+.pb{height:100%;background:linear-gradient(90deg,#134E3F 0%,#10B981 100%);border-radius:999px;width:0%;transition:width .5s ease;}
+.prog-label{text-align:center;margin-top:12px;color:#4B5563;font-size:13.5px;font-weight:600;}
+
+/* Live Model Logs */
+#llmLogs{background:#0F172A;padding:14px 18px;border-radius:12px;margin-top:18px;font-family:monospace;font-size:12.5px;color:#93C5FD;max-height:140px;overflow-y:auto;border:1px solid #1E293B;}
+
+/* Result Card */
+.result{background:#FFFFFF;border:2px solid #10B981;border-radius:18px;padding:26px;margin-top:24px;display:none;box-shadow:0 8px 30px rgba(16,185,129,0.12);}
 .result.show{display:block;}
-.result h3{color:#34d399;margin-bottom:14px;font-size:17px;}
-.meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:18px;}
-.meta-item{background:rgba(255,255,255,.04);border-radius:10px;padding:10px 14px;}
-.meta-item label{font-size:10px;color:#6b7280;display:block;margin-bottom:3px;text-transform:uppercase;}
-.meta-item span{font-size:14px;font-weight:600;}
-.watch-btn{display:block;width:100%;padding:13px;background:linear-gradient(135deg,#059669,#047857);color:#fff;border-radius:10px;text-align:center;text-decoration:none;font-weight:600;font-size:15px;margin-bottom:8px;}
-.copy-btn{width:100%;padding:10px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:#9ca3af;border-radius:10px;cursor:pointer;font-size:13px;}
-/* error */
-.err{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.3);border-radius:14px;padding:18px;margin-top:22px;display:none;}
+.result h3{color:#065F46;margin-bottom:14px;font-size:20px;font-weight:800;display:flex;align-items:center;gap:8px;}
+.meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;}
+.meta-item{background:#F9FBFA;border:1px solid #D1E3DA;border-radius:12px;padding:12px 16px;}
+.meta-item label{font-size:10.5px;color:#6B7280;display:block;margin-bottom:4px;text-transform:uppercase;font-weight:700;letter-spacing:0.04em;}
+.meta-item span{font-size:15px;font-weight:800;color:#134E3F;}
+.watch-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px;background:linear-gradient(135deg,#134E3F,#0E3F33);color:#fff;border-radius:12px;text-align:center;text-decoration:none;font-weight:800;font-size:15.5px;margin-bottom:10px;box-shadow:0 4px 14px rgba(19,78,63,0.25);transition:.2s;}
+.watch-btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(19,78,63,0.35);}
+.copy-btn{width:100%;padding:11px;background:#F0F6F3;border:1.5px solid #D1E3DA;color:#134E3F;border-radius:12px;cursor:pointer;font-size:13.5px;font-weight:700;transition:.2s;}
+.copy-btn:hover{background:#E2ECE8;}
+
+/* Error Card */
+.err{background:#FEF2F2;border:2px solid #F87171;border-radius:18px;padding:22px;margin-top:24px;display:none;}
 .err.show{display:block;}
-.err h3{color:#f87171;margin-bottom:6px;}
-.err p{color:#fca5a5;font-size:14px;}
-/* jobs */
-.jobs-grid{display:flex;flex-direction:column;gap:10px;}
-.job-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:14px 18px;display:flex;align-items:center;gap:14px;transition:.2s;}
-.job-card:hover{border-color:rgba(124,58,237,.4);}
-.jthumb{width:50px;height:36px;background:linear-gradient(135deg,#312e81,#4f46e5);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
-.jinfo{flex:1;}
-.jtitle{font-size:14px;font-weight:600;margin-bottom:2px;}
-.jmeta{font-size:11px;color:#6b7280;}
-.jeng{display:inline-block;font-size:10px;padding:1px 8px;border-radius:10px;margin-left:6px;background:rgba(124,58,237,.2);color:#a78bfa;}
-.jwatch{padding:7px 14px;background:rgba(124,58,237,.2);border:1px solid rgba(124,58,237,.4);color:#a78bfa;border-radius:8px;text-decoration:none;font-size:12px;}
-.no-jobs{text-align:center;color:#4b5563;padding:36px;}
-.refresh-btn{display:block;width:fit-content;margin:0 auto 16px;padding:8px 20px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:#9ca3af;border-radius:8px;cursor:pointer;font-size:13px;}
-/* action row */
-.action-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;}
-.btn-outline{background:transparent;border:2px solid #7c3aed;color:#a78bfa;font-size:14px;font-weight:600;padding:13px;border-radius:12px;cursor:pointer;transition:.2s;}
-.btn-outline:hover{background:rgba(124,58,237,.15);}
-.btn-outline:disabled{opacity:.4;cursor:not-allowed;}
-/* summary modal */
-.sum-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:1000;display:none;align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto;}
+.err h3{color:#B91C1C;margin-bottom:6px;font-size:18px;font-weight:800;display:flex;align-items:center;gap:8px;}
+.err p{color:#7F1D1D;font-size:14px;font-weight:500;}
+
+/* Jobs Grid */
+.jobs-grid{display:flex;flex-direction:column;gap:12px;}
+.job-card{background:#FFFFFF;border:1.5px solid #D1E3DA;border-radius:14px;padding:16px 20px;display:flex;align-items:center;gap:16px;transition:.2s;box-shadow:0 2px 8px rgba(19,78,63,0.03);}
+.job-card:hover{border-color:#134E3F;transform:translateY(-1px);box-shadow:0 6px 18px rgba(19,78,63,0.08);}
+.jthumb{width:52px;height:40px;background:linear-gradient(135deg,#134E3F,#0E3F33);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;flex-shrink:0;}
+.jinfo{flex:1;min-width:0;}
+.jtitle{font-size:14.5px;font-weight:800;color:#134E3F;margin-bottom:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.jmeta{font-size:12px;color:#6B7280;font-weight:500;}
+.jeng{display:inline-block;font-size:10px;font-weight:800;padding:2px 8px;border-radius:999px;margin-left:6px;background:#EBF4F0;color:#134E3F;border:1px solid #D1E3DA;}
+.jwatch{padding:8px 16px;background:#134E3F;color:#fff;border-radius:10px;text-decoration:none;font-size:12.5px;font-weight:700;transition:.2s;}
+.jwatch:hover{background:#0E3F33;}
+.no-jobs{text-align:center;color:#6B7280;padding:40px 20px;font-weight:500;}
+.refresh-btn{display:flex;align-items:center;gap:6px;width:fit-content;margin:0 auto 18px;padding:9px 22px;background:#FFFFFF;border:1.5px solid #D1E3DA;color:#134E3F;border-radius:10px;cursor:pointer;font-size:13.5px;font-weight:700;transition:.2s;}
+.refresh-btn:hover{background:#F0F6F3;border-color:#134E3F;}
+
+/* Modals */
+.sum-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);z-index:1000;display:none;align-items:flex-start;justify-content:center;padding:24px;overflow-y:auto;}
 .sum-overlay.show{display:flex;}
-.sum-modal{background:#111827;border:1px solid rgba(124,58,237,.4);border-radius:18px;width:100%;max-width:780px;margin:auto;padding:28px;position:relative;}
-.sum-modal h2{color:#a78bfa;font-size:20px;margin-bottom:6px;}
-.sum-modal .sum-meta{font-size:13px;color:#6b7280;margin-bottom:18px;}
-.sum-close{position:absolute;top:16px;right:16px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#9ca3af;border-radius:8px;padding:5px 12px;cursor:pointer;font-size:14px;}
-.sum-close:hover{background:rgba(255,255,255,.12);}
-.sum-content{background:#0f172a;border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:20px;font-size:13.5px;line-height:1.75;color:#e2e8f0;white-space:pre-wrap;word-break:break-word;max-height:60vh;overflow-y:auto;}
-.sum-content h1{color:#a78bfa;font-size:18px;margin-bottom:8px;}
-.sum-content h2{color:#7c3aed;font-size:15px;margin:14px 0 4px;}
-.sum-content strong{color:#fbbf24;}
-.sum-content code{background:rgba(124,58,237,.15);color:#c4b5fd;padding:2px 6px;border-radius:4px;font-family:monospace;}
-.sum-content pre{background:#0a0f1a;border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:14px;margin:10px 0;overflow-x:auto;}
-.sum-content blockquote{border-left:3px solid #7c3aed;padding-left:12px;color:#9ca3af;margin:8px 0;}
-.sum-footer{display:flex;gap:10px;margin-top:18px;}
-.sum-btn-video{flex:1;padding:13px;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;}
-.sum-btn-copy{padding:13px 20px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:#9ca3af;border-radius:10px;font-size:13px;cursor:pointer;}
+.sum-modal{background:#FFFFFF;border:1.5px solid #D1E3DA;border-radius:20px;width:100%;max-width:800px;margin:auto;padding:32px;position:relative;box-shadow:0 20px 50px rgba(0,0,0,0.15);}
+.sum-modal h2{color:#134E3F;font-size:22px;font-weight:800;margin-bottom:6px;}
+.sum-modal .sum-meta{font-size:13px;color:#6B7280;margin-bottom:18px;}
+.sum-close{position:absolute;top:18px;right:18px;background:#F3F4F6;border:1px solid #D1D5DB;color:#4B5563;border-radius:8px;padding:6px 14px;cursor:pointer;font-size:13px;font-weight:700;}
+.sum-close:hover{background:#E5E7EB;}
+.sum-content{background:#F8FAF8;border:1.5px solid #D1E3DA;border-radius:14px;padding:22px;font-size:14px;line-height:1.75;color:#1F2937;white-space:pre-wrap;word-break:break-word;max-height:60vh;overflow-y:auto;}
+.sum-content h1{color:#134E3F;font-size:20px;margin-bottom:8px;font-weight:800;}
+.sum-content h2{color:#0E3F33;font-size:16px;margin:16px 0 6px;font-weight:800;}
+.sum-content strong{color:#EA580C;}
+.sum-content code{background:#EBF4F0;color:#134E3F;padding:2px 6px;border-radius:6px;font-family:monospace;font-weight:700;}
+.sum-content blockquote{border-left:4px solid #134E3F;padding-left:14px;color:#4B5563;margin:10px 0;background:#FFFFFF;border-radius:0 8px 8px 0;}
+.sum-footer{display:flex;gap:12px;margin-top:20px;}
+.sum-btn-video{flex:1;padding:14px;background:linear-gradient(135deg,#134E3F,#0E3F33);color:#fff;border:none;border-radius:12px;font-size:14.5px;font-weight:800;cursor:pointer;}
+.sum-btn-copy{padding:14px 24px;background:#FFFFFF;border:1.5px solid #D1E3DA;color:#134E3F;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;}
+
+/* Study Modal */
+.study-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);backdrop-filter:blur(6px);z-index:1100;display:none;align-items:center;justify-content:center;padding:20px;overflow-y:auto;}
+.study-modal-overlay.show{display:flex;}
+.study-modal{background:#FFFFFF;border:1.5px solid #D1E3DA;border-radius:22px;width:100%;max-width:880px;max-height:90vh;overflow-y:auto;padding:32px;position:relative;box-shadow:0 25px 60px rgba(0,0,0,.18);}
+.study-modal h2{color:#134E3F;font-size:24px;font-weight:800;margin-bottom:4px;display:flex;align-items:center;gap:8px;}
+.study-modal .study-meta{font-size:13px;color:#6B7280;margin-bottom:20px;}
+.study-close{position:absolute;top:20px;right:20px;background:#F3F4F6;border:1px solid #D1D5DB;color:#4B5563;border-radius:8px;padding:6px 14px;cursor:pointer;font-size:13px;font-weight:700;}
+.study-close:hover{background:#E5E7EB;}
+
+.fc-flip-wrap{perspective:1000px;margin:20px 0;cursor:pointer;}
+.fc-card{min-height:220px;border-radius:18px;background:linear-gradient(135deg,#FFFFFF 0%,#F8FAF9 100%);border:2px solid #D1E3DA;padding:26px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 8px 24px rgba(19,78,63,0.08);position:relative;}
+.fc-card.flipped{background:linear-gradient(135deg,#EBF4F0 0%,#E2ECE8 100%);border-color:#134E3F;}
+.fc-num{font-size:11.5px;font-weight:800;color:#EA580C;text-transform:uppercase;letter-spacing:0.06em;}
+.fc-tag{font-size:11px;font-weight:700;color:#134E3F;background:#EBF4F0;padding:3px 10px;border-radius:999px;border:1px solid #D1E3DA;}
+.fc-prompt{font-size:19px;font-weight:800;color:#134E3F;margin:auto 0;text-align:center;line-height:1.4;}
+.fc-answer{font-size:17px;font-weight:700;color:#0E3F33;margin:auto 0;text-align:center;line-height:1.5;}
+.fc-hint{font-size:11.5px;color:#6B7280;text-align:center;margin-top:10px;font-style:italic;}
+.fc-footer{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:#6B7280;font-weight:600;}
+.fc-controls{display:flex;gap:12px;justify-content:center;margin-top:20px;}
+.fc-btn{background:#FFFFFF;border:1.5px solid #D1E3DA;color:#134E3F;padding:9px 20px;border-radius:10px;cursor:pointer;font-size:13.5px;font-weight:700;transition:.2s;}
+.fc-btn:hover{background:#EBF4F0;border-color:#134E3F;}
+
+.ws-sec{background:#F8FAF8;border:1.5px solid #D1E3DA;border-radius:14px;padding:20px;margin-bottom:18px;}
+.ws-sec-title{font-size:15.5px;font-weight:800;color:#134E3F;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.ws-q-item{padding:12px 0;border-bottom:1px solid #E5EBE7;}
+.ws-q-item:last-child{border-bottom:none;}
+.ws-q-txt{font-size:14.5px;color:#111827;font-weight:700;margin-bottom:8px;}
+.ws-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0;}
+.ws-opt{background:#FFFFFF;border:1px solid #D1E3DA;border-radius:8px;padding:8px 12px;font-size:13.5px;color:#374151;font-weight:500;}
+.ws-ans{display:none;margin-top:8px;padding:10px 14px;background:#ECFDF5;border-left:4px solid #10B981;border-radius:6px;color:#065F46;font-size:13.5px;font-weight:700;}
+.ws-ans.show{display:block;}
+.ws-ans-toggle{background:none;border:none;color:#134E3F;font-size:12.5px;font-weight:700;cursor:pointer;padding:0;text-decoration:underline;margin-top:6px;}
 </style>
 </head>
 <body>
 <header>
-  <div class="logo">
-    <div class="logo-icon">🤖</div>
-    <div><h1>CodeSeekho V3</h1><p>AI Avatar Video Generator</p></div>
+<div class="logo">
+  <div class="logo-icon">🎓</div>
+  <div>
+    <h1>Shiksha Setu</h1>
+    <p>Student Video Generation Studio · 3-5 min lessons</p>
   </div>
-  <div class="v2-badge">🎭 Avatar Mode</div>
+</div>
+<nav class="nav-links">
+  <a href="/" class="nav-link active">🎬 Video Studio</a>
+  <a href="/study-tools" class="nav-link outline">📚 Study Tools Suite</a>
+</nav>
+<span class="v2-badge">AI STUDIO v3.0</span>
 </header>
 <main>
-  <h2>AI Avatar Explains Your Content</h2>
-  <p class="sub">Upload PPT, PDF, or TXT — an AI avatar character explains it with AI voice</p>
+  <h2>AI Avatar Video Generator for Students</h2>
+  <p class="sub">Turn any PPT, PDF, or study notes into a 3-5 minute animated video lesson with Indian accent narration</p>
+
+  <div class="feature-row">
+    <div class="feat-item">
+      <div class="feat-icon">📑</div>
+      <div class="feat-title">Full Topic Coverage</div>
+      <div class="feat-desc">Every slide, concept & definition explained</div>
+    </div>
+    <div class="feat-item">
+      <div class="feat-icon">🎭</div>
+      <div class="feat-title">AI Avatar & Animations</div>
+      <div class="feat-desc">Visual radar, flowcharts & live code runner</div>
+    </div>
+    <div class="feat-item">
+      <div class="feat-icon">🇮🇳</div>
+      <div class="feat-title">Indian Accent Voice</div>
+      <div class="feat-desc">Clear, natural conversational teaching</div>
+    </div>
+    <div class="feat-item">
+      <div class="feat-icon">📋</div>
+      <div class="feat-title">Video Index & Agenda</div>
+      <div class="feat-desc">Built-in table of contents & roadmap</div>
+    </div>
+  </div>
 
   <div class="avatar-preview">
     <div class="avatar-card">
       <svg class="avatar-svg" viewBox="0 0 200 240">
-        <circle cx="100" cy="110" r="85" fill="none" stroke="#7c3aed" stroke-width="2" opacity="0.4"/>
-        <circle cx="100" cy="110" r="72" fill="#1e1b4b"/>
+        <circle cx="100" cy="110" r="85" fill="none" stroke="#134E3F" stroke-width="2" opacity="0.4"/>
+        <circle cx="100" cy="110" r="72" fill="#FFFFFF"/>
         <ellipse cx="100" cy="46" rx="72" ry="30" fill="#312e81"/>
         <ellipse cx="44" cy="80" rx="18" ry="32" fill="#312e81"/>
         <ellipse cx="156" cy="80" rx="18" ry="32" fill="#312e81"/>
         <ellipse cx="100" cy="120" rx="55" ry="60" fill="#fcd9a0"/>
-        <ellipse cx="78" cy="110" rx="10" ry="14" fill="#fff"/><ellipse cx="78" cy="110" rx="6" ry="8" fill="#7c3aed"/>
-        <ellipse cx="122" cy="110" rx="10" ry="14" fill="#fff"/><ellipse cx="122" cy="110" rx="6" ry="8" fill="#7c3aed"/>
+        <ellipse cx="78" cy="110" rx="10" ry="14" fill="#fff"/><ellipse cx="78" cy="110" rx="6" ry="8" fill="#134E3F"/>
+        <ellipse cx="122" cy="110" rx="10" ry="14" fill="#fff"/><ellipse cx="122" cy="110" rx="6" ry="8" fill="#134E3F"/>
         <path d="M65 95 Q78 88 91 95" stroke="#5b3a1a" stroke-width="3" fill="none"/>
         <path d="M109 95 Q122 88 135 95" stroke="#5b3a1a" stroke-width="3" fill="none"/>
         <ellipse cx="100" cy="145" rx="22" ry="8" fill="#1a0a00" stroke="#8b5cf6" stroke-width="1.5"/>
         <ellipse cx="100" cy="210" rx="60" ry="40" fill="#312e81"/>
-        <rect x="82" y="180" width="36" height="35" fill="#4f46e5" rx="4"/>
-        <polygon points="100,182 108,195 100,230 92,195" fill="#7c3aed" opacity="0.8"/>
+        <rect x="82" y="180" width="36" height="35" fill="#0E3F33" rx="4"/>
+        <polygon points="100,182 108,195 100,230 92,195" fill="#134E3F" opacity="0.8"/>
       </svg>
       <div class="avatar-info">
-        <h3>🤖 AI Teacher Avatar</h3>
-        <p>Animated character explains your content<br>with lip-sync and speech bubbles</p>
+        <h3>👩‍🏫 Indian AI Teacher Avatar</h3>
+        <p>Animated character explains every topic step-by-step<br>with synchronized lip-sync and subtitles</p>
         <div class="engines">
           <span class="eng eng-el">ElevenLabs Voice ✅</span>
           <span class="eng eng-free">Remotion Avatar ✅</span>
@@ -164,19 +277,20 @@ textarea::placeholder{color:#4b5563;}
     </div>
   </div>
 
-  <div class="tabs">
-    <button class="tab active" onclick="switchTab('upload')">📎 Upload File</button>
-    <button class="tab" onclick="switchTab('text')">✍️ Type Text</button>
+    <div class="tabs">
+    <button class="tab active" onclick="switchTab('upload')">📁 Upload File</button>
+    <button class="tab" onclick="switchTab('text')">✍️ Type Notes</button>
     <button class="tab" onclick="switchTab('jobs')">🎬 My Videos</button>
+    <button class="tab" onclick="switchTab('scripts')">📝 My Scripts</button>
     <button class="tab" onclick="switchTab('credits')">⚡ AI Credits</button>
   </div>
 
   <div class="panel active" id="panel-upload">
     <div class="dropzone" id="dz" onclick="document.getElementById('fi').click()">
-      <input type="file" id="fi" accept=".pptx,.ppt,.pdf,.txt,.md" onchange="onFile(this)">
+      <input type="file" id="fi" accept=".pptx,.ppt,.pdf,.txt,.md,.png,.jpg,.jpeg,.webp" onchange="onFile(this)">
       <div class="icon">📎</div>
       <h3>Drag & Drop or Click to Browse</h3>
-      <p>PPT, PPTX, PDF, TXT, MD — Max 50MB</p>
+      <p>PPT, PPTX, PDF, Images (PNG/JPG), TXT, MD — Max 50MB</p>
     </div>
     <div class="file-sel" id="fsel">
       <span id="ficon" style="font-size:22px">📄</span>
@@ -187,9 +301,9 @@ textarea::placeholder{color:#4b5563;}
     <div class="lang-row">
       <label class="lang-label">🌍 Script Language:</label>
       <select id="langSelect" class="lang-select">
-        <option value="English" selected>🇺🇸 English</option>
+        <option value="English" selected>🇮🇳 English (Indian English)</option>
+        <option value="Hinglish">🇮🇳 Hinglish (English + Hindi Mix)</option>
         <option value="Hindi">🇮🇳 Hindi (हिंदी)</option>
-        <option value="Hinglish">🇮🇳 Hinglish (Mix)</option>
         <option value="Bengali">🇮🇳 Bengali (বাংলা)</option>
         <option value="Marathi">🇮🇳 Marathi (मराठी)</option>
         <option value="Telugu">🇮🇳 Telugu (తెలుగు)</option>
@@ -198,12 +312,27 @@ textarea::placeholder{color:#4b5563;}
         <option value="Kannada">🇮🇳 Kannada (ಕನ್ನಡ)</option>
         <option value="Malayalam">🇮🇳 Malayalam (മലയാളം)</option>
         <option value="Punjabi">🇮🇳 Punjabi (ਪੰਜਾਬੀ)</option>
-        <option value="Urdu">🇮🇳 Urdu (اردو)</option>
+        <option value="Santhali">🇮🇳 Santhali (ᱥᱟᱱᱛᱟᱲᱤ / Ol Chiki)</option>
+        <option value="Ho">🇮🇳 Ho (ᱦᱳ / Warang Citi)</option>
+        <option value="Mundari">🇮🇳 Mundari (ᱢᱩᱱᱰᱟᱨᱤ)</option>
+        <option value="Urdu">🇵🇰 Urdu (اردو)</option>
       </select>
     </div>
-    <div class="action-row">
-      <button class="btn btn-outline" id="summaryBtnFile" onclick="getSummaryFromFile()" disabled>📋 Script Summary</button>
-      <button class="btn" id="uploadBtn" onclick="genFromFile()" disabled>🎬 Generate Video</button>
+    <div class="lang-row" style="margin-top:10px;">
+      <label class="lang-label">💻 Code Examples:</label>
+      <select id="codeModeSelect" class="lang-select">
+        <option value="auto" selected>✨ Auto-detect (Only if topic is about programming/software)</option>
+        <option value="never">🚫 Never (Strictly theory, literature, science, humanities)</option>
+        <option value="always">💻 Always include live code editor scene</option>
+      </select>
+    </div>
+        <div class="action-box">
+      <button class="btn-primary-generate" id="uploadBtn" onclick="genFromFile()" disabled>🎬 Generate Full Video Lesson (3-5 min)</button>
+      <div class="action-row-tools">
+        <button class="btn-tool" id="summaryBtnFile" onclick="getSummaryFromFile()" disabled>📋 Lesson Summary</button>
+        <button class="btn-tool fc" id="fcBtnFile" onclick="genFlashcardsFromFile()" disabled>🃏 Make Flashcards</button>
+        <button class="btn-tool ws" id="wsBtnFile" onclick="genWorksheetFromFile()" disabled>📝 Make Worksheet</button>
+      </div>
     </div>
   </div>
 
@@ -212,9 +341,9 @@ textarea::placeholder{color:#4b5563;}
     <div class="lang-row">
       <label class="lang-label">🌍 Script Language:</label>
       <select id="langSelect2" class="lang-select">
-        <option value="English" selected>🇺🇸 English</option>
+        <option value="English" selected>🇮🇳 English (Indian English)</option>
+        <option value="Hinglish">🇮🇳 Hinglish (English + Hindi Mix)</option>
         <option value="Hindi">🇮🇳 Hindi (हिंदी)</option>
-        <option value="Hinglish">🇮🇳 Hinglish (Mix)</option>
         <option value="Bengali">🇮🇳 Bengali (বাংলা)</option>
         <option value="Marathi">🇮🇳 Marathi (मराठी)</option>
         <option value="Telugu">🇮🇳 Telugu (తెలుగు)</option>
@@ -223,12 +352,26 @@ textarea::placeholder{color:#4b5563;}
         <option value="Kannada">🇮🇳 Kannada (ಕನ್ನಡ)</option>
         <option value="Malayalam">🇮🇳 Malayalam (മലയാളം)</option>
         <option value="Punjabi">🇮🇳 Punjabi (ਪੰਜਾਬੀ)</option>
-        <option value="Urdu">🇮🇳 Urdu (اردو)</option>
+        <option value="Santhali">🇮🇳 Santhali (ᱥᱟᱱᱛᱟᱲᱤ / Ol Chiki)</option>
+        <option value="Ho">🇮🇳 Ho (ᱦᱳ / Warang Citi)</option>
+        <option value="Mundari">🇮🇳 Mundari (ᱢᱩᱱᱰᱟᱨᱤ)</option>
       </select>
     </div>
-    <div class="action-row">
-      <button class="btn btn-outline" onclick="getSummaryFromText()">📋 Script Summary</button>
-      <button class="btn" onclick="genFromText()">🎬 Generate Video</button>
+    <div class="lang-row" style="margin-top:10px;">
+      <label class="lang-label">💻 Code Examples:</label>
+      <select id="codeModeSelect2" class="lang-select">
+        <option value="auto" selected>✨ Auto-detect (Only if topic is about programming/software)</option>
+        <option value="never">🚫 Never (Strictly theory, literature, science, humanities)</option>
+        <option value="always">💻 Always include live code editor scene</option>
+      </select>
+    </div>
+        <div class="action-box">
+      <button class="btn-primary-generate" id="textBtn" onclick="genFromText()">🎬 Generate Full Video Lesson (3-5 min)</button>
+      <div class="action-row-tools">
+        <button class="btn-tool" id="summaryBtnText" onclick="getSummaryFromText()">📋 Lesson Summary</button>
+        <button class="btn-tool fc" id="fcBtnText" onclick="genFlashcardsFromText()">🃏 Make Flashcards</button>
+        <button class="btn-tool ws" id="wsBtnText" onclick="genWorksheetFromText()">📝 Make Worksheet</button>
+      </div>
     </div>
   </div>
 
@@ -237,11 +380,16 @@ textarea::placeholder{color:#4b5563;}
     <div class="jobs-grid" id="jobsGrid"><div class="no-jobs">Loading...</div></div>
   </div>
 
+  <div class="panel" id="panel-scripts">
+    <button class="refresh-btn" onclick="loadScripts()">🔄 Refresh</button>
+    <div class="jobs-grid" id="scriptsGrid"><div class="no-jobs">Loading...</div></div>
+  </div>
+
   <!-- CREDITS PANEL -->
   <div class="panel" id="panel-credits">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-      <h3 style="font-size:18px;color:#a78bfa;">⚡ Live AI API Credits & Status</h3>
-      <button onclick="loadCredits()" style="background:rgba(124,58,237,.2);border:1px solid rgba(124,58,237,.4);color:#a78bfa;padding:6px 14px;border-radius:8px;cursor:pointer;font-size:13px;">🔄 Refresh</button>
+      <h3 style="font-size:18px;color:#134E3F;">⚡ Live AI API Credits & Status</h3>
+      <button onclick="loadCredits()" style="background:rgba(19,78,63,.1);border:1px solid rgba(19,78,63,.3);color:#134E3F;padding:6px 14px;border-radius:8px;cursor:pointer;font-size:13px;">🔄 Refresh</button>
     </div>
     <div id="creditsGrid" style="display:flex;flex-direction:column;gap:12px;">
       <div style="color:#6b7280;text-align:center;padding:30px;">Loading API status...</div>
@@ -251,17 +399,17 @@ textarea::placeholder{color:#4b5563;}
 
   <div class="prog-card" id="progCard">
     <div class="steps">
-      <div class="step wait" id="s1"><span class="step-icon">🤖</span><span class="step-text">Gemini — Reading content & building script</span><span class="step-badge">Waiting</span></div>
-      <div class="step wait" id="s2"><span class="step-icon">🔊</span><span class="step-text">ElevenLabs — Generating AI voice narration</span><span class="step-badge">Waiting</span></div>
-      <div class="step wait" id="s3"><span class="step-icon">🎭</span><span class="step-text">Avatar — Generating talking character</span><span class="step-badge">Waiting</span></div>
-      <div class="step wait" id="s4"><span class="step-icon">🎥</span><span class="step-text">Remotion — Rendering final HD video</span><span class="step-badge">Waiting</span></div>
-      <div class="step wait" id="s5"><span class="step-icon">☁️</span><span class="step-text">Supabase — Uploading to cloud</span><span class="step-badge">Waiting</span></div>
+      <div class="step wait" id="s1"><span class="step-icon">🤖</span><span class="step-text">Gemini AI — Reading content & building 12-18 scene script</span><span class="step-badge">Waiting</span></div>
+      <div class="step wait" id="s2"><span class="step-icon">🎙️</span><span class="step-text">Voice AI — Generating Indian accent narration & word timing</span><span class="step-badge">Waiting</span></div>
+      <div class="step wait" id="s3"><span class="step-icon">🎭</span><span class="step-text">AI Avatar — Preparing synchronized teacher character</span><span class="step-badge">Waiting</span></div>
+      <div class="step wait" id="s4"><span class="step-icon">🎥</span><span class="step-text">Remotion Engine — Rendering final animated HD video</span><span class="step-badge">Waiting</span></div>
+      <div class="step wait" id="s5"><span class="step-icon">☁️</span><span class="step-text">Cloud Storage — Uploading and saving to video library</span><span class="step-badge">Waiting</span></div>
     </div>
     <div class="pb-wrap"><div class="pb" id="pb"></div></div>
     <p class="prog-label" id="progLabel">Starting...</p>
     
     <!-- Live Model Logs -->
-    <div id="llmLogs" style="display:none; font-family: 'Courier New', Courier, monospace; font-size: 13px; color: #a78bfa; background: #020617; padding: 12px; border-radius: 8px; margin-top: 20px; text-align: left; max-height: 150px; overflow-y: auto; border: 1px solid #334155;">
+    <div id="llmLogs" style="display:none; font-family: 'Courier New', Courier, monospace; font-size: 13px; color: #34D399; background: #020617; padding: 12px; border-radius: 8px; margin-top: 20px; text-align: left; max-height: 150px; overflow-y: auto; border: 1px solid #334155;">
       <div style="color: #94a3b8; margin-bottom: 5px; font-weight: bold;">⚡ Live AI Model Rotation Logs:</div>
       <div id="llmLogContent"></div>
     </div>
@@ -277,7 +425,11 @@ textarea::placeholder{color:#4b5563;}
     </div>
     <a href="#" target="_blank" class="watch-btn" id="watchBtn">▶️ Watch Avatar Video</a>
     <a href="#" target="_blank" class="watch-btn" id="mdBtn" style="background:linear-gradient(135deg,#0369a1,#0284c7);margin-top:8px;">📄 Download Script as Markdown</a>
-    <button class="copy-btn" onclick="copyUrl()">📋 Copy Video URL</button>
+    <div style="display:flex;gap:10px;margin-top:10px;flex-wrap:wrap;">
+      <button class="watch-btn" id="resFcBtn" style="background:linear-gradient(135deg,#134E3F,#0E3F33);flex:1;min-width:160px;margin-bottom:0;" onclick="genFlashcardsFromResult()">🃏 Make Flashcards in <span id="rLangFc">this language</span></button>
+      <button class="watch-btn" id="resWsBtn" style="background:linear-gradient(135deg,#2563eb,#1d4ed8);flex:1;min-width:160px;margin-bottom:0;" onclick="genWorksheetFromResult()">📝 Make Worksheet in <span id="rLangWs">this language</span></button>
+    </div>
+    <button class="copy-btn" onclick="copyUrl()" style="margin-top:10px;">📋 Copy Video URL</button>
   </div>
 
   <div class="err" id="err">
@@ -295,45 +447,72 @@ fetch('/health').then(r=>r.json()).then(d=>{
 });
 
 function switchTab(t) {
-  document.querySelectorAll('.tab').forEach((el,i)=>el.classList.toggle('active',['upload','text','jobs','credits'][i]===t));
+  const tabs = ['upload', 'text', 'jobs', 'scripts', 'credits'];
+  document.querySelectorAll('.tab').forEach((el,i)=>el.classList.toggle('active',tabs[i]===t));
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.getElementById('panel-'+t).classList.add('active');
   if(t==='jobs') loadJobs();
+  if(t==='scripts') loadScripts();
   if(t==='credits') loadCredits();
 }
 function onFile(inp){
   const f=inp.files[0]; if(!f) return;
   const ext=f.name.split('.').pop().toLowerCase();
-  const icons={pptx:'📊',ppt:'📊',pdf:'📄',txt:'📝',md:'📝'};
+  const icons={pptx:'📊',ppt:'📊',pdf:'📄',txt:'📝',md:'📝',png:'🖼️',jpg:'🖼️',jpeg:'🖼️',webp:'🖼️'};
   document.getElementById('ficon').textContent=icons[ext]||'📁';
   document.getElementById('fname').textContent=f.name;
   document.getElementById('fsize').textContent=(f.size/1024).toFixed(1)+' KB';
   document.getElementById('fsel').classList.add('show');
   document.getElementById('uploadBtn').disabled=false;
   document.getElementById('summaryBtnFile').disabled=false;
+  if(document.getElementById('fcBtnFile')) document.getElementById('fcBtnFile').disabled=false;
+  if(document.getElementById('wsBtnFile')) document.getElementById('wsBtnFile').disabled=false;
 }
 function clearFile(){
   document.getElementById('fi').value='';
   document.getElementById('fsel').classList.remove('show');
   document.getElementById('uploadBtn').disabled=true;
   document.getElementById('summaryBtnFile').disabled=true;
+  if(document.getElementById('fcBtnFile')) document.getElementById('fcBtnFile').disabled=true;
+  if(document.getElementById('wsBtnFile')) document.getElementById('wsBtnFile').disabled=true;
 }
 const dz=document.getElementById('dz');
-dz.addEventListener('dragover',e=>{e.preventDefault();dz.style.borderColor='#7c3aed';});
+dz.addEventListener('dragover',e=>{e.preventDefault();dz.style.borderColor='#134E3F';});
 dz.addEventListener('dragleave',()=>dz.style.borderColor='');
 dz.addEventListener('drop',e=>{e.preventDefault();dz.style.borderColor='';const f=e.dataTransfer.files[0];if(f){const inp=document.getElementById('fi');inp.files=e.dataTransfer.files;onFile(inp);}});
 
+let isGenerating = false;
+
 async function genFromFile(){
+  if (isGenerating) return;
   const f=document.getElementById('fi').files[0]; if(!f) return;
   const lang = document.getElementById('langSelect').value;
-  const form=new FormData(); form.append('file',f); form.append('script_language', lang);
-  await run(()=>fetch('/generate-from-file',{method:'POST',body:form}));
+  const codeMode = document.getElementById('codeModeSelect')?.value || 'auto';
+  isGenerating = true;
+  document.getElementById('uploadBtn').disabled = true;
+  document.getElementById('summaryBtnFile').disabled = true;
+  const form=new FormData(); 
+  form.append('file',f); 
+  form.append('script_language', lang);
+  form.append('code_mode', codeMode);
+  try {
+    await run(()=>fetch('/generate-from-file',{method:'POST',body:form}));
+  } finally {
+    isGenerating = false;
+  }
 }
 async function genFromText(){
+  if (isGenerating) return;
   const t=document.getElementById('rawText').value.trim();
   const lang = document.getElementById('langSelect2').value;
+  const codeMode = document.getElementById('codeModeSelect2')?.value || 'auto';
   if(t.length<10){alert('At least 10 characters needed.');return;}
-  await run(()=>fetch('/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({raw_text:t, script_language: lang})}));
+  isGenerating = true;
+  try {
+    await run(()=>fetch('/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({raw_text:t, script_language: lang, code_mode: codeMode})}));
+  } finally {
+    isGenerating = false;
+  }
 }
 
 async function run(fetchFn){
@@ -393,9 +572,12 @@ async function run(fetchFn){
           const jData = await jRes.json();
           if (jData.success) {
             const job = jData.job;
+            _currentJob = job;
             vidUrl = job.video_url;
             document.getElementById('rTitle').textContent = job.title;
             document.getElementById('rLang').textContent = job.language;
+            if (document.getElementById('rLangFc')) document.getElementById('rLangFc').textContent = job.language;
+            if (document.getElementById('rLangWs')) document.getElementById('rLangWs').textContent = job.language;
             document.getElementById('rScenes').textContent = job.scene_count + ' scenes';
             document.getElementById('rEngine').textContent = 'Remotion-Avatar';
             document.getElementById('watchBtn').href = job.video_url;
@@ -431,22 +613,44 @@ async function loadJobs(){
   g.innerHTML='<div class="no-jobs">Loading...</div>';
   try{
     const d=await(await fetch('/jobs')).json();
-    if(!d.jobs?.length){g.innerHTML='<div class="no-jobs">No avatar videos yet. Generate your first one!</div>';return;}
-    g.innerHTML=d.jobs.map(j=>`<div class="job-card">
+    const videos = d.jobs?.filter(j => j.status !== 'script_only') || [];
+    if(!videos.length){g.innerHTML='<div class="no-jobs">No avatar videos yet. Generate your first one!</div>';return;}
+    g.innerHTML=videos.map(j=>{
+      return `<div class="job-card">
       <div class="jthumb">🎭</div>
       <div class="jinfo">
-        <div class="jtitle">${j.title}<span class="jeng">Avatar</span></div>
-        <div class="jmeta">${j.scene_count} scenes &nbsp;·&nbsp; ${new Date(j.created_at).toLocaleString('en-IN',{dateStyle:'medium',timeStyle:'short'})}</div>
+        <div class="jtitle">${j.title}<span class="jeng">Avatar Video</span></div>
+        <div class="jmeta">${j.scene_count} topics &nbsp;·&nbsp; ${new Date(j.created_at).toLocaleString('en-IN',{dateStyle:'medium',timeStyle:'short'})}</div>
       </div>
       <a href="${j.video_url}" target="_blank" class="jwatch">▶ Watch</a>
-    </div>`).join('');
-  } catch(e){g.innerHTML='<div class="no-jobs">Could not load. Is server running on :3002?</div>';}
+    </div>`}).join('');
+  } catch(e){g.innerHTML='<div class="no-jobs">Could not load. Is server running?</div>';}
 }
-function copyUrl(){navigator.clipboard.writeText(vidUrl).then(()=>{const b=document.querySelector('.copy-btn');b.textContent='✅ Copied!';setTimeout(()=>b.textContent='📋 Copy Video URL',2000);});}
+
+async function loadScripts(){
+  const g=document.getElementById('scriptsGrid');
+  g.innerHTML='<div class="no-jobs">Loading...</div>';
+  try{
+    const d=await(await fetch('/jobs')).json();
+    const scripts = d.jobs?.filter(j => j.status === 'script_only') || [];
+    if(!scripts.length){g.innerHTML='<div class="no-jobs">No script documents yet. Generate your first one!</div>';return;}
+    g.innerHTML=scripts.map(j=>{
+      return `<div class="job-card">
+      <div class="jthumb" style="background:rgba(59,130,246,0.1)">📄</div>
+      <div class="jinfo">
+        <div class="jtitle">${j.title}<span class="jeng" style="background:rgba(59,130,246,0.1);color:#3b82f6;border-color:rgba(59,130,246,0.2);">Script Document</span></div>
+        <div class="jmeta">${j.scene_count} topics &nbsp;·&nbsp; ${new Date(j.created_at).toLocaleString('en-IN',{dateStyle:'medium',timeStyle:'short'})}</div>
+      </div>
+      <a href="${j.video_url}" target="_blank" class="jwatch" style="background:rgba(59,130,246,0.1);color:#3b82f6;">📄 Read Script</a>
+    </div>`}).join('');
+  } catch(e){g.innerHTML='<div class="no-jobs">Could not load. Is server running?</div>';}
+}
+
+function copyUrl(){navigator.clipboard.writeText(vidUrl).then(()=>{const b=document.querySelector('.copy-btn');b.textContent='✅ Copied!';setTimeout(()=>b.textContent='📋 Copy Video Link',2000);});}
 function show(id){document.getElementById(id).classList.add('show');}
 function hide(id){document.getElementById(id).classList.remove('show');}
 function hideAll(){['progCard','result','err'].forEach(hide);}
-function disableAll(v){document.querySelectorAll('.btn').forEach(b=>b.disabled=v);}
+function disableAll(v){document.querySelectorAll('.btn-primary-generate, .btn-tool').forEach(b=>b.disabled=v);}
 
 async function loadCredits() {
   const grid = document.getElementById('creditsGrid');
@@ -493,6 +697,27 @@ async function loadCredits() {
   </div>
 </div>
 
+<!-- Study Tools Modal (Flashcards & Worksheets) -->
+<div class="study-modal-overlay" id="studyModalOverlay" onclick="if(event.target===this) closeStudyModal()">
+  <div class="study-modal">
+    <button class="study-close" onclick="closeStudyModal()">✕ Close</button>
+    <h2 id="studyModalTitle">🃏 Interactive Flashcards</h2>
+    <div class="study-meta" id="studyModalMeta">Language: English · Shiksha Setu Study Engine</div>
+    <div id="studyModalBody">
+      <!-- Dynamic Content rendered by renderStudyModalFlashcards or renderStudyModalWorksheet -->
+    </div>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:20px; padding-top:16px; border-top:1px solid rgba(255,255,255,.08); flex-wrap:wrap; gap:10px;">
+      <a href="/study-tools" target="_blank" style="color:#134E3F; font-size:13px; text-decoration:none; font-weight:600; display:flex; align-items:center; gap:4px;">
+        📚 Open Full Study Tools Suite ↗
+      </a>
+      <div style="display:flex; gap:10px;">
+        <button class="fc-btn" id="studyPrintBtn" style="display:none;" onclick="window.print()">🖨️ Print / Save PDF</button>
+        <button class="fc-btn" onclick="closeStudyModal()">Done</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
 // ── Summary helpers ────────────────────────────────────────────────────────────
 let _lastSummaryRawText   = '';
@@ -510,7 +735,7 @@ function showSummary(markdown, rawText, lang, fromFile, file) {
   let html = markdown
     .replace(/^# (.+)/gm, '<h1>$1</h1>')
     .replace(/^## (.+)/gm, '<h2>$1</h2>')
-    .replace(/^### (.+)/gm, '<h3 style="color:#c4b5fd;margin:10px 0 3px;">$1</h3>')
+    .replace(/^### (.+)/gm, '<h3 style="color:#134E3F;margin:10px 0 3px;">$1</h3>')
     .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
     .replace(/`([^`]+)`/g, '<code>$1</code>')
     .replace(/^---$/gm, '<hr style="border-color:rgba(255,255,255,.08);margin:10px 0;">')
@@ -539,12 +764,13 @@ async function convertSummaryToVideo() {
     const form = new FormData();
     form.append('file', _lastSummaryFile);
     form.append('script_language', _lastSummaryLang);
+    form.append('code_mode', document.getElementById('codeModeSelect')?.value || 'auto');
     await run(() => fetch('/generate-from-file', { method: 'POST', body: form }));
   } else {
     await run(() => fetch('/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ raw_text: _lastSummaryRawText, script_language: _lastSummaryLang })
+      body: JSON.stringify({ raw_text: _lastSummaryRawText, script_language: _lastSummaryLang, code_mode: document.getElementById('codeModeSelect2')?.value || 'auto' })
     }));
   }
 }
@@ -552,10 +778,14 @@ async function convertSummaryToVideo() {
 async function getSummaryFromFile() {
   const f = document.getElementById('fi').files[0]; if (!f) return;
   const lang = document.getElementById('langSelect').value;
+  const codeMode = document.getElementById('codeModeSelect')?.value || 'auto';
   const btn = document.getElementById('summaryBtnFile');
   btn.textContent = '⏳ Generating...'; btn.disabled = true;
 
-  const form = new FormData(); form.append('file', f); form.append('script_language', lang);
+  const form = new FormData(); 
+  form.append('file', f); 
+  form.append('script_language', lang);
+  form.append('code_mode', codeMode);
   try {
     const res = await fetch('/generate-script-from-file', { method: 'POST', body: form });
     const d = await res.json();
@@ -571,6 +801,7 @@ async function getSummaryFromFile() {
 async function getSummaryFromText() {
   const t = document.getElementById('rawText').value.trim();
   const lang = document.getElementById('langSelect2').value;
+  const codeMode = document.getElementById('codeModeSelect2')?.value || 'auto';
   if (t.length < 10) { alert('At least 10 characters needed.'); return; }
   const btns = document.querySelectorAll('#panel-text .btn-outline');
   btns.forEach(b => { b.textContent = '⏳ Generating...'; b.disabled = true; });
@@ -579,7 +810,7 @@ async function getSummaryFromText() {
     const res = await fetch('/generate-script', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ raw_text: t, script_language: lang })
+      body: JSON.stringify({ raw_text: t, script_language: lang, code_mode: codeMode })
     });
     const d = await res.json();
     if (!d.success) throw new Error(d.error || 'Failed');
@@ -588,6 +819,280 @@ async function getSummaryFromText() {
     alert('❌ Summary failed: ' + e.message);
   } finally {
     btns.forEach(b => { b.textContent = '📋 Script Summary'; b.disabled = false; });
+  }
+}
+
+// ── Study Tools (Flashcards & Worksheets) Modal Handlers ───────────────────────
+let _fcCards = [];
+let _fcIdx = 0;
+let _fcFlipped = false;
+
+function closeStudyModal() {
+  document.getElementById('studyModalOverlay').classList.remove('show');
+}
+
+function showStudyModalLoading(title, language) {
+  document.getElementById('studyModalTitle').innerHTML = title;
+  document.getElementById('studyModalMeta').textContent = `Target Language: ${language} · AI Model generating authentic study materials...`;
+  document.getElementById('studyModalBody').innerHTML = `
+    <div style="text-align:center; padding:50px 20px; color:#cbd5e1;">
+      <div style="display:inline-block; width:40px; height:40px; border:3px solid rgba(19,78,63,0.3); border-top-color:#134E3F; border-radius:50%; animation:spin 1s linear infinite; margin-bottom:16px;"></div>
+      <div style="font-size:16px; font-weight:600; color:#134E3F;">Generating comprehensive content in ${language}...</div>
+      <div style="font-size:13px; color:#94a3b8; margin-top:8px;">Adapting terminology, cultural context, and native script without English fallback</div>
+    </div>
+  `;
+  document.getElementById('studyPrintBtn').style.display = 'none';
+  document.getElementById('studyModalOverlay').classList.add('show');
+}
+
+function renderStudyModalFlashcards(fcData, language) {
+  _fcCards = fcData.cards || [];
+  _fcIdx = 0;
+  _fcFlipped = false;
+  document.getElementById('studyModalTitle').innerHTML = `🃏 ${fcData.title || 'Flashcards'} <span style="font-size:13px; color:#134E3F; font-weight:400;">(${fcData.total || _fcCards.length} cards)</span>`;
+  document.getElementById('studyModalMeta').textContent = `Language: ${language} · 100% Native Script · Click card to flip`;
+  document.getElementById('studyPrintBtn').style.display = 'none';
+
+  const body = document.getElementById('studyModalBody');
+  body.innerHTML = `
+    <div class="fc-flip-wrap" onclick="flipStudyCard()">
+      <div class="fc-card" id="mainFcCard">
+        <div>
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span class="fc-badge" id="fcBadgeSide">QUESTION</span>
+            <span style="font-size:12px; color:#94a3b8;" id="fcCategoryBadge">Definition</span>
+          </div>
+          <div class="fc-content" id="fcContentText"></div>
+        </div>
+        <div class="fc-footer">
+          <span id="fcCardCount">Card 1 of ${_fcCards.length}</span>
+          <span id="fcDifficultyBadge" style="padding:2px 8px; border-radius:10px; font-size:11px; font-weight:700; background:rgba(59,130,246,.2); color:#60a5fa;">Easy</span>
+        </div>
+      </div>
+    </div>
+    <div style="text-align:center; font-size:12px; color:#94a3b8; margin-top:-8px;">👆 Tap anywhere on the card to flip between Question &amp; Answer</div>
+    <div class="fc-controls">
+      <button class="fc-btn" onclick="navStudyCard(-1)">← Previous</button>
+      <button class="fc-btn" onclick="shuffleStudyCards()">🔀 Shuffle</button>
+      <button class="fc-btn" onclick="navStudyCard(1)">Next →</button>
+    </div>
+    <div style="margin-top:24px;">
+      <div style="font-size:13px; font-weight:700; color:#cbd5e1; margin-bottom:10px;">📋 All Cards Overview:</div>
+      <div class="fc-grid-view">
+        ${_fcCards.map((c, i) => `
+          <div class="fc-grid-item" onclick="jumpStudyCard(${i})">
+            <div style="font-size:11px; color:#134E3F; font-weight:700; margin-bottom:4px;">#${i + 1} · ${c.category || 'Concept'}</div>
+            <div style="font-size:12px; color:#f1f5f9; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${c.front}</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+  updateStudyCardUI();
+}
+
+function updateStudyCardUI() {
+  if (!_fcCards.length) return;
+  const c = _fcCards[_fcIdx];
+  const card = document.getElementById('mainFcCard');
+  const badgeSide = document.getElementById('fcBadgeSide');
+  const content = document.getElementById('fcContentText');
+  const cat = document.getElementById('fcCategoryBadge');
+  const count = document.getElementById('fcCardCount');
+  const diff = document.getElementById('fcDifficultyBadge');
+
+  if (!card) return;
+  card.classList.toggle('flipped', _fcFlipped);
+  badgeSide.textContent = _fcFlipped ? 'ANSWER ✅' : 'QUESTION ❓';
+  badgeSide.style.color = _fcFlipped ? '#059669' : '#134E3F';
+  badgeSide.style.background = _fcFlipped ? 'rgba(16,185,129,.2)' : 'rgba(124,58,237,.25)';
+  content.textContent = _fcFlipped ? c.back : c.front;
+  cat.textContent = c.category || 'Topic';
+  count.textContent = `Card ${_fcIdx + 1} of ${_fcCards.length}`;
+  diff.textContent = c.difficulty || 'Medium';
+}
+
+function flipStudyCard() {
+  _fcFlipped = !_fcFlipped;
+  updateStudyCardUI();
+}
+
+function navStudyCard(dir) {
+  _fcIdx = (_fcIdx + dir + _fcCards.length) % _fcCards.length;
+  _fcFlipped = false;
+  updateStudyCardUI();
+}
+
+function jumpStudyCard(i) {
+  _fcIdx = i;
+  _fcFlipped = false;
+  updateStudyCardUI();
+}
+
+function shuffleStudyCards() {
+  _fcCards = _fcCards.sort(() => Math.random() - 0.5);
+  _fcIdx = 0;
+  _fcFlipped = false;
+  updateStudyCardUI();
+}
+
+function renderStudyModalWorksheet(ws, language) {
+  document.getElementById('studyModalTitle').innerHTML = `📝 ${ws.title || 'Worksheet'} <span style="font-size:13px; color:#60a5fa; font-weight:400;">(${ws.subject || 'Subject'})</span>`;
+  document.getElementById('studyModalMeta').textContent = `Language: ${language} · ${ws.instructions || 'Answer all questions'}`;
+  document.getElementById('studyPrintBtn').style.display = 'inline-block';
+
+  const icons = { mcq: '🔘', fill_blank: '✏️', short_answer: '📝', true_false: '✅', long_answer: '📖' };
+  const sectionsHTML = (ws.sections || []).map(sec => {
+    const qHTML = (sec.questions || []).map(q => {
+      let opts = '';
+      if (sec.type === 'mcq' && q.options) {
+        opts = `<div class="ws-opts">${q.options.map(o => `<div class="ws-opt">${o}</div>`).join('')}</div>`;
+      }
+      return `
+        <div class="ws-q-item">
+          <div class="ws-q-txt"><span style="color:#134E3F;">Q${q.id || ''}.</span> ${q.question}</div>
+          ${opts}
+          <button class="ws-ans-toggle" onclick="this.nextElementSibling.classList.toggle('show')">Show Answer 👁️</button>
+          <div class="ws-ans">✅ ${q.answer}</div>
+        </div>
+      `;
+    }).join('');
+
+    return `
+      <div class="ws-sec">
+        <div class="ws-sec-title">${icons[sec.type] || '📌'} ${sec.title}</div>
+        ${qHTML}
+      </div>
+    `;
+  }).join('');
+
+  document.getElementById('studyModalBody').innerHTML = `
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+      <div style="font-size:13px; color:#94a3b8;">${(ws.sections || []).reduce((a, s) => a + (s.questions?.length || 0), 0)} Total Questions</div>
+      <button class="fc-btn" onclick="document.querySelectorAll('.ws-ans').forEach(el => el.classList.toggle('show'))">👁️ Toggle All Answers</button>
+    </div>
+    ${sectionsHTML}
+  `;
+}
+
+// Action button handlers
+async function genFlashcardsFromFile() {
+  const f = document.getElementById('fi').files[0];
+  if (!f) return;
+  const lang = document.getElementById('langSelect').value;
+  showStudyModalLoading(`🃏 Generating Flashcards in ${lang}...`, lang);
+  const form = new FormData();
+  form.append('file', f);
+  form.append('language', lang);
+  try {
+    const res = await fetch('/flashcards-from-file', { method: 'POST', body: form });
+    const d = await res.json();
+    if (!d.success) throw new Error(d.error || 'Failed to generate flashcards');
+    renderStudyModalFlashcards(d.flashcards, lang);
+  } catch (e) {
+    document.getElementById('studyModalBody').innerHTML = `<div style="color:#f87171; text-align:center; padding:30px;">❌ Error: ${e.message}</div>`;
+  }
+}
+
+async function genWorksheetFromFile() {
+  const f = document.getElementById('fi').files[0];
+  if (!f) return;
+  const lang = document.getElementById('langSelect').value;
+  showStudyModalLoading(`📝 Generating Worksheet in ${lang}...`, lang);
+  const form = new FormData();
+  form.append('file', f);
+  form.append('language', lang);
+  try {
+    const res = await fetch('/worksheet-from-file', { method: 'POST', body: form });
+    const d = await res.json();
+    if (!d.success) throw new Error(d.error || 'Failed to generate worksheet');
+    renderStudyModalWorksheet(d.worksheet, lang);
+  } catch (e) {
+    document.getElementById('studyModalBody').innerHTML = `<div style="color:#f87171; text-align:center; padding:30px;">❌ Error: ${e.message}</div>`;
+  }
+}
+
+async function genFlashcardsFromText() {
+  const t = document.getElementById('rawText').value.trim();
+  const lang = document.getElementById('langSelect2').value;
+  if (t.length < 10) { alert('Please enter at least 10 characters.'); return; }
+  showStudyModalLoading(`🃏 Generating Flashcards in ${lang}...`, lang);
+  try {
+    const res = await fetch('/flashcards', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ raw_text: t, language: lang })
+    });
+    const d = await res.json();
+    if (!d.success) throw new Error(d.error || 'Failed to generate flashcards');
+    renderStudyModalFlashcards(d.flashcards, lang);
+  } catch (e) {
+    document.getElementById('studyModalBody').innerHTML = `<div style="color:#f87171; text-align:center; padding:30px;">❌ Error: ${e.message}</div>`;
+  }
+}
+
+async function genWorksheetFromText() {
+  const t = document.getElementById('rawText').value.trim();
+  const lang = document.getElementById('langSelect2').value;
+  if (t.length < 10) { alert('Please enter at least 10 characters.'); return; }
+  showStudyModalLoading(`📝 Generating Worksheet in ${lang}...`, lang);
+  try {
+    const res = await fetch('/worksheet', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ raw_text: t, language: lang })
+    });
+    const d = await res.json();
+    if (!d.success) throw new Error(d.error || 'Failed to generate worksheet');
+    renderStudyModalWorksheet(d.worksheet, lang);
+  } catch (e) {
+    document.getElementById('studyModalBody').innerHTML = `<div style="color:#f87171; text-align:center; padding:30px;">❌ Error: ${e.message}</div>`;
+  }
+}
+
+async function genFlashcardsFromResult() {
+  if (!_currentJob) return;
+  const lang = _currentJob.language || 'English';
+  showStudyModalLoading(`🃏 Generating Flashcards in ${lang}...`, lang);
+  try {
+    let textToUse = _currentJob.title;
+    try {
+      const r = await fetch(`/script/${_currentJob.job_id}/markdown`);
+      if (r.ok) textToUse = await r.text();
+    } catch (_) {}
+    const res = await fetch('/flashcards', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ raw_text: textToUse, language: lang })
+    });
+    const d = await res.json();
+    if (!d.success) throw new Error(d.error || 'Failed to generate flashcards');
+    renderStudyModalFlashcards(d.flashcards, lang);
+  } catch (e) {
+    document.getElementById('studyModalBody').innerHTML = `<div style="color:#f87171; text-align:center; padding:30px;">❌ Error: ${e.message}</div>`;
+  }
+}
+
+async function genWorksheetFromResult() {
+  if (!_currentJob) return;
+  const lang = _currentJob.language || 'English';
+  showStudyModalLoading(`📝 Generating Worksheet in ${lang}...`, lang);
+  try {
+    let textToUse = _currentJob.title;
+    try {
+      const r = await fetch(`/script/${_currentJob.job_id}/markdown`);
+      if (r.ok) textToUse = await r.text();
+    } catch (_) {}
+    const res = await fetch('/worksheet', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ raw_text: textToUse, language: lang })
+    });
+    const d = await res.json();
+    if (!d.success) throw new Error(d.error || 'Failed to generate worksheet');
+    renderStudyModalWorksheet(d.worksheet, lang);
+  } catch (e) {
+    document.getElementById('studyModalBody').innerHTML = `<div style="color:#f87171; text-align:center; padding:30px;">❌ Error: ${e.message}</div>`;
   }
 }
 </script>

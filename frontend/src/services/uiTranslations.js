@@ -21,6 +21,7 @@ export const uiTranslations = {
     nav: {
       flnStudio: "Lessons",
       voiceEngine: "Voice",
+      videoStudio: "Video Studio",
       worksheets: "Worksheets",
       dashboard: "Dashboard",
       pedagogyAssistant: "Assistant",
@@ -152,6 +153,7 @@ export const uiTranslations = {
     nav: {
       flnStudio: "पाठ",
       voiceEngine: "ध्वनि",
+      videoStudio: "वीडियो स्टूडियो",
       worksheets: "कार्यपत्रक",
       dashboard: "डैशबोर्ड",
       pedagogyAssistant: "सहायक",

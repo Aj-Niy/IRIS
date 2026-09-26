@@ -3,6 +3,7 @@ import {
   LayoutDashboard,
   BookOpen,
   Volume2,
+  Video,
   FileCheck,
   Bot,
   Library,
@@ -28,6 +29,7 @@ export default function Sidebar({
     { id: 'teacher', label: t.nav.dashboard, icon: LayoutDashboard },
     { id: 'santali-studio', label: t.nav.flnStudio, icon: BookOpen },
     { id: 'phrasebook', label: t.nav.voiceEngine, icon: Volume2 },
+    { id: 'video-studio', label: t.nav.videoStudio || 'Video Studio', icon: Video },
     { id: 'worksheets', label: t.nav.worksheets, icon: FileCheck },
     { id: 'ncert', label: t.nav.curriculumHub, icon: Library },
     { id: 'ai-mentor', label: t.nav.pedagogyAssistant, icon: Bot }

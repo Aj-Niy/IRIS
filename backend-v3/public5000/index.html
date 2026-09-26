@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Shiksha Setu — Study Tools</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Ol+Chiki:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F4F7F5; --card: #FFFFFF; --border: #E2ECE8;
+    --purple: #134E3F; --blue: #0284C7; --green: #15803D; --orange: #EA580C;
+    --text: #111827; --muted: #6B7280;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Plus Jakarta Sans', 'Noto Sans Ol Chiki', 'Segoe UI', sans-serif; min-height: 100vh; }
+  
+  /* Header */
+  .header { background: #FFFFFF; border-bottom: 1px solid var(--border); padding: 16px 32px; display: flex; align-items: center; gap: 16px; box-shadow: 0 2px 8px rgba(19, 78, 63, 0.04); }
+  .brand-icon { width: 36px; height: 36px; background: linear-gradient(135deg, #F97316 0%, #EA580C 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 18px; font-weight: 800; }
+  .logo { font-size: 20px; font-weight: 800; color: #111827; }
+  .badge { font-size: 11px; background: #FFF7ED; border: 1px solid rgba(234,88,12,0.25); color: #EA580C; padding: 2px 8px; border-radius: 99px; font-weight: 700; }
+
+  /* Tabs */
+  .tabs { display: flex; gap: 6px; padding: 18px 32px 0; border-bottom: 1px solid var(--border); background: #FFFFFF; }
+  .tab { padding: 10px 20px; border-radius: 10px 10px 0 0; border: none; background: none; color: var(--muted); cursor: pointer; font-size: 14px; font-weight: 600; font-family: inherit; transition: all 0.2s; border-bottom: 3px solid transparent; }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--purple); border-bottom-color: var(--purple); background: #EBF4F0; }
+  .tab-icon { margin-right: 6px; }
+
+  /* Panels */
+  .panel { display: none; padding: 28px 32px; max-width: 900px; margin: 0 auto; }
+  .panel.active { display: block; }
+
+  /* Card */
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 24px; margin-bottom: 20px; }
+  .card-title { font-size: 16px; font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+
+  /* Form elements */
+  textarea { width: 100%; background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 10px; color: var(--text); padding: 12px 16px; font-size: 14px; resize: vertical; min-height: 150px; font-family: inherit; }
+  textarea:focus { outline: none; border-color: rgba(124,58,237,0.5); }
+  select { background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 8px; color: var(--text); padding: 10px 14px; font-size: 14px; width: 100%; cursor: pointer; }
+  select option { background: #1e1e2e; }
+  label { font-size: 13px; color: var(--muted); margin-bottom: 6px; display: block; }
+
+  /* Upload zone */
+  .drop-zone { border: 2px dashed rgba(124,58,237,0.3); border-radius: 12px; padding: 40px 20px; text-align: center; cursor: pointer; transition: all 0.2s; }
+  .drop-zone:hover { border-color: rgba(124,58,237,0.6); background: rgba(124,58,237,0.04); }
+  .drop-zone input { display: none; }
+  .drop-icon { font-size: 40px; margin-bottom: 12px; }
+  .drop-text { color: var(--muted); font-size: 14px; }
+  .drop-text strong { color: var(--text); }
+  .file-chosen { margin-top: 10px; font-size: 13px; color: var(--green); }
+
+  /* Buttons */
+  .btn { padding: 12px 24px; border: none; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn-purple { background: linear-gradient(135deg, #7c3aed, #5b21b6); color: white; }
+  .btn-purple:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(124,58,237,0.4); }
+  .btn-blue { background: linear-gradient(135deg, #2563eb, #1d4ed8); color: white; }
+  .btn-blue:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(37,99,235,0.4); }
+  .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
+  .btn-outline:hover { background: rgba(255,255,255,0.05); }
+  .row { display: flex; gap: 12px; align-items: flex-end; margin-top: 16px; flex-wrap: wrap; }
+
+  /* Spinner */
+  .spinner { display: none; width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Flashcard viewer */
+  .fc-container { margin-top: 24px; }
+  .fc-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+  .fc-count { font-size: 13px; color: var(--muted); }
+  .fc-progress { font-size: 13px; color: var(--purple); font-weight: 600; }
+  .fc-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; min-height: 220px; display: flex; align-items: center; justify-content: center; padding: 32px; text-align: center; cursor: pointer; transition: all 0.3s; perspective: 1000px; }
+  .fc-card:hover { border-color: rgba(124,58,237,0.3); box-shadow: 0 8px 30px rgba(124,58,237,0.1); }
+  .fc-inner { transition: transform 0.5s; transform-style: preserve-3d; width: 100%; position: relative; }
+  .fc-card.flipped .fc-inner { transform: rotateY(180deg); }
+  .fc-front, .fc-back { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+  .fc-back { transform: rotateY(180deg); position: absolute; top: 0; left: 0; width: 100%; }
+  .fc-side { padding: 20px; }
+  .fc-label { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--purple); margin-bottom: 12px; }
+  .fc-front .fc-text { font-size: 20px; font-weight: 600; color: var(--text); }
+  .fc-back .fc-text { font-size: 16px; color: var(--text); line-height: 1.6; }
+  .fc-category { font-size: 11px; background: rgba(124,58,237,0.15); color: #a78bfa; padding: 3px 10px; border-radius: 99px; display: inline-block; margin-top: 10px; }
+  .fc-difficulty { font-size: 11px; padding: 3px 10px; border-radius: 99px; display: inline-block; margin-top: 6px; margin-left: 6px; }
+  .diff-Easy { background: rgba(16,185,129,0.15); color: #6ee7b7; }
+  .diff-Medium { background: rgba(245,158,11,0.15); color: #fcd34d; }
+  .diff-Hard { background: rgba(239,68,68,0.15); color: #fca5a5; }
+  .fc-nav { display: flex; justify-content: center; gap: 12px; margin-top: 20px; align-items: center; }
+  .fc-hint { text-align: center; font-size: 12px; color: var(--muted); margin-top: 10px; }
+  .fc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin-top: 20px; }
+  .fc-mini { background: rgba(124,58,237,0.06); border: 1px solid rgba(124,58,237,0.2); border-radius: 10px; padding: 14px; font-size: 13px; cursor: pointer; transition: all 0.2s; }
+  .fc-mini:hover { background: rgba(124,58,237,0.1); }
+  .fc-mini-q { font-weight: 600; color: var(--text); margin-bottom: 6px; }
+  .fc-mini-a { color: var(--muted); font-size: 12px; }
+
+  /* Worksheet viewer */
+  .ws-container { margin-top: 24px; }
+  .ws-section { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 16px; }
+  .ws-section-title { font-size: 15px; font-weight: 700; color: #a78bfa; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+  .ws-question { margin-bottom: 18px; padding-bottom: 18px; border-bottom: 1px solid var(--border); }
+  .ws-question:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .ws-q-text { font-size: 14px; color: var(--text); margin-bottom: 10px; line-height: 1.5; }
+  .ws-q-num { color: var(--purple); font-weight: 700; }
+  .ws-options { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+  .ws-option { font-size: 13px; color: var(--muted); padding: 6px 12px; border-radius: 6px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); }
+  .ws-answer { display: none; margin-top: 8px; background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.2); border-radius: 6px; padding: 8px 12px; font-size: 13px; color: #6ee7b7; }
+  .ws-answer.show { display: block; }
+  .ws-ans-btn { font-size: 11px; padding: 4px 10px; background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.2); color: #6ee7b7; border-radius: 6px; cursor: pointer; margin-top: 6px; }
+  .ws-controls { display: flex; gap: 10px; margin-bottom: 16px; align-items: center; }
+  .ws-title-bar { background: linear-gradient(135deg, rgba(124,58,237,0.1), rgba(37,99,235,0.1)); border: 1px solid rgba(124,58,237,0.2); border-radius: 12px; padding: 16px 20px; margin-bottom: 20px; }
+  .ws-title-main { font-size: 20px; font-weight: 700; }
+  .ws-title-sub { color: var(--muted); font-size: 13px; margin-top: 4px; }
+  
+  /* Print */
+  @media print {
+    .header, .tabs, .row, .ws-controls, .ws-ans-btn, .btn { display: none !important; }
+    body { background: white; color: black; }
+    .ws-answer { display: block !important; border: 1px solid #ccc; }
+  }
+
+  /* My Library */
+  .lib-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; margin-top: 16px; }
+  .lib-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 18px; }
+  .lib-card-type { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
+  .type-flashcard { color: var(--purple); }
+  .type-worksheet { color: var(--blue); }
+  .lib-card-title { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+  .lib-card-meta { font-size: 12px; color: var(--muted); }
+  
+  .toast { position: fixed; bottom: 24px; right: 24px; background: #1e1e2e; border: 1px solid var(--border); border-radius: 10px; padding: 12px 20px; font-size: 14px; z-index: 999; opacity: 0; transition: opacity 0.3s; }
+  .toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="brand-icon">S</div>
+  <div class="logo">Shiksha Setu</div>
+  <div class="badge">AI Study Suite</div>
+  <div style="margin-left:auto;display:flex;align-items:center;gap:14px;">
+    <a href="/" style="padding:8px 16px;background:#134E3F;color:#FFFFFF;border-radius:999px;text-decoration:none;font-size:12.5px;font-weight:700;display:flex;align-items:center;gap:6px;transition:0.2s;box-shadow:0 2px 8px rgba(19,78,63,0.25);">🎬 Back to Video Studio</a>
+    <div style="font-size:12px;color:var(--muted);font-weight:600;">Student Learning Edition</div>
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="switchTab('flashcards')"><span class="tab-icon">🃏</span>Flashcards</button>
+  <button class="tab" onclick="switchTab('worksheets')"><span class="tab-icon">📝</span>Worksheets</button>
+  <button class="tab" onclick="switchTab('library')"><span class="tab-icon">📚</span>My Library</button>
+  <button class="tab" onclick="switchTab('proxy')"><span class="tab-icon">🔌</span>Pipeline Proxy</button>
+</div>
+
+<!-- FLASHCARDS PANEL -->
+<div id="panel-flashcards" class="panel active">
+  <div class="card">
+    <div class="card-title">🃏 Generate Flashcards</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+      <!-- Text input -->
+      <div>
+        <label>Paste text or notes</label>
+        <textarea id="fc-text" placeholder="Paste your chapter, notes, or any study content here..."></textarea>
+      </div>
+      <!-- File upload -->
+      <div>
+        <label>Or upload a file</label>
+        <div class="drop-zone" onclick="document.getElementById('fc-file').click()">
+          <div class="drop-icon">📎</div>
+          <div class="drop-text"><strong>Click to upload</strong><br/>PDF, PPT, TXT, MD — Max 50MB</div>
+          <div class="file-chosen" id="fc-file-name"></div>
+          <input type="file" id="fc-file" accept=".pdf,.pptx,.txt,.md,.docx" onchange="updateFileName('fc-file','fc-file-name')"/>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div style="flex:1;min-width:180px;">
+        <label>Language</label>
+        <select id="fc-lang">
+          <option value="English">🇬🇧 English</option>
+          <option value="Hindi">🇮🇳 Hindi (हिंदी)</option>
+          <option value="Hinglish">🇮🇳 Hinglish (Mix)</option>
+          <option value="Santhali">🇮🇳 Santhali (ᱥᱟᱱᱛᱟᱲᱤ / Ol Chiki)</option>
+          <option value="Ho">🇮🇳 Ho (ᱦᱳ / Warang Citi)</option>
+          <option value="Mundari">🇮🇳 Mundari (ᱢᱩᱱᱰᱟᱨᱤ)</option>
+          <option value="Bengali">🇮🇳 Bengali (বাংলা)</option>
+          <option value="Telugu">🇮🇳 Telugu (తెలుగు)</option>
+          <option value="Tamil">🇮🇳 Tamil (தமிழ்)</option>
+          <option value="Marathi">🇮🇳 Marathi (मराठी)</option>
+          <option value="Gujarati">🇮🇳 Gujarati (ગુજરાતી)</option>
+          <option value="Kannada">🇮🇳 Kannada (ಕನ್ನಡ)</option>
+          <option value="Malayalam">🇮🇳 Malayalam (മലയാളം)</option>
+          <option value="Punjabi">🇮🇳 Punjabi (ਪੰਜਾਬੀ)</option>
+          <option value="Urdu">🇮🇳 Urdu (اردو)</option>
+        </select>
+      </div>
+      <button class="btn btn-purple" id="fc-btn" onclick="generateFlashcards()">
+        <span id="fc-spinner" class="spinner"></span>🃏 Generate Flashcards
+      </button>
+    </div>
+  </div>
+  <div id="fc-result" style="display:none;"></div>
+</div>
+
+<!-- WORKSHEETS PANEL -->
+<div id="panel-worksheets" class="panel">
+  <div class="card">
+    <div class="card-title">📝 Generate Worksheet</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+      <div>
+        <label>Paste text or notes</label>
+        <textarea id="ws-text" placeholder="Paste your chapter, notes, or any study content here..."></textarea>
+      </div>
+      <div>
+        <label>Or upload a file</label>
+        <div class="drop-zone" onclick="document.getElementById('ws-file').click()">
+          <div class="drop-icon">📎</div>
+          <div class="drop-text"><strong>Click to upload</strong><br/>PDF, PPT, TXT, MD — Max 50MB</div>
+          <div class="file-chosen" id="ws-file-name"></div>
+          <input type="file" id="ws-file" accept=".pdf,.pptx,.txt,.md,.docx" onchange="updateFileName('ws-file','ws-file-name')"/>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div style="flex:1;min-width:180px;">
+        <label>Language</label>
+        <select id="ws-lang">
+          <option value="English">🇬🇧 English</option>
+          <option value="Hindi">🇮🇳 Hindi (हिंदी)</option>
+          <option value="Hinglish">🇮🇳 Hinglish (Mix)</option>
+          <option value="Santhali">🇮🇳 Santhali (ᱥᱟᱱᱛᱟᱲᱤ / Ol Chiki)</option>
+          <option value="Ho">🇮🇳 Ho (ᱦᱳ / Warang Citi)</option>
+          <option value="Mundari">🇮🇳 Mundari (ᱢᱩᱱᱰᱟᱨᱤ)</option>
+          <option value="Bengali">🇮🇳 Bengali (বাংলা)</option>
+          <option value="Telugu">🇮🇳 Telugu (తెలుగు)</option>
+          <option value="Tamil">🇮🇳 Tamil (தமிழ்)</option>
+          <option value="Marathi">🇮🇳 Marathi (मराठी)</option>
+          <option value="Gujarati">🇮🇳 Gujarati (ગુજરાતી)</option>
+          <option value="Kannada">🇮🇳 Kannada (ಕನ್ನಡ)</option>
+          <option value="Malayalam">🇮🇳 Malayalam (മലയാളം)</option>
+          <option value="Punjabi">🇮🇳 Punjabi (ਪੰਜਾਬੀ)</option>
+          <option value="Urdu">🇮🇳 Urdu (اردو)</option>
+        </select>
+      </div>
+      <button class="btn btn-blue" id="ws-btn" onclick="generateWorksheet()">
+        <span id="ws-spinner" class="spinner"></span>📝 Generate Worksheet
+      </button>
+    </div>
+  </div>
+  <div id="ws-result" style="display:none;"></div>
+</div>
+
+<!-- LIBRARY PANEL -->
+<div id="panel-library" class="panel">
+  <div class="card">
+    <div class="card-title">📚 My Study Library</div>
+    <div id="lib-content"><div style="color:var(--muted);text-align:center;padding:30px;">Loading from Supabase...</div></div>
+  </div>
+</div>
+
+<!-- PROXY PANEL -->
+<div id="panel-proxy" class="panel">
+  <div class="card">
+    <div class="card-title">🔌 Main Pipeline Status</div>
+    <div id="proxy-health" style="color:var(--muted);">Checking...</div>
+    <div class="row" style="margin-top:16px;">
+      <button class="btn btn-outline" onclick="checkProxy()">🔄 Refresh</button>
+      <a href="http://localhost:3010" target="_blank" class="btn btn-outline">🚀 Open Main App</a>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">🎬 Recent Videos (from Main Pipeline)</div>
+    <div id="proxy-jobs" style="color:var(--muted);">Loading...</div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let currentCards = [], currentIndex = 0, currentFlipped = false;
+
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelector(`.tab[onclick*="${name}"]`).classList.add('active');
+  document.getElementById(`panel-${name}`).classList.add('active');
+  if (name === 'proxy') checkProxy();
+  if (name === 'library') loadLibrary();
+}
+
+function updateFileName(inputId, labelId) {
+  const f = document.getElementById(inputId).files[0];
+  document.getElementById(labelId).textContent = f ? `✅ ${f.name}` : '';
+}
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ============================================================
+// FLASHCARDS
+// ============================================================
+async function generateFlashcards() {
+  const text = document.getElementById('fc-text').value.trim();
+  const file = document.getElementById('fc-file').files[0];
+  const lang = document.getElementById('fc-lang').value;
+  const btn  = document.getElementById('fc-btn');
+  const spin = document.getElementById('fc-spinner');
+
+  if (!text && !file) return toast('⚠️ Please paste text or upload a file!');
+
+  btn.disabled = true; spin.style.display = 'block';
+  document.getElementById('fc-result').style.display = 'none';
+
+  try {
+    let data;
+    if (file) {
+      const fd = new FormData(); fd.append('file', file); fd.append('language', lang);
+      const r = await fetch('/flashcards-from-file', { method: 'POST', body: fd });
+      data = await r.json();
+    } else {
+      const r = await fetch('/flashcards', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ raw_text: text, language: lang }) });
+      data = await r.json();
+    }
+    if (!data.success) throw new Error(data.error);
+    renderFlashcards(data.flashcards);
+    toast(`✅ ${data.flashcards.total} flashcards generated!`);
+  } catch(e) {
+    toast('❌ Error: ' + e.message);
+  } finally {
+    btn.disabled = false; spin.style.display = 'none';
+  }
+}
+
+function renderFlashcards(data) {
+  currentCards = data.cards; currentIndex = 0; currentFlipped = false;
+  const el = document.getElementById('fc-result');
+  el.style.display = 'block';
+  el.innerHTML = `
+    <div class="card">
+      <div class="card-title">🃏 ${data.title} <span style="color:var(--muted);font-size:13px;font-weight:400;">(${data.total} cards)</span></div>
+      
+      <!-- Single card flip view -->
+      <div class="fc-header">
+        <div class="fc-count">Card <span id="fc-idx">1</span> of ${data.total}</div>
+        <div class="fc-progress" id="fc-prog"></div>
+      </div>
+      <div class="fc-card" id="fc-flip" onclick="flipCard()">
+        <div class="fc-inner" id="fc-inner">
+          <div class="fc-front">
+            <div class="fc-side">
+              <div class="fc-label">Question</div>
+              <div class="fc-text" id="fc-q-text"></div>
+              <span class="fc-category" id="fc-cat"></span>
+              <span class="fc-difficulty" id="fc-diff"></span>
+            </div>
+          </div>
+          <div class="fc-back">
+            <div class="fc-side">
+              <div class="fc-label">Answer</div>
+              <div class="fc-text" id="fc-a-text"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="fc-hint">👆 Click card to flip</div>
+      <div class="fc-nav">
+        <button class="btn btn-outline" onclick="navCard(-1)">← Prev</button>
+        <button class="btn btn-outline" onclick="navCard(1)">Next →</button>
+        <button class="btn btn-outline" onclick="shuffleCards()">🔀 Shuffle</button>
+      </div>
+      
+      <!-- Grid view -->
+      <div style="margin-top:28px;padding-top:20px;border-top:1px solid var(--border);">
+        <div style="font-size:14px;font-weight:600;margin-bottom:12px;color:var(--muted);">All Flashcards</div>
+        <div class="fc-grid" id="fc-grid"></div>
+      </div>
+    </div>`;
+  
+  updateCard();
+  renderGrid(data.cards);
+}
+
+function updateCard() {
+  const c = currentCards[currentIndex];
+  document.getElementById('fc-idx').textContent = currentIndex + 1;
+  document.getElementById('fc-q-text').textContent = c.front;
+  document.getElementById('fc-a-text').textContent = c.back;
+  document.getElementById('fc-cat').textContent = c.category;
+  const diff = document.getElementById('fc-diff');
+  diff.textContent = c.difficulty; diff.className = `fc-difficulty diff-${c.difficulty}`;
+  const card = document.getElementById('fc-flip');
+  card.classList.remove('flipped'); currentFlipped = false;
+}
+
+function flipCard() {
+  const card = document.getElementById('fc-flip');
+  currentFlipped = !currentFlipped;
+  currentFlipped ? card.classList.add('flipped') : card.classList.remove('flipped');
+}
+
+function navCard(dir) {
+  currentIndex = (currentIndex + dir + currentCards.length) % currentCards.length;
+  updateCard();
+}
+
+function shuffleCards() {
+  currentCards = currentCards.sort(() => Math.random() - 0.5);
+  currentIndex = 0; updateCard(); toast('🔀 Cards shuffled!');
+}
+
+function renderGrid(cards) {
+  document.getElementById('fc-grid').innerHTML = cards.map((c,i) => `
+    <div class="fc-mini" onclick="jumpCard(${i})">
+      <div class="fc-mini-q">${i+1}. ${c.front.slice(0,60)}${c.front.length>60?'...':''}</div>
+      <div class="fc-mini-a">${c.back.slice(0,60)}${c.back.length>60?'...':''}</div>
+      <span class="fc-difficulty diff-${c.difficulty}" style="font-size:10px;">${c.difficulty}</span>
+    </div>`).join('');
+}
+
+function jumpCard(i) { currentIndex = i; updateCard(); window.scrollTo(0, document.getElementById('fc-flip').offsetTop - 100); }
+
+// ============================================================
+// WORKSHEETS
+// ============================================================
+async function generateWorksheet() {
+  const text = document.getElementById('ws-text').value.trim();
+  const file = document.getElementById('ws-file').files[0];
+  const lang = document.getElementById('ws-lang').value;
+  const btn  = document.getElementById('ws-btn');
+  const spin = document.getElementById('ws-spinner');
+
+  if (!text && !file) return toast('⚠️ Please paste text or upload a file!');
+
+  btn.disabled = true; spin.style.display = 'block';
+  document.getElementById('ws-result').style.display = 'none';
+
+  try {
+    let data;
+    if (file) {
+      const fd = new FormData(); fd.append('file', file); fd.append('language', lang);
+      const r = await fetch('/worksheet-from-file', { method: 'POST', body: fd });
+      data = await r.json();
+    } else {
+      const r = await fetch('/worksheet', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ raw_text: text, language: lang }) });
+      data = await r.json();
+    }
+    if (!data.success) throw new Error(data.error);
+    renderWorksheet(data.worksheet);
+    toast('✅ Worksheet generated!');
+  } catch(e) {
+    toast('❌ Error: ' + e.message);
+  } finally {
+    btn.disabled = false; spin.style.display = 'none';
+  }
+}
+
+function renderWorksheet(ws) {
+  const icons = { mcq: '🔘', fill_blank: '✏️', short_answer: '📝', true_false: '✅', long_answer: '📖' };
+  const el = document.getElementById('ws-result');
+  el.style.display = 'block';
+
+  const sectionsHTML = ws.sections.map(sec => {
+    const qHTML = sec.questions.map(q => {
+      let extra = '';
+      if (sec.type === 'mcq') extra = `<div class="ws-options">${q.options.map(o => `<div class="ws-option">${o}</div>`).join('')}</div>`;
+      if (sec.type === 'fill_blank') extra = '';
+      return `<div class="ws-question">
+        <div class="ws-q-text"><span class="ws-q-num">Q${q.id}.</span> ${q.question}</div>
+        ${extra}
+        <button class="ws-ans-btn" onclick="this.nextElementSibling.classList.toggle('show')">Show Answer</button>
+        <div class="ws-answer">✅ ${q.answer}</div>
+      </div>`;
+    }).join('');
+
+    return `<div class="ws-section">
+      <div class="ws-section-title">${icons[sec.type]||'📌'} ${sec.title}</div>
+      ${qHTML}
+    </div>`;
+  }).join('');
+
+  const totalQ = ws.sections.reduce((a,s) => a + s.questions.length, 0);
+
+  el.innerHTML = `
+    <div class="card">
+      <div class="card-title">📝 Worksheet Ready</div>
+      <div class="ws-title-bar">
+        <div class="ws-title-main">${ws.title}</div>
+        <div class="ws-title-sub">${ws.subject} · ${totalQ} questions · ${ws.language}</div>
+        <div style="font-size:13px;color:var(--muted);margin-top:8px;">${ws.instructions}</div>
+      </div>
+      <div class="ws-controls">
+        <button class="btn btn-outline" onclick="toggleAllAnswers()">👁️ Toggle All Answers</button>
+        <button class="btn btn-outline" onclick="window.print()">🖨️ Print Worksheet</button>
+      </div>
+      ${sectionsHTML}
+    </div>`;
+}
+
+let answersVisible = false;
+function toggleAllAnswers() {
+  answersVisible = !answersVisible;
+  document.querySelectorAll('.ws-answer').forEach(el => answersVisible ? el.classList.add('show') : el.classList.remove('show'));
+  toast(answersVisible ? '👁️ Answers shown' : '🙈 Answers hidden');
+}
+
+// ============================================================
+// PROXY
+// ============================================================
+async function checkProxy() {
+  try {
+    const r = await fetch('/proxy/health');
+    const d = await r.json();
+    document.getElementById('proxy-health').innerHTML = `
+      <div style="color:var(--green);font-size:15px;">✅ Main backend connected</div>
+      <div style="color:var(--muted);font-size:13px;margin-top:6px;">Service: ${d.service} · Port: ${d.mainBackend}</div>`;
+  } catch(e) {
+    document.getElementById('proxy-health').innerHTML = `<div style="color:#f87171;">❌ Main backend not reachable. Start it with: node server.js</div>`;
+  }
+  try {
+    const r = await fetch('/proxy/jobs');
+    const d = await r.json();
+    if (!d.jobs?.length) { document.getElementById('proxy-jobs').innerHTML = '<div style="color:var(--muted);">No videos yet.</div>'; return; }
+    document.getElementById('proxy-jobs').innerHTML = d.jobs.slice(0,6).map(j => `
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border);">
+        <div>
+          <div style="font-size:14px;font-weight:600;">${j.title}</div>
+          <div style="font-size:12px;color:var(--muted);">${j.scene_count} scenes · ${j.language} · ${new Date(j.created_at).toLocaleString('en-IN')}</div>
+        </div>
+        <a href="${j.video_url}" target="_blank" class="btn btn-outline" style="font-size:12px;padding:6px 12px;">▶ Watch</a>
+      </div>`).join('');
+  } catch(e) { }
+}
+
+// ============================================================
+// LIBRARY (from Supabase)
+// ============================================================
+async function loadLibrary() {
+  document.getElementById('lib-content').innerHTML = '<div style="color:var(--muted);text-align:center;padding:30px;">Loading...</div>';
+  try {
+    const r = await fetch('/proxy/credits'); // just a quick ping
+    document.getElementById('lib-content').innerHTML = '<div style="color:var(--muted);text-align:center;padding:30px;">Flashcards and Worksheets you generate will be saved here.</div>';
+  } catch(e) {
+    document.getElementById('lib-content').innerHTML = '<div style="color:var(--muted);text-align:center;padding:30px;">Could not connect to storage.</div>';
+  }
+}
+
+checkProxy();
+</script>
+</body>
+</html>

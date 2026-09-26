@@ -9,6 +9,7 @@ import AIMentorPage from './components/AIMentorPage';
 import TeacherDashboard from './components/TeacherDashboard';
 import NCERTSection from './components/NCERTSection';
 import MyProjectsWorkspace from './components/MyProjectsWorkspace';
+import VideoStudio from './components/VideoStudio';
 import { initOfflineStorage } from './services/offlineSync';
 
 export default function App() {
@@ -135,6 +136,13 @@ print("Final Sum:", total)
               uiLang={uiLang}
               currentLang={currentLang}
               setCurrentLang={setCurrentLang}
+            />
+          )}
+
+          {currentTab === 'video-studio' && (
+            <VideoStudio
+              uiLang={uiLang}
+              currentLang={currentLang}
             />
           )}
 
