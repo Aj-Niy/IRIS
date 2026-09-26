@@ -1,0 +1,48 @@
+{
+  "packVersion": "0.1.0",
+  "appVersion": "0.1.0-offline",
+  "name": "ShikshaSetu Offline Classroom Content Pack",
+  "targetAudience": "Foundational Literacy & Numeracy (FLN) Grades 1-3",
+  "state": "Jharkhand (MTB-MLE Alignment)",
+  "grades": [1, 2, 3],
+  "languages": [
+    {
+      "code": "sat",
+      "name": "Santhali",
+      "nativeName": "ᱥᱟᱱᱛᱟᱲᱤ",
+      "script": "Ol Chiki (ᱚᱞ ᱪᱤᱠᱤ)",
+      "region": "Santhal Pargana, East Singhbhum"
+    },
+    {
+      "code": "hoc",
+      "name": "Ho",
+      "nativeName": "𑢹𑣉𑣉 𑣏𑣂𑣑𑣂 (हो)",
+      "script": "Warang Chiti / Devanagari",
+      "region": "West Singhbhum (Kolhan), Saraikela"
+    },
+    {
+      "code": "unr",
+      "name": "Mundari",
+      "nativeName": "ᱢᱩᱱᱰᱟᱨᱤ (मुंडारी)",
+      "script": "Mundari Bani / Devanagari",
+      "region": "Ranchi, Khunti, Gumla, Simdega"
+    }
+  ],
+  "features": {
+    "lessonScripts": true,
+    "worksheets": true,
+    "flashcards": true,
+    "audio": true,
+    "phrasebook": true,
+    "socraticPedagogy": true,
+    "translationMemory": true
+  },
+  "assetCounts": {
+    "lessons": 12,
+    "worksheets": 8,
+    "flashcards": 48,
+    "classroomPhrases": 24,
+    "vocabulary": 120
+  },
+  "buildTimestamp": "2026-09-26T22:27:00Z"
+}

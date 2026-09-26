@@ -10,6 +10,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@capacitor/android": "^8.5.2",
+    "@capacitor/app": "^8.1.1",
+    "@capacitor/core": "^8.5.2",
+    "@capacitor/status-bar": "^8.0.3",
     "@monaco-editor/react": "^4.7.0",
     "@supabase/supabase-js": "^2.112.2",
     "canvas-confetti": "^1.9.2",
@@ -20,6 +24,7 @@
     "recharts": "^3.10.1"
   },
   "devDependencies": {
+    "@capacitor/cli": "^8.5.2",
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
     "@vitejs/plugin-react": "^4.2.1",

@@ -29,6 +29,7 @@ import {
   GraduationCap
 } from 'lucide-react';
 import { uiTranslations } from '../services/uiTranslations';
+import { isOffline } from '../services/offline/offlineMode';
 
 // Pre-rendered Video Library
 const PRELOADED_VIDEOS = [
@@ -372,6 +373,25 @@ export default function VideoStudio({ uiLang = 'en', currentLang = 'sat' }) {
           </div>
         </div>
       </div>
+
+      {isOffline() && (
+        <div style={{
+          backgroundColor: '#EFF6FF',
+          border: '1px solid #BFDBFE',
+          borderRadius: '12px',
+          padding: '10px 16px',
+          marginBottom: '16px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '10px',
+          fontSize: '12px',
+          color: '#1E40AF',
+          fontWeight: '600'
+        }}>
+          <AlertCircle size={16} color="#2563EB" />
+          <span>Offline Mode: AI Avatar video generation is available when connected to the internet. Preloaded educational video library below is available offline.</span>
+        </div>
+      )}
 
       {/* Main Studio Navigation Tabs */}
       <div className="seg" style={{ marginBottom: '16px', width: '100%', display: 'flex' }}>

@@ -192,6 +192,20 @@ export default function LandingPage({
     setCurrentTab('teacher');
   };
 
+  // Handle Demo Teacher Offline Login
+  const handleDemoTeacherLogin = () => {
+    const teacherName = 'Primary Teacher';
+    const teacherRole = 'teacher';
+    
+    setUserName(teacherName);
+    setUserRole(teacherRole);
+    localStorage.setItem('palash_username', teacherName);
+    localStorage.setItem('palash_userrole', teacherRole);
+    localStorage.setItem('codeseekho_username', teacherName);
+    
+    setCurrentTab('teacher');
+  };
+
   return (
     <div style={{
       minHeight: '100vh',
@@ -650,6 +664,28 @@ export default function LandingPage({
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                 <button
                   type="button"
+                  onClick={handleDemoTeacherLogin}
+                  style={{
+                    padding: '9px 14px',
+                    borderRadius: '20px',
+                    border: '1.5px solid #10B981',
+                    backgroundColor: '#ECFDF5',
+                    fontSize: '12px',
+                    fontWeight: '700',
+                    color: '#065F46',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '6px',
+                    cursor: 'pointer'
+                  }}
+                >
+                  <Sparkles size={14} color="#059669" />
+                  <span>{uiLang === 'hi' ? 'डेमो शिक्षक (ऑफलाइन)' : 'Demo Teacher (Offline)'}</span>
+                </button>
+
+                <button
+                  type="button"
                   onClick={handleGuestJudgeLogin}
                   style={{
                     padding: '9px 14px',
@@ -667,28 +703,6 @@ export default function LandingPage({
                   }}
                 >
                   <span style={{ fontWeight: '800', color: '#4285F4' }}>G</span>
-                  <span>Google</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={handleGuestJudgeLogin}
-                  style={{
-                    padding: '9px 14px',
-                    borderRadius: '20px',
-                    border: '1.5px solid #A7F3D0',
-                    backgroundColor: '#ECFDF5',
-                    fontSize: '12px',
-                    fontWeight: '700',
-                    color: '#047857',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '6px',
-                    cursor: 'pointer'
-                  }}
-                >
-                  <Sparkles size={14} color="#047857" />
                   <span>{lt.guestAccess}</span>
                 </button>
               </div>

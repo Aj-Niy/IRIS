@@ -15,6 +15,8 @@ import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { NIPUN_OUTCOMES_MATRIX, TRIBAL_LANGUAGES } from '../services/apertiumSantaliData';
 import { irisAskTutor } from '../services/api';
+import { getWorksheetForOutcome } from '../services/offline/offlineWorksheets';
+import { isOffline } from '../services/offline/offlineMode';
 import AudioPlayButton from './AudioPlayButton';
 import { uiTranslations } from '../services/uiTranslations';
 import ISLVideoPlayerModal from './ISLVideoPlayerModal';
@@ -253,6 +255,13 @@ export default function WorksheetGenerator({
       return;
     }
 
+    if (isOffline()) {
+      const offlineWs = getWorksheetForOutcome(outcome.code, selectedLang);
+      setWorksheetData(offlineWs);
+      setIsGenerating(false);
+      return;
+    }
+
     try {
       const res = await irisAskTutor({
         mode: 'worksheet',
@@ -265,6 +274,7 @@ export default function WorksheetGenerator({
       }
     } catch (err) {
       console.warn("Worksheet gen fallback:", err);
+      setWorksheetData(getWorksheetForOutcome(outcome.code, selectedLang));
     } finally {
       setIsGenerating(false);
     }

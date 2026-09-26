@@ -11,6 +11,8 @@ import {
 } from "lucide-react";
 import { irisAskTutor } from "../services/api";
 import { TRIBAL_LANGUAGES } from "../services/apertiumSantaliData";
+import { getOfflinePedagogicalGuidance, PEDAGOGICAL_ACTIONS } from "../services/offline/offlineSocraticMentor";
+import { isOffline } from "../services/offline/offlineMode";
 import AudioPlayButton from "./AudioPlayButton";
 import { uiTranslations } from "../services/uiTranslations";
 import ISLVideoPlayerModal from "./ISLVideoPlayerModal";
@@ -95,6 +97,31 @@ export default function AIMentorPage({
     ]
   };
 
+  const handlePedagogyAction = (actionId) => {
+    const guidance = getOfflinePedagogicalGuidance('L1.1', actionId, selectedLang);
+    let replyText = guidance.title;
+    if (guidance.pedagogyStrategy) replyText += `\n\n📌 Strategy: ${guidance.pedagogyStrategy}`;
+    if (guidance.mtbMleTip) replyText += `\n💡 NEP MTB-MLE: ${guidance.mtbMleTip}`;
+    if (guidance.steps) replyText += `\n\n${guidance.steps.join('\n')}`;
+    if (guidance.recommendation) replyText += `\n\n💡 Remediation: ${guidance.recommendation}`;
+    if (guidance.questions) {
+      replyText += `\n\n` + guidance.questions.map(q => `${q.q}\n   (${q.sat})`).join('\n\n');
+    }
+
+    setMessages(prev => [
+      ...prev,
+      { role: "user", text: PEDAGOGICAL_ACTIONS.find(a => a.id === actionId)?.label || actionId, mode: "pedagogy" },
+      {
+        role: "assistant",
+        mode: "pedagogy",
+        text: replyText,
+        scriptText: "ᱥᱮᱪᱮᱫ ᱜᱚᱲᱚ (Pedagogical Assistance)",
+        romanText: "Seched goro",
+        hindiText: "मातृभाषा शिक्षण मार्गदर्शन"
+      }
+    ]);
+  };
+
   const handleSendMessage = async (e) => {
     e?.preventDefault();
     if (!inputQuery.trim() || isLoading) return;
@@ -104,6 +131,23 @@ export default function AIMentorPage({
     
     setMessages(prev => [...prev, { role: "user", text: userText, mode: tutorMode }]);
     setIsLoading(true);
+
+    if (isOffline() || tutorMode === 'pedagogy') {
+      const guidance = getOfflinePedagogicalGuidance('L1.1', 'explain', selectedLang);
+      setMessages(prev => [
+        ...prev,
+        {
+          role: "assistant",
+          mode: tutorMode,
+          text: `[Offline Pedagogy Engine] ${guidance.title}\n\n${guidance.pedagogyStrategy || guidance.lakshya || 'Focus on concrete mother-tongue vocabulary and phonological awareness.'}\n\n💡 NEP 2020 Guidance: Encourage mother-tongue expression before validating in standard Hindi.`,
+          scriptText: "ᱡᱚᱦᱟᱨ! ᱛᱮᱦᱮᱧ ᱟᱵᱚ ᱯᱚᱛᱚᱵ ᱵᱚ ᱯᱟᱲᱦᱟᱣ-ᱟ᱾",
+          romanText: "Johar! Teheñ abo potob bo paṛhaw-a.",
+          hindiText: "नमस्ते! आज हम सब मातृभाषा शिक्षण मार्गदर्शिका के साथ पाठ पढ़ाएंगे।"
+        }
+      ]);
+      setIsLoading(false);
+      return;
+    }
 
     try {
       const res = await irisAskTutor({
@@ -201,6 +245,21 @@ export default function AIMentorPage({
           </div>
         ))}
         {isLoading && <div className="quiet">Working…</div>}
+      </div>
+
+      {/* Offline Pedagogical Quick Action Buttons */}
+      <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '12px' }}>
+        {PEDAGOGICAL_ACTIONS.map(action => (
+          <button
+            key={action.id}
+            type="button"
+            className="btn-secondary"
+            onClick={() => handlePedagogyAction(action.id)}
+            style={{ fontSize: '11px', padding: '5px 10px', borderRadius: '16px' }}
+          >
+            {uiLang === 'hi' ? action.labelHi : action.label}
+          </button>
+        ))}
       </div>
 
       <form onSubmit={handleSendMessage} className="composer">

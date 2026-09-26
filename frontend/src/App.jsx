@@ -11,6 +11,8 @@ import NCERTSection from './components/NCERTSection';
 import MyProjectsWorkspace from './components/MyProjectsWorkspace';
 import VideoStudio from './components/VideoStudio';
 import { initOfflineStorage } from './services/offlineSync';
+import { initDB } from './services/offline/offlineDB';
+import { App as CapApp } from '@capacitor/app';
 
 export default function App() {
   const [currentTab, setCurrentTab] = useState(
@@ -34,7 +36,29 @@ export default function App() {
 
   useEffect(() => {
     initOfflineStorage();
-  }, []);
+    initDB();
+
+    let backListener = null;
+    try {
+      backListener = CapApp.addListener('backButton', () => {
+        if (currentTab !== 'teacher' && currentTab !== 'landing') {
+          setCurrentTab('teacher');
+        } else if (currentTab === 'teacher') {
+          setCurrentTab('landing');
+        } else {
+          CapApp.exitApp();
+        }
+      });
+    } catch (e) {
+      // Non-native fallback
+    }
+
+    return () => {
+      if (backListener && backListener.remove) {
+        backListener.remove();
+      }
+    };
+  }, [currentTab]);
 
   const setUserRole = (role) => {
     setUserRoleState(role);

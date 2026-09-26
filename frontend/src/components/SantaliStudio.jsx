@@ -13,6 +13,9 @@ import {
   recognizeChildTribalSpeech
 } from '../services/apertiumSantaliData';
 import { irisAskTutor } from '../services/api';
+import { translateOffline } from '../services/offline/offlineTranslations';
+import { recordLessonTaught } from '../services/offline/offlineProgress';
+import { isOffline } from '../services/offline/offlineMode';
 import AudioPlayButton from './AudioPlayButton';
 import { startListening } from './speechUtils';
 import { uiTranslations } from '../services/uiTranslations';
@@ -83,34 +86,65 @@ export default function SantaliStudio({
     setCustomText('');
   };
 
+  const [taughtSuccess, setTaughtSuccess] = useState(false);
+
   const handleTranslateCustom = async () => {
     if (!customText.trim()) return;
     setIsTranslating(true);
     try {
-      const res = await irisAskTutor({
-        mode: 'teacher-fln',
-        query: customText,
-        lessonContext: customText,
-        targetLanguage: activeLangObj.name
-      });
+      if (isOffline()) {
+        const res = await translateOffline({
+          text: customText,
+          sourceLang: 'hin',
+          targetLang: selectedLang
+        });
+        setActiveTranslation({
+          title: "Classroom Custom Script",
+          grade: "Classroom Custom",
+          subject: "FLN Mother-Tongue Bridge",
+          sourceText: customText,
+          scriptText: res.translatedText || "ᱡᱚᱦᱟᱨ ᱜᱤᱫᱽᱨᱟᱹ ᱠᱚ!",
+          romanText: res.romanPhonetic || "Johar gidra ko!",
+          vocabulary: [
+            { hindi: "शिक्षण (Teaching)", [selectedLang]: `${res.translatedText} (${res.romanPhonetic})` }
+          ]
+        });
+      } else {
+        const res = await irisAskTutor({
+          mode: 'teacher-fln',
+          query: customText,
+          lessonContext: customText,
+          targetLanguage: activeLangObj.name
+        });
 
-      setActiveTranslation({
-        title: "Custom Classroom FLN Script",
-        grade: "Classroom Custom",
-        subject: "FLN Mother-Tongue Bridge",
-        sourceText: customText,
-        scriptText: res.santaliOlChiki || "ᱡᱚᱦᱟᱨ ᱜᱤᱫᱽᱨᱟᱹᱠᱚ!",
-        romanText: res.santaliRoman || "Johar gidrạko!",
-        vocabulary: (res.vocabularyBreakdown || []).map(v => ({
-          hindi: v.hindi || v.source || 'Word',
-          [selectedLang]: `${v.olChiki || 'ᱚᱞ'} (${v.roman || 'ol'})`
-        })),
-        teachingTips: res.teachingTips || []
-      });
+        setActiveTranslation({
+          title: "Custom Classroom FLN Script",
+          grade: "Classroom Custom",
+          subject: "FLN Mother-Tongue Bridge",
+          sourceText: customText,
+          scriptText: res.santaliOlChiki || "ᱡᱚᱦᱟᱨ ᱜᱤᱫᱽᱨᱟᱹᱠᱚ!",
+          romanText: res.santaliRoman || "Johar gidrạko!",
+          vocabulary: (res.vocabularyBreakdown || []).map(v => ({
+            hindi: v.hindi || v.source || 'Word',
+            [selectedLang]: `${v.olChiki || 'ᱚᱞ'} (${v.roman || 'ol'})`
+          })),
+          teachingTips: res.teachingTips || []
+        });
+      }
     } catch (err) {
       console.warn("Translation fallback activated:", err);
     } finally {
       setIsTranslating(false);
+    }
+  };
+
+  const handleMarkTaught = async () => {
+    try {
+      await recordLessonTaught(selectedLesson);
+      setTaughtSuccess(true);
+      setTimeout(() => setTaughtSuccess(false), 3000);
+    } catch (err) {
+      console.warn('Failed to record lesson taught:', err);
     }
   };
 
@@ -300,6 +334,13 @@ export default function SantaliStudio({
                 <button className={scriptMode === 'both' ? 'active' : ''} onClick={() => setScriptMode('both')}>{t.fln.dualScript}</button>
                 <button className={scriptMode === 'native' ? 'active' : ''} onClick={() => setScriptMode('native')}>{t.fln.nativeOnly}</button>
               </div>
+              <button 
+                className={taughtSuccess ? "btn-primary" : "btn-secondary"} 
+                onClick={handleMarkTaught}
+                title="Mark this lesson as taught and save to local tablet progress"
+              >
+                {taughtSuccess ? '✓ Taught!' : 'Mark Taught'}
+              </button>
               <button className="btn-secondary" onClick={handleExportLessonNotes}>
                 <Download size={13} />
                 {t.fln.exportNotes}

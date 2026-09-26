@@ -12,3 +12,5 @@ build/
 test-output.mp4
 .DS_Store
 *.log
+*.apk
+release/

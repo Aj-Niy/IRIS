@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
 } from 'recharts';
-import { RefreshCw, Plus, CheckCircle2, ArrowUpRight, Play } from 'lucide-react';
+import { RefreshCw, Plus, CheckCircle2, ArrowUpRight, Play, WifiOff, HardDrive } from 'lucide-react';
 import { irisGetDashboardStats, irisSyncOfflineProgress } from '../services/api';
 import { getPendingOfflineLogs, getLastSyncTime } from '../services/offlineSync';
+import { getLocalDashboardMetrics } from '../services/offline/offlineProgress';
+import { isOffline } from '../services/offline/offlineMode';
 import { uiTranslations } from '../services/uiTranslations';
 
 export default function TeacherDashboard({
@@ -21,12 +23,19 @@ export default function TeacherDashboard({
 
   const loadData = async () => {
     try {
-      const stats = await irisGetDashboardStats();
-      setFlnStats(stats);
+      if (isOffline()) {
+        const localData = await getLocalDashboardMetrics();
+        setFlnStats(localData);
+      } else {
+        const stats = await irisGetDashboardStats();
+        setFlnStats(stats);
+      }
       setPendingLogsCount(getPendingOfflineLogs().length);
       setLastSync(getLastSyncTime());
     } catch (err) {
       console.warn('Dashboard data fetch error:', err);
+      const localData = await getLocalDashboardMetrics();
+      setFlnStats(localData);
     }
   };
 
