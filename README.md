@@ -1,79 +1,115 @@
-<div align="center">
+# ShikshaSetu (शिक्षासेतु)
 
-# 🌾 IRIS AI
-### Inclusive Real-Time Instruction System (PALASH × CodeSeekho)
-**Teacher-first mother-tongue FLN instruction support with embedded coding for inclusive education.**
+### Mother-Tongue First Foundational Literacy & Numeracy (FLN) and Inclusive Multimodal Learning Platform
 
-*Grounded in NEP 2020 & NIPUN Bharat, powered by Apertium English-Santali, Ol Chiki dual-script engine, and offline tablet intelligence.*
-
-</div>
+**ShikshaSetu** is an offline-ready, teacher-first educational platform designed to bridge the language divide in primary and secondary classrooms across tribal and rural regions. Grounded in **NEP 2020** and the **NIPUN Bharat Mission** (Jharkhand MTB-MLE, Problem Statement 26042), the platform empowers Hindi-medium teachers to instruct children in their native mother tongues: **Santali (`sat` / Ol Chiki `ᱚᱞ ᱪᱤᱠᱤ`)**, **Ho (`hoc` / Warang Citi)**, and **Mundari (`unr`)**.
 
 ---
 
-## 📖 Overview
+## 1. Key System Modules
 
-**IRIS** is a unified education intelligence platform designed around a **teacher-first front door**. It empowers primary school teachers in Hindi/English-medium tribal and rural schools to instruct Santali-speaking children in **Foundational Literacy and Numeracy (FLN)** using native **Ol Chiki (`ᱚᱞ ᱪᱤᱠᱤ`)** script, Roman transliterations, and audio pronunciation guides.
+### 1.1 FLN Lesson Studio
+- Translates Hindi classroom passages into authentic tribal languages with dual-script rendering (**Ol Chiki `ᱚᱞ ᱪᱤᱠᱤ`** and phonetic Romanization).
+- Provides word-by-word linguistic glossing, vocabulary breakdowns, and audio playback guides for teachers.
+- Covers Grade 1 to 3 primary NCERT and JCERT curriculum stories.
 
-The platform unifies two major use cases under one general-purpose **Universal AI Tutor Engine**:
-1. **Primary Focus (Front Door)**: Teacher-first Mother-Tongue FLN instruction (Santali MVP), NIPUN Bharat grounded worksheet & flashcard generation, and real-time offline voice phrasebooks.
-2. **Secondary Module (Embedded)**: Project-based interactive coding lab (Smart Calculator, Quiz App, Monaco sandbox) with cross-platform Indian Sign Language (ISL) video accessibility for Class 8+ students.
+### 1.2 Classroom Voice Engine
+- Two-way real-time classroom speech translation between Hindi and indigenous languages.
+- Powered by the **Aadi Vaani** translation router and client-side phonetic engine with under 1.5s real-time latency.
+- Full support for classroom commands, affirmations, numeracy, and student response translation.
+
+### 1.3 Live ISL Gesture AI Recognizer
+- Real-time webcam hand-gesture recognition tailored for inclusive and deaf-accessible classrooms.
+- Utilizes MediaPipe 126-keypoint hand landmark extraction and a trained LSTM temporal sequence model.
+- Automatically translates recognized Indian Sign Language (ISL) gestures into tribal Ol Chiki script, Roman pronunciation, and Hindi meanings.
+
+### 1.4 AI Avatar Video Generation Studio
+- Converts study notes, PPTs, and PDFs into 3 to 5-minute animated video lessons with Indian accent voice narration.
+- Features multi-scene pedagogical progression (Intro, Concept, Animated Flowcharts, Live Code Sandbox, and Summary Index).
+- Includes one-click generation of Lesson Summaries, interactive 3D Flip Flashcards, and printable NIPUN worksheets.
+
+### 1.5 NIPUN Bharat Worksheets & Flashcards
+- Competency-aligned practice material mapped directly to NIPUN Bharat learning outcomes (L1-L5 Literacy, M1-M5 Numeracy).
+- Dual-script print sheets with instant PDF export via `jsPDF` for resource-constrained schools.
+
+### 1.6 NCERT Curriculum Hub & Socratic AI Mentor
+- Digital textbook and curriculum browser across Science, Mathematics, and Computer Science (Classes 6-12).
+- Socratic AI teaching assistant providing culturally grounded pedagogic suggestions and interactive coding sandboxes.
+
+### 1.7 Offline-First Tablet Architecture
+- Fully functional on low-resource school tablets ($\le$ 2GB RAM) without active internet connectivity.
+- Local interactions and analytics are stored via IndexedDB and synchronized automatically when network access is restored.
 
 ---
 
-## 🎯 The Four Core Pillars of IRIS
-
-| Module | Purpose & Pedagogy | Key Capabilities |
-|---|---|---|
-| 🏫 **Santali FLN Studio** | Primary classroom instruction bridge for Hindi/English teachers | Dual-script reader (**Ol Chiki `ᱚᱞ ᱪᱤᱠᱤ`** + Roman), Apertium linguistic glossing, NCERT primary stories, audio pronunciation |
-| 📝 **NIPUN Bharat Worksheets** | Competency-grounded practice material | Mapped to official NIPUN outcome codes (L1–L5, M1–M5), interactive flip flashcards, printable PDF export via jsPDF |
-| 🎙️ **Live Classroom Phrasebook** | Real-time voice assistance in classroom | 50+ bounded phrases ("sit down", "open books", "count to 5"), Web Speech recognition, 100% offline tablet operation |
-| 💻 **Embedded Coding Lab** | Inclusive STEM education for Class 8+ | Monaco code editor, Python/JS sandbox, Socratic AI coding mentor, ISL sign video clips |
-
----
-
-## 🏗️ Architecture & Tech Stack
+## 2. Directory Structure
 
 ```
-Teacher Tablet (2GB RAM Offline Cache / React Web)
-       │
-       ├──► 1. Santali FLN Studio ──► Apertium eng-sat Lexicon + Ol Chiki Parser
-       ├──► 2. NIPUN Worksheets   ──► Competency Generator + jsPDF Printable Engine
-       ├──► 3. Voice Phrasebook   ──► Bounded 50+ Phrases + Speech Synthesis
-       ├──► 4. Coding Module      ──► Monaco Sandbox + Socratic Tutor + ISL Clips
-       │
-       ▼
-Local Cache (LocalStorage / IndexedDB) ──► Offline Sync Queue
-       │ (when reconnected)
-       ▼
-IRIS Express Backend (/api/iris/tutor, /api/iris/translate, /api/iris/sync-progress)
-       ├──► Supabase (fln_lessons, worksheets, classroom_logs, videos)
-       ├──► Apertium eng-sat Linguistic Bank
-       └──► Google Gemini 1.5/2.0 Flash (Curriculum Grounding)
+IRIS / ShikshaSetu
+├── frontend/                     # React + Vite Single-Page Application
+│   ├── src/
+│   │   ├── components/           # UI Modules (VideoStudio, LivePhrasebook, etc.)
+│   │   ├── services/             # Aadi Vaani client, API bridges, offline sync
+│   │   └── styles/               # CSS styling and design system
+│   └── public/                   # Static assets, branding logo, and audio files
+├── aadi-vaani/                   # Indigenous Translation Service (FastAPI + Python)
+│   ├── src/router/               # Multi-backend fallback routing & caching
+│   ├── src/transliteration/      # Ol Chiki and Warang Citi phonetic converters
+│   └── src/providers/            # Bhashini, IndicTrans2, and custom lexicon adapters
+├── gestures/                     # Real-Time Gesture Inference Service
+│   ├── gesture_api.py            # Local HTTP bridge on port 5005
+│   ├── isl_model_lstm.h5         # Trained 126-landmark LSTM sequence classifier
+│   └── predict_live_lstm.py      # Native desktop MediaPipe test harness
+├── backend-v3/                   # AI Avatar Video Generation Engine
+│   ├── server.js                 # Express orchestration server (port 3002)
+│   ├── llmRotation.js            # Gemini -> Groq -> Cerebras auto-fallback
+│   └── voiceGenerator.js         # Indian accent voice synthesis
+├── src/                          # Remotion Video Compositions & Scenes
+│   ├── scenes/                   # Visual, Code, Flowchart, and Index scenes
+│   └── components/               # Animated Teacher Avatar and PiP components
+└── README.md                     # Main documentation
 ```
 
 ---
 
-## 🚀 Getting Started
+## 3. Quick Start Guide
 
-### 1. Frontend Setup
+### 3.1 Frontend Application
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
-Open `http://localhost:5173` to launch the IRIS Teacher-First Studio.
+Access the application at `http://localhost:5173` (or `http://localhost:3000`).
 
-### 2. Backend Setup
+### 3.2 Video Generation Studio Backend
 ```bash
-cd backend
+cd backend-v3
 npm install
-npm start
+node server.js
 ```
-Runs the Express API on `http://localhost:3001` with `/api/iris/*` routes.
+The video generation engine runs on `http://localhost:3002`.
+
+### 3.3 Aadi Vaani Translation Router
+```bash
+cd aadi-vaani
+pip install -r requirements.txt
+uvicorn src.router.api:app --reload --port 8000
+```
+Interactive API documentation is available at `http://localhost:8000/docs`.
+
+### 3.4 Live Gesture AI Service
+```bash
+cd gestures
+pip install tensorflow opencv-python mediapipe
+python gesture_api.py
+```
+The gesture API server listens on `http://localhost:5005`.
 
 ---
 
-## 🤝 Project Alignment & References
-- **Apertium English-Santali Integration**: [apertium-eng-sat](https://github.com/apertium/apertium-eng-sat)
-- **NIPUN Bharat Guidelines**: Ministry of Education, Govt. of India (Foundational Literacy & Numeracy Lakshyas)
-- **NEP 2020**: Mother-tongue instruction & multi-disciplinary inclusive learning
+## 4. Policy & Pedagogical Standards
+
+- **National Education Policy (NEP 2020)**: Primary education delivery in the child's home language / mother tongue.
+- **NIPUN Bharat Mission**: National Initiative for Proficiency in Reading with Understanding and Numeracy.
+- **Constitution of India**: Eighth Schedule recognition of the Santali language and Ol Chiki script.
