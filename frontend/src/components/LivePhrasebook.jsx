@@ -13,6 +13,7 @@ import { uiTranslations } from '../services/uiTranslations';
 import ISLVideoPlayerModal from './ISLVideoPlayerModal';
 import ISLGestureRecognizerModal from './ISLGestureRecognizerModal';
 import { translateAadiVaani, isOlChiki, devanagariToOlChiki } from '../services/aadiVaaniTranslator';
+import SaveToVocab from './SaveToVocab';
 
 export default function LivePhrasebook({
   uiLang = 'en',
@@ -366,6 +367,15 @@ export default function LivePhrasebook({
                 {activeLangObj.name} · {measuredLatency || 0.22}s real-time (Aadi Vaani)
               </span>
               <div className="actions">
+                <SaveToVocab
+                  text={teacherTranslation.script || selectedPhrase[selectedLang]?.script || ''}
+                  roman={teacherTranslation.roman || selectedPhrase[selectedLang]?.roman || ''}
+                  hindi={teacherTranscript || selectedPhrase.hindi}
+                  lang={selectedLang}
+                  langName={activeLangObj.name}
+                  source="voice"
+                  context={'Classroom voice phrase'}
+                />
                 <button className="btn-ghost" onClick={() => handleOpenIsl(teacherTranscript || selectedPhrase.hindi, teacherTranscript || selectedPhrase.hindi)}>ISL</button>
                 <AudioPlayButton
                   text={teacherTranslation.roman || teacherTranslation.script || selectedPhrase[selectedLang]?.roman || selectedPhrase[selectedLang]?.script}

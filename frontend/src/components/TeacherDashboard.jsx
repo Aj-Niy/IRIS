@@ -6,6 +6,7 @@ import { RefreshCw, Plus, CheckCircle2, ArrowUpRight, Play } from 'lucide-react'
 import { irisGetDashboardStats, irisSyncOfflineProgress } from '../services/api';
 import { getPendingOfflineLogs, getLastSyncTime } from '../services/offlineSync';
 import { uiTranslations } from '../services/uiTranslations';
+import { getVocabStats, getVocabEntries } from '../services/vocabMemory';
 
 export default function TeacherDashboard({
   uiLang = 'en',
@@ -18,6 +19,8 @@ export default function TeacherDashboard({
   const [syncMessage, setSyncMessage] = useState('');
   const [pendingLogsCount, setPendingLogsCount] = useState(0);
   const [lastSync, setLastSync] = useState(getLastSyncTime());
+  const [vocabStats, setVocabStats] = useState(null);
+  const [vocabEntries, setVocabEntries] = useState([]);
 
   const loadData = async () => {
     try {
@@ -28,6 +31,9 @@ export default function TeacherDashboard({
     } catch (err) {
       console.warn('Dashboard data fetch error:', err);
     }
+    // Always load vocab from localStorage (offline-first, no network required)
+    setVocabStats(getVocabStats());
+    setVocabEntries(getVocabEntries());
   };
 
   useEffect(() => {
@@ -63,12 +69,11 @@ export default function TeacherDashboard({
     { name: 'S2', mastered: 71 },
   ];
 
-  const words = flnStats?.translationHeatmap || [
-    { word: 'Book', script: 'ᱯᱚᱛᱚᱵ', count: 142, status: 'Mastered', category: 'Literacy' },
-    { word: 'Read', script: 'ᱯᱟᱲᱦᱟᱣ', count: 98, status: 'Mastered', category: 'Literacy' },
-    { word: 'Write', script: 'ᱚᱞ', count: 74, status: 'Practising', category: 'Literacy' },
-    { word: 'Count', script: 'ᱞᱮᱠᱷᱟ', count: 56, status: 'Next', category: 'Numeracy' }
-  ];
+  const SOURCE_PILL = {
+    lesson:      { className: 'pill info', label: 'Lesson' },
+    voice:       { className: 'pill ok',   label: 'Voice' },
+    translation: { className: 'pill warn', label: 'Translation' }
+  };
 
   return (
     <div>
@@ -169,29 +174,72 @@ export default function TeacherDashboard({
       </div>
 
       <div className="dash-row b">
+        {/* Words in Use — real vocab memory data */}
         <div className="card">
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
             <h2 style={{ fontSize: 16, fontWeight: 750, margin: 0 }}>Words in use</h2>
-            <span className="pill info" style={{ fontWeight: 700 }}>1,240 Total Words</span>
+            <span className="pill info" style={{ fontWeight: 700 }}>
+              {vocabStats?.total ?? 0} {vocabStats?.total === 1 ? 'Word' : 'Words'} Saved
+            </span>
           </div>
-          {words.slice(0, 4).map((item, idx) => {
-            const usageCount = item.count || (142 - idx * 28);
-            return (
-              <div className="list-row" key={idx}>
-                <div>
-                  <div style={{ fontSize: 13, fontWeight: 750 }}>
-                    {item.word} {item.script ? `· ${item.script}` : ''}
+          <div className="quiet" style={{ fontSize: 12, marginBottom: 12 }}>Saved from lessons and classroom voice</div>
+
+          {vocabEntries.length === 0 ? (
+            <div style={{
+              padding: '24px 16px',
+              textAlign: 'center',
+              background: 'var(--bg-subtle)',
+              borderRadius: 14,
+              border: '1px dashed var(--border-medium)'
+            }}>
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ margin: '0 auto 10px', display: 'block' }}>
+                <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/>
+                <line x1="12" y1="7" x2="12" y2="13"/>
+                <line x1="9" y1="10" x2="15" y2="10"/>
+              </svg>
+              <div style={{ fontSize: 13, fontWeight: 650, color: 'var(--text-sub)', marginBottom: 6 }}>
+                No words saved yet
+              </div>
+              <div className="quiet" style={{ fontSize: 12, lineHeight: 1.5 }}>
+                Open <strong>Lesson Studio</strong> or <strong>Classroom Voice</strong> and tap{' '}
+                <strong>Save</strong> next to any translated word or phrase.
+              </div>
+            </div>
+          ) : (
+            vocabEntries.slice(0, 4).map((entry) => {
+              const pill = SOURCE_PILL[entry.source] || SOURCE_PILL.lesson;
+              return (
+                <div className="list-row" key={entry.id}>
+                  <div>
+                    <div style={{ fontSize: 13, fontWeight: 750 }}>
+                      {entry.text}
+                      {entry.roman ? (
+                        <span className="quiet" style={{ fontSize: 12, fontWeight: 500, marginLeft: 6 }}>
+                          · {entry.roman}
+                        </span>
+                      ) : null}
+                    </div>
+                    <div className="quiet" style={{ fontSize: 12, marginTop: 2 }}>
+                      {entry.hindi || '—'}
+                      {entry.context ? ` · ${entry.context}` : ''}
+                    </div>
                   </div>
-                  <div className="quiet" style={{ fontSize: 12, marginTop: 2 }}>
-                    {item.category || item.subject || 'Classroom'} · <strong style={{ color: 'var(--green-primary)', fontWeight: 700 }}>{usageCount} usages</strong> in class
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4 }}>
+                    <span className={pill.className} style={{ fontSize: 10 }}>{pill.label}</span>
+                    <span className="pill" style={{ background: 'var(--bg-subtle)', fontSize: 10, color: 'var(--text-sub)' }}>
+                      {entry.langName}
+                    </span>
                   </div>
                 </div>
-                <span className={`pill ${item.status === 'Mastered' || item.status === 'Completed' ? 'ok' : item.status === 'Next' || item.status === 'Pending' ? 'warn' : 'info'}`}>
-                  {item.status || 'Active'}
-                </span>
-              </div>
-            );
-          })}
+              );
+            })
+          )}
+
+          {vocabEntries.length > 4 && (
+            <div className="quiet" style={{ textAlign: 'center', marginTop: 10, fontSize: 12 }}>
+              +{vocabEntries.length - 4} more saved words
+            </div>
+          )}
         </div>
 
         <div className="card" style={{ textAlign: 'center' }}>
