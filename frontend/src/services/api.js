@@ -297,19 +297,19 @@ export async function irisAskTutor({
 
     // Offline linguistic fallback
     if (mode === 'teacher-fln') {
-      const sample = SAMPLE_FLN_LESSONS.find(l => (lessonContext && l.sourceText.includes(lessonContext.substring(0, 10)))) || SAMPLE_FLN_LESSONS[0];
+      const sample = SAMPLE_FLN_LESSONS.find(l => (lessonContext && l.sourceText && l.sourceText.includes(lessonContext.substring(0, 10)))) || SAMPLE_FLN_LESSONS[0];
       recordOfflineInteraction('lesson_translated', { query, sampleTitle: sample.title });
       return {
         mode: 'teacher-fln',
         status: 'offline_cache',
-        santaliOlChiki: sample.santaliOlChiki,
-        santaliRoman: sample.santaliRoman,
+        santaliOlChiki: sample.santaliOlChiki || sample.sat?.script || "ᱡᱚᱦᱟᱨ",
+        santaliRoman: sample.santaliRoman || sample.sat?.roman || "Johar",
         hindiMeaning: sample.sourceText,
-        vocabularyBreakdown: sample.vocabulary.map(v => ({
-          source: v.word,
-          olChiki: v.olChiki,
-          roman: v.roman,
-          hindi: v.word,
+        vocabularyBreakdown: (sample.vocabulary || []).map(v => ({
+          source: v.hindi || v.word || 'शब्द',
+          olChiki: typeof v.sat === 'string' ? v.sat : (v.sat?.script || v.olChiki || 'ᱚᱞ'),
+          roman: typeof v.sat === 'string' ? v.sat : (v.sat?.roman || v.roman || 'ol'),
+          hindi: v.hindi || v.word || 'शब्द',
           pos: 'noun/verb'
         })),
         teachingTips: [

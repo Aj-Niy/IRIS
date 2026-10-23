@@ -12,3 +12,9 @@ build/
 test-output.mp4
 .DS_Store
 *.log
+
+# Android build outputs & local Gradle caches
+frontend/android/
+.gradle/
+*.apk
+*.aab
