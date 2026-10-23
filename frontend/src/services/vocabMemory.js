@@ -91,6 +91,34 @@ export function isDuplicateVocab(text, lang) {
 }
 
 /**
+ * Remove a vocab entry by its ID.
+ */
+export function removeVocabEntry(id) {
+  try {
+    const entries = getVocabEntries();
+    const filtered = entries.filter(e => e.id !== id);
+    localStorage.setItem(VOCAB_MEMORY_KEY, JSON.stringify(filtered));
+    return true;
+  } catch (err) {
+    console.warn('[VocabMemory] removeVocabEntry failed:', err);
+    return false;
+  }
+}
+
+/**
+ * Clear all vocab entries.
+ */
+export function clearVocabEntries() {
+  try {
+    localStorage.removeItem(VOCAB_MEMORY_KEY);
+    return true;
+  } catch (err) {
+    console.warn('[VocabMemory] clearVocabEntries failed:', err);
+    return false;
+  }
+}
+
+/**
  * Return aggregated stats for the Words in Use dashboard.
  */
 export function getVocabStats() {

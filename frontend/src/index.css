@@ -380,7 +380,24 @@ input, select, textarea { font-family: inherit; }
 }
 
 .dash-row.a { grid-template-columns: 1.7fr 1fr; }
-.dash-row.b { grid-template-columns: 1.4fr 1fr 0.9fr; }
+.dash-row.b { grid-template-columns: 1.4fr 1.05fr 0.95fr; }
+.dash-row.b.no-vocab { grid-template-columns: 1fr 1fr; }
+
+.vocab-row {
+  transition: background 0.15s ease;
+}
+.vocab-row:hover {
+  background: var(--bg-subtle);
+}
+.word-del-btn {
+  opacity: 0.6;
+  transition: opacity 0.15s ease, color 0.15s ease, background 0.15s ease;
+}
+.word-del-btn:hover {
+  opacity: 1;
+  color: #DC2626 !important;
+  background: rgba(220, 38, 38, 0.1) !important;
+}
 
 .quiet { font-size: 12px; color: var(--text-muted); }
 .metric { font-size: 36px; font-weight: 800; letter-spacing: -1px; line-height: 1; margin: 12px 0 10px; }
